@@ -73,11 +73,24 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
+;;
+;;
+;;
+;; scrolling
+(setq scroll-margin 101
+      scroll-conservatively 101)
+(setq doom-font (font-spec :size 16))
+
+;;zshell for terminal, fish for vterm
 (setq shell-file-name (executable-find "zsh"))
 (setq-default vterm-shell "/bin/fish")
 (setq-default explicit-shell-file-name "/bin/fish")
 
 ;; Julia
 (after! julia-mode
+  (setq lsp-julia-package-dir nil)
   (setq julia-program "/home/lorenzo/.juliaup/bin/julia")
   (setq lsp-julia-default-environment "~/.julia/environments/v1.11"))
+
+
+(load-theme 'noctalia t)

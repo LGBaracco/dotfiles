@@ -5,9 +5,17 @@
         draw-border-with-background false
         background-effect {
             blur true
+            xray false
             
     }
     }
+    window-rule {
+        match app-id="brave-browser"
+        match app-id="code" 
+        match app-id="emacs"
+        open-maximized true
+    }
+
 
      // if you use steam you will probably like these
     window-rule {

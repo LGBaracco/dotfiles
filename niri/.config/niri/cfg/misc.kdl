@@ -17,7 +17,7 @@
     debug {
         // Allows notification actions and window activation from Noctalia.
         honor-xdg-activation-with-invalid-serial
-        render-drm-device "/dev/dri/renderD128"
+        //render-drm-device "/dev/dri/renderD128"
     }
 
     hotkey-overlay {

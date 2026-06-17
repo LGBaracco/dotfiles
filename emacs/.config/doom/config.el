@@ -32,11 +32,11 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-one)
+;;(setq doom-theme 'doom-one)
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
-;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type t)
+;
+(setq display-line-numbers-type 'relative)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -74,12 +74,21 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 ;;
-;;
+;; Send files to trash instead of fully deleting
+(setq delete-by-moving-to-trash t)
+;; Save automatically
+(setq auto-save-default t)
 ;;
 ;; scrolling
 (setq scroll-margin 101
       scroll-conservatively 101)
 (setq doom-font (font-spec :size 16))
+
+;; Evil settings
+(setq-default evil-escape-key-sequence "kj")
+(setq-default evil-escape-delay 0.1)
+;; Enable paste from system clipboard with C-v in insert mode
+(evil-define-key 'insert global-map (kbd "C-v") 'clipboard-yank)
 
 ;;zshell for terminal, fish for vterm
 (setq shell-file-name (executable-find "zsh"))
@@ -92,5 +101,17 @@
   (setq julia-program "/home/lorenzo/.juliaup/bin/julia")
   (setq lsp-julia-default-environment "~/.julia/environments/v1.11"))
 
-
+;; Theme
 (load-theme 'noctalia t)
+
+;; Doom dashboard
+(assoc-delete-all "Open org-agenda" +dashboard-menu-sections)
+(assoc-delete-all "Jump to bookmark" +dashboard-menu-sections)
+
+;; ask for buffer after splitting
+(setq evil-vsplit-window-right t
+      evil-split-window-below t)
+
+(defadvice! prompt-for-buffer (&rest _)
+  :after '(evil-window-split evil-window-vsplit)
+  (consult-buffer))

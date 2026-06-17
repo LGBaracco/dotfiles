@@ -1,0 +1,10 @@
+{
+  "catWidget": {
+    "enabled": true,
+    "showCpuPercent": false
+  },
+  "dankBatteryAlerts": {
+    "enabled": true,
+    "criticalThreshold": 20
+  }
+}

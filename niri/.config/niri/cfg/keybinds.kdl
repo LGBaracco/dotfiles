@@ -14,7 +14,7 @@ binds {
     Mod+T                          hotkey-overlay-title="Open Terminal: Foot" { spawn "foot"; }
     Mod+Space                     hotkey-overlay-title="Open App Launcher: noctalia launcher" { spawn-sh "qs -c noctalia-shell ipc call launcher toggle"; }
     Mod+B                               hotkey-overlay-title="Open Browser: Brave" { spawn-sh "brave --password-store=kwallet6"; }
-    Mod+ALT+L                           hotkey-overlay-title="Lock Screen: noctalia lock" { spawn-sh "qs -c noctalia-shell ipc call lockScreen lock"; }
+    //Mod+ALT+L                           hotkey-overlay-title="Lock Screen: noctalia lock" { spawn-sh "qs -c noctalia-shell ipc call lockScreen lock"; }
     //Mod+ALT+Q                        hotkey-overlay-title="Session Menu: noctalia sessionMenu" { spawn-sh "qs -c noctalia-shell ipc call sessionMenu toggle"; }
     Mod+S                            hotkey-overlay-title="Open VSCode" { spawn-sh "code --password-store=kwallet6"; } 
     Mod+M                            hotkey-overlay-title="Open Emacs" { spawn-sh "emacsclient -c -a 'emacs'"; } 

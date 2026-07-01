@@ -9,7 +9,7 @@ input {
             // uncomment the line below and change the layout accordingly.
             layout "us" // Use the American keyboard layout"
 	    variant "altgr-intl"	    
-      options "caps:escape"
+      options "caps:swapescape"
 	    }
         numlock // Enable numlock on startup
     }

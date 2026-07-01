@@ -82,13 +82,25 @@
 ;; scrolling
 (setq scroll-margin 101
       scroll-conservatively 101)
+
+;; font size
 (setq doom-font (font-spec :size 16))
+;; Theme
+(load-theme 'noctalia t)
 
 ;; Evil settings
 (setq-default evil-escape-key-sequence "kj")
 (setq-default evil-escape-delay 0.1)
 ;; Enable paste from system clipboard with C-v in insert mode
 (evil-define-key 'insert global-map (kbd "C-v") 'clipboard-yank)
+
+;; ask for buffer after splitting
+(setq evil-vsplit-window-right t
+      evil-split-window-below t)
+
+(defadvice! prompt-for-buffer (&rest _)
+  :after '(evil-window-split evil-window-vsplit)
+  (consult-buffer))
 
 ;;zshell for terminal, fish for vterm
 (setq shell-file-name (executable-find "zsh"))
@@ -101,17 +113,15 @@
   (setq julia-program "/home/lorenzo/.juliaup/bin/julia")
   (setq lsp-julia-default-environment "~/.julia/environments/v1.11"))
 
-;; Theme
-(load-theme 'noctalia t)
+;; Python
+(with-eval-after-load 'python
+  (set-formatter! 'ruff :modes '(python-mode python-ts-mode))
+  (set-eglot-client! '(python-mode python-ts-mode) '("ty" "server")))
+
+
+
 
 ;; Doom dashboard
 (assoc-delete-all "Open org-agenda" +dashboard-menu-sections)
 (assoc-delete-all "Jump to bookmark" +dashboard-menu-sections)
 
-;; ask for buffer after splitting
-(setq evil-vsplit-window-right t
-      evil-split-window-below t)
-
-(defadvice! prompt-for-buffer (&rest _)
-  :after '(evil-window-split evil-window-vsplit)
-  (consult-buffer))

@@ -14,10 +14,10 @@
     # --- Editors / Dev ---
     vscode                     # or vscodium for the libre build
     emacs30-pgtk               # pgtk = pure GTK, best for Wayland; Doom goes on top
+    neovim
 
     # --- Dev tools ---
-    git
-    gh                         # GitHub CLI
+    stow
     ripgrep                    # needed by Doom Emacs / Neovim telescope
     fd
     fzf
@@ -56,6 +56,7 @@
 
     # --- Misc ---
     dms-shell
+    quickshell
     ghostty                    # terminal (works great with niri)
     foot
     mpv
@@ -129,7 +130,7 @@
       vi   = "nvim";
       vim  = "nvim";
       # Rebuild shortcut
-      nrs  = "sudo nixos-rebuild switch --flake ~/nixos#nixlorenzo";  # CHANGE ME
+      rebuild = "sudo nixos-rebuild switch --flake ~/nixos#nixlorenzo";  # CHANGE ME
     };
   };
 

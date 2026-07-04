@@ -136,13 +136,15 @@
     git
     curl
     wget
+    coreutils
     pciutils      # lspci — useful for GPU debugging
     usbutils
     nvtopPackages.full   # GPU monitor
     htop
     btop
-    stow
     efibootmgr
+    clang
+    gcc
   ];
 
   # ── User ──────────────────────────────────────────────────────────────────

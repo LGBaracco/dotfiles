@@ -14,7 +14,7 @@
   "widgetColorMode": "default",
   "controlCenterTileColorMode": "primary",
   "buttonColorMode": "primary",
-  "cornerRadius": 10,
+  "cornerRadius": 5,
   "niriLayoutGapsOverride": -1,
   "niriLayoutRadiusOverride": -1,
   "niriLayoutBorderSize": -1,
@@ -179,7 +179,7 @@
   "runningAppsGroupByApp": false,
   "runningAppsCurrentMonitor": false,
   "appIdSubstitutions": [],
-  "centeringMode": "index",
+  "centeringMode": "geometric",
   "clockDateFormat": "d MMM",
   "lockDateFormat": "",
   "greeterRememberLastSession": true,
@@ -279,7 +279,7 @@
   "qtThemingEnabled": false,
   "syncModeWithPortal": true,
   "terminalsAlwaysDark": false,
-  "muxType": "tmux",
+  "muxType": "zellij",
   "muxUseCustomCommand": false,
   "muxCustomCommand": "",
   "muxSessionFilter": "",
@@ -439,6 +439,10 @@
         {
           "id": "idleInhibitor",
           "enabled": true
+        },
+        {
+          "id": "catWidget",
+          "enabled": true
         }
       ],
       "centerWidgets": [
@@ -455,10 +459,6 @@
           "enabled": true
         },
         {
-          "id": "catWidget",
-          "enabled": true
-        },
-        {
           "id": "runningApps",
           "enabled": true,
           "runningAppsCompactMode": true,
@@ -468,10 +468,6 @@
         },
         {
           "id": "workspaceSwitcher",
-          "enabled": true
-        },
-        {
-          "id": "layout",
           "enabled": true
         }
       ],
@@ -506,19 +502,23 @@
           "showMicIcon": false,
           "showMicPercent": true,
           "showBatteryIcon": false
+        },
+        {
+          "id": "powerMenuButton",
+          "enabled": true
         }
       ],
-      "spacing": 0,
-      "innerPadding": -6,
-      "bottomGap": -25,
+      "spacing": -4,
+      "innerPadding": -8,
+      "bottomGap": -18,
       "transparency": 0,
-      "widgetTransparency": 1,
+      "widgetTransparency": 0.85,
       "squareCorners": false,
       "noBackground": false,
       "maximizeWidgetIcons": false,
       "maximizeWidgetText": false,
       "removeWidgetPadding": false,
-      "widgetPadding": 5,
+      "widgetPadding": 8,
       "gothCornersEnabled": false,
       "gothCornerRadiusOverride": false,
       "gothCornerRadiusValue": 42,

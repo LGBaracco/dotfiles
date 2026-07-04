@@ -103,11 +103,13 @@
   (consult-buffer))
 
 ;;zshell for terminal, fish for vterm
+;; TODO maybe remove whole thing
 (setq shell-file-name (executable-find "zsh"))
 (setq-default vterm-shell "/bin/fish")
 (setq-default explicit-shell-file-name "/bin/fish")
 
 ;; Julia
+;; Fix: use eglot instead of lsp thing
 (after! julia-mode
   (setq lsp-julia-package-dir nil)
   (setq julia-program "/home/lorenzo/.juliaup/bin/julia")

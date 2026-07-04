@@ -142,6 +142,7 @@
     nvtopPackages.full   # GPU monitor
     htop
     btop
+    dgop
     efibootmgr
     clang
     gcc

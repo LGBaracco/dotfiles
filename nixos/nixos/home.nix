@@ -27,11 +27,13 @@
     jq
     yq
     lazygit
+    nwg-look
 
     # --- Nix tooling ---
     nix-output-monitor         # prettier `nix build` output
     nvd                        # diff nixos generations
     alejandra                  # nix formatter
+    nixfmt
 
     # --- Python (scientific) ---
     (python312.withPackages (ps: with ps; [
@@ -43,12 +45,23 @@
       ipython
     ]))
 
+    uv
+    ruff
+
     # --- Julia ---
     julia-bin                  # official Julia binary (faster than building from source)
 
+    # --- C/C++ ---
     clang
-    # --- Wayland / niri utilities ---
-    # rofi-wayland              # alternative if you prefer rofi
+    cmake
+
+    sbcl # Common Lisp
+    proselint # Markdown linter
+    pandoc
+    shellcheck
+
+    # --- build tools ---
+    gnumake
 
     # --- Fonts / theming ---
     papirus-icon-theme
@@ -69,13 +82,13 @@
 
   # ── Brave / Chromium flags for Wayland + KWallet ──────────────────────────
   # Brave reads from ~/.config/brave-flags.conf
-  home.file.".config/brave-flags.conf".text = ''
-    --ozone-platform=wayland
-    --enable-features=WaylandWindowDecorations
-    --password-store=gnome
-    # --password-store=kwallet6
-  '';
-
+  # home.file.".config/brave-flags.conf".text = ''
+  #   --ozone-platform=wayland
+  #   --enable-features=WaylandWindowDecorations
+  #   --password-store=gnome-libsecret
+  # '';
+  # Currently managed by dms and niri, one day create xdg.desktopEntry here
+ 
   # ── Git ───────────────────────────────────────────────────────────────────
   programs.git = {
     enable      = true;
@@ -95,7 +108,7 @@
     };
 
   # ── Neovim ────────────────────────────────────────────────────────────────
-  # Minimal bootstrap — assumes you manage your own config in ~/.config/nvim
+  # Minimal bootstrap — declarative configuration will need to live here
   # programs.neovim = {
   #   enable        = true;
   #   defaultEditor = true;
@@ -109,7 +122,7 @@
   #   ~/.config/emacs/bin/doom install
   # The emacs30-pgtk package above is the underlying Emacs binary Doom will use.
   # Add doom's bin to PATH:
-  home.sessionPath = [ "$HOME/.config/emacs/bin" ];
+  home.sessionPath = [ "$HOME/.config/emacs/bin $HOME/.local/bin" ];
 
   # ── Fish shell ────────────────────────────────────────────────────────────
   programs.fish = {
@@ -130,7 +143,7 @@
       vi   = "nvim";
       vim  = "nvim";
       # Rebuild shortcut
-      rebuild = "sudo nixos-rebuild switch --flake ~/nixos#nixlorenzo";  # CHANGE ME
+      rebuild = "sudo nixos-rebuild switch --flake ~/nixos#nixlorenzo";
     };
   };
 

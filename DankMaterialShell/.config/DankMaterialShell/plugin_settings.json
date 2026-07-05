@@ -6,5 +6,8 @@
   "dankBatteryAlerts": {
     "enabled": true,
     "criticalThreshold": 20
+  },
+  "dmsLenovoBatterySettings": {
+    "enabled": true
   }
 }

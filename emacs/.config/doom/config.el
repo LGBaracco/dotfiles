@@ -102,11 +102,11 @@
   :after '(evil-window-split evil-window-vsplit)
   (consult-buffer))
 
-;;zshell for terminal, fish for vterm
+;;bash for terminal commands, fish for vterm
 ;; TODO maybe remove whole thing
-(setq shell-file-name (executable-find "zsh"))
-(setq-default vterm-shell "/bin/fish")
-(setq-default explicit-shell-file-name "/bin/fish")
+(setq shell-file-name (executable-find "bash"))
+(setq-default vterm-shell "usr/bin/env fish")
+(setq-default explicit-shell-file-name "usr/bin/env fish")
 
 ;; Julia
 ;; Fix: use eglot instead of lsp thing

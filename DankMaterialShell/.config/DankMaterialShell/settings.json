@@ -15,9 +15,9 @@
   "controlCenterTileColorMode": "primary",
   "buttonColorMode": "primary",
   "cornerRadius": 5,
-  "niriLayoutGapsOverride": -1,
-  "niriLayoutRadiusOverride": -1,
-  "niriLayoutBorderSize": -1,
+  "niriLayoutGapsOverride": 4,
+  "niriLayoutRadiusOverride": 3,
+  "niriLayoutBorderSize": 1,
   "hyprlandLayoutGapsOverride": -1,
   "hyprlandLayoutRadiusOverride": -1,
   "hyprlandLayoutBorderSize": -1,
@@ -211,10 +211,10 @@
   "networkPreference": "auto",
   "iconTheme": "System Default",
   "cursorSettings": {
-    "theme": "Adwaita",
+    "theme": "System Default",
     "size": 24,
     "niri": {
-      "hideWhenTyping": false,
+      "hideWhenTyping": true,
       "hideAfterInactiveMs": 0
     },
     "hyprland": {
@@ -426,9 +426,18 @@
           "enabled": true
         },
         {
+          "id": "catWidget",
+          "enabled": true
+        },
+        {
           "id": "cpuUsage",
           "enabled": true,
           "minimumWidth": false
+        },
+        {
+          "id": "cpuTemp",
+          "enabled": true,
+          "minimumWidth": true
         },
         {
           "id": "memUsage",
@@ -438,10 +447,6 @@
         },
         {
           "id": "idleInhibitor",
-          "enabled": true
-        },
-        {
-          "id": "catWidget",
           "enabled": true
         }
       ],
@@ -486,6 +491,10 @@
         },
         {
           "id": "clipboard",
+          "enabled": true
+        },
+        {
+          "id": "dmsLenovoBatterySettings",
           "enabled": true
         },
         {

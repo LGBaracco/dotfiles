@@ -132,6 +132,7 @@
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.sddm.enableGnomeKeyring = true;
   # Then set the BROWSER_KEYRING env var to "gnome" for Brave.
+  systemd.user.services.niri-flake-polkit.enable = false;
 
   # ── Fonts ─────────────────────────────────────────────────────────────────
   fonts = {
@@ -189,9 +190,9 @@
   xdg.portal = {
     enable = true;
     extraPortals = with pkgs; [
+      xdg-desktop-portal-gnome
       xdg-desktop-portal-gtk
       kdePackages.xdg-desktop-portal-kde
-      xdg-desktop-portal-gnome
     ];
     config.common.default = "*";
   };

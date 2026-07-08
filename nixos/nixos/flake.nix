@@ -9,7 +9,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # niri is not in nixpkgs yet; use the community flake
     niri-flake = {
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -19,10 +18,8 @@
       url = "github:uiriansan/SilentSDDM";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    
-  };
 
-   
+  };
 
   outputs = { self, nixpkgs, home-manager, niri-flake, silentSDDM, ... }@inputs:
   let
@@ -42,7 +39,7 @@
           home-manager.useUserPackages = true;
           home-manager.users.lorenzo = import ./home.nix; 
           home-manager.extraSpecialArgs = { inherit inputs; };
-  	      home-manager.backupFileExtension = "bak";
+          home-manager.backupFileExtension = "bak";
 
         }
       ];

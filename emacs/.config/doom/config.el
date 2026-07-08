@@ -103,25 +103,24 @@
   (consult-buffer))
 
 ;;bash for terminal commands, fish for vterm
-;; TODO maybe remove whole thing
 (setq shell-file-name (executable-find "bash"))
-(setq-default vterm-shell "usr/bin/env fish")
-(setq-default explicit-shell-file-name "usr/bin/env fish")
+(setq-default vterm-shell "/run/current-system/sw/bin/fish")
+(setq-default explicit-shell-file-name "/run/current-system/sw/bin/fish")
 
 ;; Julia
 ;; Fix: use eglot instead of lsp thing
-(after! julia-mode
-  (setq lsp-julia-package-dir nil)
-  (setq julia-program "/home/lorenzo/.juliaup/bin/julia")
-  (setq lsp-julia-default-environment "~/.julia/environments/v1.11"))
+(with-eval-after-load 'eglot-jl
+  (setq eglot-jl-language-server-project "~/.julia/environments/v1.12"))
+
+;; (after! julia-mode
+;;   (setq lsp-julia-package-dir nil)
+;;   (setq julia-program "/home/lorenzo/.juliaup/bin/julia")
+;;   (setq lsp-julia-default-environment "~/.julia/environments/v1.11"))
 
 ;; Python
 (with-eval-after-load 'python
   (set-formatter! 'ruff :modes '(python-mode python-ts-mode))
   (set-eglot-client! '(python-mode python-ts-mode) '("ty" "server")))
-
-
-
 
 ;; Doom dashboard
 (assoc-delete-all "Open org-agenda" +dashboard-menu-sections)

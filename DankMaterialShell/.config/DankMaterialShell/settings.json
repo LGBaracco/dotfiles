@@ -37,7 +37,7 @@
   "popoutCustomAnimationDuration": 150,
   "modalAnimationSpeed": 1,
   "modalCustomAnimationDuration": 150,
-  "enableRippleEffects": true,
+  "enableRippleEffects": false,
   "blurEnabled": false,
   "blurForegroundLayers": true,
   "blurLayerOutlineOpacity": 0.12,
@@ -116,17 +116,17 @@
       "width": 50
     },
     {
-      "id": "nightMode",
-      "enabled": true,
-      "width": 50
-    },
-    {
-      "id": "darkMode",
-      "enabled": true,
-      "width": 50
-    },
-    {
       "id": "idleInhibitor",
+      "enabled": true,
+      "width": 50
+    },
+    {
+      "id": "doNotDisturb",
+      "enabled": true,
+      "width": 50
+    },
+    {
+      "id": "plugin_dmsLenovoBatterySettings",
       "enabled": true,
       "width": 50
     },
@@ -209,13 +209,13 @@
   "useAutoLocation": false,
   "weatherEnabled": true,
   "networkPreference": "auto",
-  "iconTheme": "System Default",
+  "iconTheme": "breeze",
   "cursorSettings": {
-    "theme": "System Default",
+    "theme": "breeze_cursors",
     "size": 24,
     "niri": {
       "hideWhenTyping": true,
-      "hideAfterInactiveMs": 0
+      "hideAfterInactiveMs": 5000
     },
     "hyprland": {
       "hideOnKeyPress": false,
@@ -491,10 +491,6 @@
         },
         {
           "id": "clipboard",
-          "enabled": true
-        },
-        {
-          "id": "dmsLenovoBatterySettings",
           "enabled": true
         },
         {

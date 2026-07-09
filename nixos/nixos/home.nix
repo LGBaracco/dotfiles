@@ -34,6 +34,7 @@
     lazygit
     gnumake
     coreutils
+    gparted
 
     # --- Nix tooling ---
     nix-output-monitor # prettier `nix build` output
@@ -72,8 +73,6 @@
     #papirus-icon-theme
 
     # --- Misc ---
-    dms-shell
-    quickshell
     ghostty
     foot
     mpv
@@ -81,12 +80,10 @@
     xdg-utils
     brightnessctl
     playerctl
+    fastfetch
   ];
 
-  # ── Brave / Chromium flags for Wayland ──────────────────────────
-  # Brave reads from ~/.config/brave-flags.conf
-  # home.file.".config/brave-flags.conf".text = ''
-  # Currently managed by dms and niri, one day create xdg.desktopEntry here
+
 
   # ── Git ───────────────────────────────────────────────────────────────────
   programs.git = {
@@ -147,7 +144,7 @@
       vi = "nvim";
       vim = "nvim";
       # Rebuild shortcut
-      rebuild = "sudo nixos-rebuild switch --flake ~/nixos#nixlorenzo";
+      nrs = "sudo nixos-rebuild switch --flake ~/nixos#nixlorenzo";
     };
   };
 

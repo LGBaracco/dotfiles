@@ -1,6 +1,6 @@
 {
-  "currentThemeName": "custom",
-  "currentThemeCategory": "registry",
+  "currentThemeName": "blue",
+  "currentThemeCategory": "generic",
   "customThemeFile": "/home/lorenzo/.config/DankMaterialShell/themes/oxocarbon/theme.json",
   "registryThemeVariants": {
     "oxocarbon": "blue"

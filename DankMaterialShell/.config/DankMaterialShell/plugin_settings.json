@@ -1,6 +1,6 @@
 {
   "catWidget": {
-    "enabled": true,
+    "enabled": false,
     "showCpuPercent": false
   },
   "dankBatteryAlerts": {

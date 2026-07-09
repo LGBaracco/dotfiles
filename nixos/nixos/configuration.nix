@@ -9,11 +9,35 @@
 {
   # ── Boot ──────────────────────────────────────────────────────────────────
   boot.loader = {
-    systemd-boot.enable = true;
+    # systemd-boot.enable = true;
+    limine = {
+      enable = true;
+      efiSupport = true;
+      maxGenerations = 20;
+    };
     efi.canTouchEfiVariables = true;
-    # If you want to keep rEFInd instead:
     # systemd-boot.enable = false;
-    # and install rEFInd manually or via boot.loader.refind
+  };
+
+  # Enable num lock early on boot
+  boot.initrd.systemd = {
+    storePaths = [
+      "${pkgs.kbd}/bin/setleds"
+    ];
+    services.numlockon = {
+      description = "Enable NumLock at startup";
+      wantedBy = [ "initrd.target" ];
+      before = [ "initrd-root-device.target" ];
+      unitConfig = {
+        DefaultDependencies = false;
+      };
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = "${pkgs.kbd}/bin/setleds -D +num";
+        StandardInput = "tty";
+        TTYPath = "/dev/tty0";
+      };
+    };
   };
 
   # ── Kernel ────────────────────────────────────────────────────────────────
@@ -87,12 +111,14 @@
     };
   };
 
+  services.xserver.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];
 
   # ── Display Manager: SDDM ─────────────────────────────────────────────────
   services.displayManager.sddm = {
     enable = true;
-    wayland.enable = true;
+    wayland.enable = false;
+    autoNumlock = true;
   };
 
   programs.silentSDDM = {
@@ -114,6 +140,15 @@
     package = inputs.niri-flake.packages.${pkgs.stdenv.hostPlatform.system}.niri-unstable;
   };
 
+  # DMS shell
+  programs.dms-shell = {
+    enable = true;
+    quickshell.package = pkgs.quickshell;
+    systemd = {
+      enable = false;
+    };
+  };
+
   # ── Audio ─────────────────────────────────────────────────────────────────
   security.rtkit.enable = true;
   services.pipewire = {
@@ -126,13 +161,14 @@
 
   hardware.bluetooth.enable = true;
 
+  security.polkit.enable = true;
   # ── Secrets / Keyring ─────────────────────────────────────────────────────
   # KWallet is pulled in by Plasma automatically.
   # If you want to ditch KWallet for gnome-keyring (works better with non-KDE apps):
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.sddm.enableGnomeKeyring = true;
   # Then set the BROWSER_KEYRING env var to "gnome" for Brave.
-  systemd.user.services.niri-flake-polkit.enable = false;
+  systemd.user.services.niri-flake-polkit.enable = true;
 
   # ── Fonts ─────────────────────────────────────────────────────────────────
   fonts = {
@@ -169,6 +205,7 @@
     efibootmgr
     gcc
   ];
+programs.partition-manager.enable = true;
 
   # ── User ──────────────────────────────────────────────────────────────────
   users.users.lorenzo = {
@@ -187,15 +224,15 @@
   programs.fish.enable = true; # needed for fish as login shell
 
   # ── XDG portals ───────────────────────────────────────────────────────────
-  xdg.portal = {
-    enable = true;
-    extraPortals = with pkgs; [
-      xdg-desktop-portal-gnome
-      xdg-desktop-portal-gtk
-      kdePackages.xdg-desktop-portal-kde
-    ];
-    config.common.default = "*";
-  };
+  # xdg.portal = {
+  #   enable = true;
+  #   extraPortals = with pkgs; [
+  #     xdg-desktop-portal-gnome
+  #     xdg-desktop-portal-gtk
+  #     kdePackages.xdg-desktop-portal-kde
+  #   ];
+  #   config.common.default = "*";
+  # };
 
   # ── Systemd
   # systed.services.battery-limit = {
@@ -204,27 +241,13 @@
   #   }
   #
   hardware.firmware = [
-    (pkgs.runCommand "Patch firmware" {} ''
-    mkdir -p $out/lib/firmware
-    cp ${./firmware}/* $out/lib/firmware
+    (pkgs.runCommand "Patch firmware" { } ''
+      mkdir -p $out/lib/firmware
+      cp ${./firmware}/* $out/lib/firmware
     '')
   ];
-  # hardware.firmware = [
-  #   (pkgs.runCommandNoCC "lenovo-audio-patch" { src = ./lenovo-audio.patch; } ''
-  #     mkdir -p $out/lib/firmware
-  #     # Make sure the path to the patch is correct!
-  #     # The path './lenovo-audio.patch' assumes the patch is
-  #     # in the same directory as this .nix file.
-  #     mkdir -p $out/lib/firmware
-  #     cp $src $out/lib/firmware/legion-alc287.patch
-  #   '')
-  # ];
 
-  # # 2. Instruct the 'snd_hda_intel' kernel module to use the patch.
-  # boot.extraModprobeConfig = ''
-  #   options snd-hda-intel patch=lenovo-audio.patch
-  # '';
-  # ── Misc ──────────────────────────────────────────────────────────────────
+ # ── Misc ──────────────────────────────────────────────────────────────────
   programs.dconf.enable = true; # needed by some GTK apps under KDE
   services.flatpak.enable = false; # enable if you need flatpaks
   system.stateVersion = "26.05";

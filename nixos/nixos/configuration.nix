@@ -7,39 +7,10 @@
 }:
 
 {
-  # ── Boot ──────────────────────────────────────────────────────────────────
-  boot.loader = {
-    # systemd-boot.enable = true;
-    limine = {
-      enable = true;
-      efiSupport = true;
-      maxGenerations = 20;
-    };
-    efi.canTouchEfiVariables = true;
-    # systemd-boot.enable = false;
-  };
-
-  # Enable num lock early on boot
-  boot.initrd.systemd = {
-    storePaths = [
-      "${pkgs.kbd}/bin/setleds"
-    ];
-    services.numlockon = {
-      description = "Enable NumLock at startup";
-      wantedBy = [ "initrd.target" ];
-      before = [ "initrd-root-device.target" ];
-      unitConfig = {
-        DefaultDependencies = false;
-      };
-      serviceConfig = {
-        Type = "oneshot";
-        ExecStart = "${pkgs.kbd}/bin/setleds -D +num";
-        StandardInput = "tty";
-        TTYPath = "/dev/tty0";
-      };
-    };
-  };
-
+  imports = [
+    ./boot
+    ./hardware
+  ];
   # ── Kernel ────────────────────────────────────────────────────────────────
   # CachyOS uses the cachyos-kernel; closest on NixOS is zen or xanmod.
   # Default linux_zen is a solid daily-driver replacement.
@@ -84,33 +55,6 @@
     networkmanager.enable = true;
   };
 
-  # ── NVIDIA ────────────────────────────────────────────────────────────────
-  # Hybrid Intel/NVIDIA via PRIME offload (matches your envycontrol/PRIME setup)
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true; # Steam / 32-bit GL
-  };
-
-  hardware.nvidia = {
-    modesetting.enable = true;
-    powerManagement = {
-      enable = true;
-      finegrained = true; # RTD3 suspend for dGPU when idle
-    };
-    open = false; # proprietary driver (better Wayland support currently)
-    nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
-    prime = {
-      offload = {
-        enable = true;
-        enableOffloadCmd = true; # gives you `nvidia-offload` helper
-      };
-      # Fill in your actual PCI bus IDs from: nixos-generate-config or lspci
-      intelBusId = "PCI:00:02:0";
-      nvidiaBusId = "PCI:01:00:0";
-    };
-  };
-
   services.xserver.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];
 
@@ -143,7 +87,6 @@
   # DMS shell
   programs.dms-shell = {
     enable = true;
-    quickshell.package = pkgs.quickshell;
     systemd = {
       enable = false;
     };
@@ -161,14 +104,16 @@
 
   hardware.bluetooth.enable = true;
 
-  security.polkit.enable = true;
+  systemd.user.services.niri-flake-polkit.enable = false;
+  security.polkit.enablePkexecWrapper = true;
+
+  # security.polkit.enable = true;
   # ── Secrets / Keyring ─────────────────────────────────────────────────────
   # KWallet is pulled in by Plasma automatically.
   # If you want to ditch KWallet for gnome-keyring (works better with non-KDE apps):
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.sddm.enableGnomeKeyring = true;
-  # Then set the BROWSER_KEYRING env var to "gnome" for Brave.
-  systemd.user.services.niri-flake-polkit.enable = true;
+
 
   # ── Fonts ─────────────────────────────────────────────────────────────────
   fonts = {
@@ -204,6 +149,7 @@
     dgop
     efibootmgr
     gcc
+    xwayland-satellite
   ];
 programs.partition-manager.enable = true;
 
@@ -224,15 +170,18 @@ programs.partition-manager.enable = true;
   programs.fish.enable = true; # needed for fish as login shell
 
   # ── XDG portals ───────────────────────────────────────────────────────────
-  # xdg.portal = {
-  #   enable = true;
-  #   extraPortals = with pkgs; [
-  #     xdg-desktop-portal-gnome
-  #     xdg-desktop-portal-gtk
-  #     kdePackages.xdg-desktop-portal-kde
-  #   ];
-  #   config.common.default = "*";
-  # };
+  xdg.portal = {
+    enable = true;
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-gnome
+      xdg-desktop-portal-gtk
+      kdePackages.xdg-desktop-portal-kde
+    ];
+    config.common.default = "*";
+    config.niri = {
+      "org.freedesktop.impl.portal.FileChooser" = [ "kde" ];
+    };
+  };
 
   # ── Systemd
   # systed.services.battery-limit = {

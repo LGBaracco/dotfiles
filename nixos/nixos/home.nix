@@ -132,10 +132,20 @@
       zoxide init fish | source
       set -gx EDITOR nvim
       set -gx VISUAL nvim
+      set fish_greeting
+      fastfetch
+
+      function fish_prompt
+        echo \n
+        echo (set_color blue)(prompt_pwd)
+        echo -n (set_color green)"> "
+      end
+
     '';
+
     shellAliases = {
-      #ls   = "eza --icons";
-      ll = "eza -lah --icons";
+      ll   = "eza";
+      ls = "eza -lah --icons";
       tree = "eza --tree --icons";
       #cat  = "bat";
       cd = "z"; # zoxide
@@ -162,10 +172,6 @@
   #     "Mod+Q".action      = close-window;
   #   };
   # };
-  # ── XDG ──────────────────────────────────────────────────────────────────
-  # xdg.portal is a system-level option; configured in configuration.nix
-  xdg.enable = true;
-
   # # ── GTK theming ───────────────────────────────────────────────────────────
   # TODO eventually make theming fully declarative by finding oxocarbon flake
   # gtk = {
@@ -186,11 +192,14 @@
 
   # ── Environment variables ─────────────────────────────────────────────────
   home.sessionVariables = {
-    NIXOS_OZONE_WL = "1"; # forces Electron/CEF apps to use Wayland
-    MOZ_ENABLE_WAYLAND = "1";
+    # NIXOS_OZONE_WL = "1"; # forces Electron/CEF apps to use Wayland
+    # MOZ_ENABLE_WAYLAND = "1";
     QT_QPA_PLATFORM = "wayland";
+    QT_QPA_PLATFORMTHEME = "gtk3";
+    QT_QPA_PLATFORMTHEME_QT6 = "gtk3";
     SDL_VIDEODRIVER = "wayland";
     # NVIDIA-specific Wayland env vars
+    ELECTRON_OZONE_PLATFORM_HINT = "auto";
     GBM_BACKEND = "nvidia-drm";
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     WLR_NO_HARDWARE_CURSORS = "1"; # fixes cursor rendering on NVIDIA+Wayland

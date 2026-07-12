@@ -2,5 +2,5 @@
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Miscellaneous#spawn-sh-at-startup
 
     spawn-sh-at-startup "dms run"
-    spawn-at-startup "/usr/lib/pam_kwallet_init"
+    // spawn-at-startup "/usr/lib/pam_kwallet_init"
     spawn-sh-at-startup "/usr/bin/emacs --daemon"

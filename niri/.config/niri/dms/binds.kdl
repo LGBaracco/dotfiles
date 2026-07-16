@@ -11,4 +11,8 @@ binds {
     XF86AudioRaiseVolume hotkey-overlay-title="Volume Up" { spawn "dms" "ipc" "call" "audio" "increment" "5"; }
     XF86MonBrightnessDown hotkey-overlay-title="Brightness Down" { spawn "dms" "ipc" "call" "brightness" "decrement" "5" ""; }
     XF86MonBrightnessUp hotkey-overlay-title="Brightness Up" { spawn "dms" "ipc" "call" "brightness" "increment" "5" ""; }
+    Super+Shift+H { focus-monitor-left; }
+    Super+Shift+J { focus-monitor-down; }
+    Super+Shift+K { focus-monitor-up; }
+    Super+Shift+L { focus-monitor-right; }
 }

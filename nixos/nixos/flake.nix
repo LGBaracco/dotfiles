@@ -17,7 +17,15 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, niri-flake, silentSDDM, ... }@inputs:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      niri-flake,
+      silentSDDM,
+      ...
+    }@inputs:
     {
       nixosConfigurations.nixdesktop = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -33,7 +41,12 @@
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs; };
             home-manager.backupFileExtension = "bak";
-            home-manager.users.lorenzo = {imports  = [./hosts/nixdesktop/lorenzo.nix ./lorenzo];};
+            home-manager.users.lorenzo = {
+              imports = [
+                ./hosts/nixdesktop/lorenzo.nix
+                ./lorenzo
+              ];
+            };
           }
         ];
       };
@@ -48,11 +61,16 @@
           silentSDDM.nixosModules.default
           home-manager.nixosModules.home-manager
           {
-            useGlobalPkgs = true;
-            useUserPackages = true;
-            extraSpecialArgs = { inherit inputs; };
-            backupFileExtension = "bak";
-            home-manager.users.lorenzo = import [./hosts/nixlorenzo/lorenzo.nix ./lorenzo];
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.backupFileExtension = "bak";
+            home-manager.users.lorenzo = {
+              imports = [
+                ./hosts/nixlaptop/lorenzo.nix
+                ./lorenzo
+              ];
+            };
           }
         ];
       };

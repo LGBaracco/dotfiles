@@ -1,0 +1,8 @@
+TODO:
+we're getting closer :)
+- Finish fish: colors, git status, fastfetch
+- Fix whatever is going on with neovim
+- Add onedrive and sync
+  * check if emacs and vim work properly with proper python and julia projects
+- re-arrange the whole nix config, make it cleaner and neat 
+- Make subfolders in stow (not needed for now)

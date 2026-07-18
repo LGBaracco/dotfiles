@@ -54,6 +54,9 @@
   # boot.kernelPackages = pkgs.linuxPackages_zen;
   boot.kernelPackages = pkgs.linuxPackages_latest; # as opposed to default LTS kernel
 
+  # zram
+  zramSwap.enable = true;
+
   # ── User ──────────────────────────────────────────────────────────────────
   users.users.lorenzo = {
     isNormalUser = true;

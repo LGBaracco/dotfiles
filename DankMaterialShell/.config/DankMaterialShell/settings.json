@@ -3,9 +3,15 @@
   "currentThemeCategory": "generic",
   "customThemeFile": "/home/lorenzo/.config/DankMaterialShell/themes/oxocarbon/theme.json",
   "registryThemeVariants": {
-    "oxocarbon": "pink"
+    "oxocarbon": "blue",
+    "deepdark": {
+      "dark": {
+        "flavor": "voltage",
+        "accent": "blue"
+      }
+    }
   },
-  "matugenScheme": "scheme-tonal-spot",
+  "matugenScheme": "scheme-fruit-salad",
   "matugenContrast": 0,
   "runUserMatugenTemplates": true,
   "matugenTargetMonitor": "",
@@ -545,8 +551,14 @@
   "updaterIncludeFlatpak": true,
   "updaterAllowAUR": true,
   "displayNameMode": "system",
-  "screenPreferences": {},
-  "showOnLastDisplay": {},
+  "screenPreferences": {
+    "notifications": [
+      "all"
+    ]
+  },
+  "showOnLastDisplay": {
+    "notifications": true
+  },
   "niriOutputSettings": {
     "DVI-D-1": {
       "focusAtStartup": false
@@ -557,7 +569,9 @@
   },
   "hyprlandOutputSettings": {},
   "displayProfiles": {},
-  "activeDisplayProfile": {},
+  "activeDisplayProfile": {
+    "niri": "profile_1784283398101_lkyihfp"
+  },
   "displayProfileAutoSelect": false,
   "displayShowDisconnected": false,
   "displaySnapToEdge": true,
@@ -666,7 +680,7 @@
         }
       ],
       "spacing": -4,
-      "innerPadding": -8,
+      "innerPadding": -4,
       "bottomGap": -16,
       "transparency": 0,
       "widgetTransparency": 0.85,
@@ -789,12 +803,12 @@
       "id": "dw_1784052140923_5feahyy8k",
       "widgetType": "systemMonitor",
       "name": "System Monitor",
-      "enabled": true,
+      "enabled": false,
       "config": {
         "showHeader": true,
         "transparency": 0.8,
-        "colorMode": "primary",
-        "customColor": "#ffffff",
+        "colorMode": "secondary",
+        "customColor": "#9c27b0",
         "showCpu": true,
         "showCpuGraph": true,
         "showCpuTemp": true,
@@ -836,42 +850,6 @@
           "height": 480,
           "x": 800,
           "y": 300
-        }
-      }
-    },
-    {
-      "id": "dw_1784052255282_q57pjfzsn",
-      "widgetType": "desktopClock",
-      "name": "Desktop Clock",
-      "enabled": true,
-      "config": {
-        "style": "digital",
-        "transparency": 0,
-        "colorMode": "secondary",
-        "customColor": "#ffffff",
-        "showDate": true,
-        "showAnalogNumbers": false,
-        "showAnalogSeconds": true,
-        "displayPreferences": [
-          {
-            "name": "DVI-D-1",
-            "model": "S1921"
-          },
-          {
-            "name": "HDMI-A-4",
-            "model": "IPS237"
-          }
-        ],
-        "showOnOverview": true,
-        "syncPositionAcrossScreens": true,
-        "showDigitalSeconds": true
-      },
-      "positions": {
-        "_synced": {
-          "width": 750,
-          "height": 380,
-          "x": 0.234375,
-          "y": 0.302734375
         }
       }
     }

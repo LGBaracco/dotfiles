@@ -119,6 +119,7 @@
 
    # ── Misc ──────────────────────────────────────────────────────────────────
   programs.dconf.enable = true; # needed by some GTK apps under KDE
+  services.gvfs.enable = true; # needed for trash bin and partition mounts with nautilus outside of kde
   services.flatpak.enable = false;
 
 }

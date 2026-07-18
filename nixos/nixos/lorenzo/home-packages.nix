@@ -5,13 +5,24 @@
     # --- Browsers ---
     brave
 
+    # --- Desktop apps ---
+    p3x-onenote
+    whatsapp-electron
+    ghostty
+    foot
+    spotify
+    mpv
+    imv
+    gparted
+    nautilus
+
     # --- Editors / Dev ---
-    vscode # or vscodium for the libre build
+    vscode # or vscodium 
     neovim
 
     # --- Dev tools ---
     stow
-    ripgrep # needed by Doom Emacs / Neovim telescope
+    ripgrep # fuzzy finder
     fd
     fzf
     bat
@@ -22,14 +33,12 @@
     lazygit
     gnumake
     coreutils
-    gparted
 
     # --- Nix tooling ---
     nix-output-monitor # prettier `nix build` output
     nvd # diff nixos generations
     alejandra # nix formatter
     nixfmt # Doom compatible formatter
-    nix-index
 
     # --- Python (scientific) ---
     # (python3.withPackages (
@@ -43,7 +52,7 @@
     #     ipython
     #   ]
     # ))
-    # uv
+    uv
 
     # --- Julia ---
     julia-bin # official Julia binary (faster than building from source)
@@ -53,6 +62,7 @@
     cmake
 
     sbcl # Common Lisp
+    racket
     proselint # Markdown linter
     pandoc # Markdown syntax highlighting
     shellcheck
@@ -61,14 +71,9 @@
     #papirus-icon-theme
 
     # --- Misc ---
-    ghostty
-    foot
-    mpv
-    imv
     xdg-utils
     brightnessctl
     playerctl
     fastfetch
-    spotify
   ];
 }

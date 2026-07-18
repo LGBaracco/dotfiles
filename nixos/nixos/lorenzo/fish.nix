@@ -20,7 +20,7 @@
 
     shellAliases = {
       ll = "eza";
-      ls = "eza -lah --icons";
+      ls = "eza -lah --icons auto";
       tree = "eza --tree --icons";
       #cat  = "bat";
       cd = "z"; # zoxide

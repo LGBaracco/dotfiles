@@ -70,6 +70,10 @@
     clang
     cmake
 
+    # --- Rust ---
+    cargo
+    rustc
+
     # --- Other languages ---
     sbcl # Common Lisp
     racket

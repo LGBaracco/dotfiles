@@ -17,7 +17,6 @@
 
       spellcheck = {
         enable = true;
-        programmingWordlist.enable = true;
       };
 
       lsp = {
@@ -157,6 +156,7 @@
         nvimBufferline.enable = true;
       };
 
+      treesitter.enable = true;
       treesitter.context.enable = true;
 
       binds = {
@@ -175,7 +175,7 @@
 
       minimap = {
         minimap-vim.enable = false;
-        codewindow.enable = true;
+        codewindow.enable = false;
       };
 
       dashboard = {
@@ -279,7 +279,7 @@
         cord-nvim.enable = false;
       };
 
-      repl.conjure.enable = true;
+      #repl.conjure.enable = true;
     };
   };
 }

@@ -4,13 +4,14 @@
   home.packages = with pkgs; [
     # --- Browsers ---
     brave
+    firefox
 
     # --- Desktop apps ---
     p3x-onenote
     whatsapp-electron
     ghostty
     foot
-    spotify
+    spotify-player
     mpv
     imv
     gparted
@@ -33,6 +34,7 @@
     lazygit
     gnumake
     coreutils
+    zellij
 
     # --- Nix tooling ---
     nix-output-monitor # prettier `nix build` output
@@ -61,6 +63,7 @@
     clang
     cmake
 
+    # --- Other languages ---
     sbcl # Common Lisp
     racket
     proselint # Markdown linter

@@ -1,16 +1,19 @@
-{ config,
+{
+  config,
   pkgs,
   inputs,
   lib,
-  ... }:
+  ...
+}:
 
 {
   imports = [
     ./boot
     ./hardware
-    ./packages
     ./theming
-    ];
+    ./system-packages.nix
+    ./desktop-environment.nix
+  ];
 
   # ── Nix / Flakes ──────────────────────────────────────────────────────────
   nix = {
@@ -25,11 +28,16 @@
         "https://cache.nixos.org"
         "https://niri.cachix.org" # niri flake cache
         "https://nix-community.cachix.org"
+        "https://cachix.org"
+        "https://cache.flox.dev"
+
       ];
       trusted-public-keys = [
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
         "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
-        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCUSeBo="
+        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+        "flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs="
+        "nix-community.cachix.org-1:D/YcTzEODD0Kz+q1YUNwk8pdnFSXlYCKTEY3wlHuwY29aB/IZd4iglRNvZcRgxH6TcOpqKr6QJULUer7lek+Cg=="
       ];
     };
 
@@ -44,9 +52,9 @@
 
   programs.nix-ld.enable = true;
   programs.nix-ld.libraries = with pkgs; [
-  #   stdenv.cc.cc.lib
-  #   libgcc
-  #   zlib
+    #   stdenv.cc.cc.lib
+    #   libgcc
+    #   zlib
     config.hardware.nvidia.package
   ];
 
@@ -72,13 +80,11 @@
   users.groups.lorenzo = { };
   programs.fish.enable = true; # needed for fish as login shell
 
-
   # ── Secrets / Keyring ─────────────────────────────────────────────────────
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.sddm.enableGnomeKeyring = true;
 
   security.polkit.enablePkexecWrapper = true;
-  # security.polkit.enable = true;
 
   # ── XDG portals ───────────────────────────────────────────────────────────
   xdg.portal = {
@@ -89,9 +95,6 @@
       kdePackages.xdg-desktop-portal-kde
     ];
     config.common.default = "*";
-    config.niri = {
-      "org.freedesktop.impl.portal.FileChooser" = [ "kde" ];
-    };
   };
 
   # ── X11 ─────────────────────────────────────────────────────────
@@ -120,7 +123,7 @@
 
   hardware.bluetooth.enable = true;
 
-   # ── Misc ──────────────────────────────────────────────────────────────────
+  # ── Misc ──────────────────────────────────────────────────────────────────
   programs.dconf.enable = true; # needed by some GTK apps under KDE
   services.gvfs.enable = true; # needed for trash bin and partition mounts with nautilus outside of kde
   services.flatpak.enable = false;

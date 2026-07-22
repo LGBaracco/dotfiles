@@ -1,7 +1,7 @@
 TODO:
-we're getting closer :)
-- configure neovim
-  * check if emacs and vim work properly with proper python and julia projects
 - move actual workflow in here
-- custom theme in DMS, enforce it everywhere
+  * check if emacs and vim work properly with proper python and julia projects
 - gaming
+- custom theme in DMS, enforce it everywhere
+  * maybe, maybe not
+- check whether cache problem is recurring or not

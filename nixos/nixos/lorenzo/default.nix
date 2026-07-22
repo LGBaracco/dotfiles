@@ -5,6 +5,7 @@
     ./git.nix
     ./home-packages.nix
     ./fish.nix
+    ./neovim.nix
     ];
 
 

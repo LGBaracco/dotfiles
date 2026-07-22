@@ -1,10 +1,16 @@
-{ pkgs, inputs, lib, config, ... }:
+{
+  pkgs,
+  inputs,
+  lib,
+  config,
+  ...
+}:
 
 {
   home.packages = with pkgs; [
     # --- Browsers ---
     brave
-    firefox
+    firefox-bin
 
     # --- Desktop apps ---
     p3x-onenote
@@ -18,8 +24,8 @@
     nautilus
 
     # --- Editors / Dev ---
-    vscode # or vscodium 
-    neovim
+    vscode # or vscodium
+    code-cursor
 
     # --- Dev tools ---
     stow
@@ -43,6 +49,8 @@
     nixfmt # Doom compatible formatter
 
     # --- Python (scientific) ---
+    uv
+    python3
     # (python3.withPackages (
     #   ps: with ps; [
     #     numpy
@@ -54,7 +62,6 @@
     #     ipython
     #   ]
     # ))
-    uv
 
     # --- Julia ---
     julia-bin # official Julia binary (faster than building from source)
@@ -74,7 +81,6 @@
     #papirus-icon-theme
 
     # --- Misc ---
-    xdg-utils
     brightnessctl
     playerctl
     fastfetch

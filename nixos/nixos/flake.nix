@@ -15,6 +15,10 @@
       url = "github:uiriansan/SilentSDDM";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nvf = {
+      url = "github:NotAShelf/nvf";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -24,6 +28,7 @@
       home-manager,
       niri-flake,
       silentSDDM,
+      nvf,
       ...
     }@inputs:
     {
@@ -45,6 +50,7 @@
               imports = [
                 ./hosts/nixdesktop/lorenzo.nix
                 ./lorenzo
+	    	nvf.homeManagerModules.default
               ];
             };
           }
@@ -60,6 +66,7 @@
           niri-flake.nixosModules.niri
           silentSDDM.nixosModules.default
           home-manager.nixosModules.home-manager
+          nvf.homeManagerModules.default
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;

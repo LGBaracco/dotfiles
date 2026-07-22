@@ -1,0 +1,5 @@
+{ ... }:
+
+{
+  imports = [ ./extra-entries.nix ];
+}

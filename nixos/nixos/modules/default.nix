@@ -28,7 +28,7 @@
         "https://cache.nixos.org"
         "https://niri.cachix.org" # niri flake cache
         "https://nix-community.cachix.org"
-        "https://cachix.org"
+        # "https://cachix.org" I think this might be unnecessary
         "https://cache.flox.dev"
 
       ];
@@ -37,7 +37,6 @@
         "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
         "flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs="
-        "nix-community.cachix.org-1:D/YcTzEODD0Kz+q1YUNwk8pdnFSXlYCKTEY3wlHuwY29aB/IZd4iglRNvZcRgxH6TcOpqKr6QJULUer7lek+Cg=="
       ];
     };
 

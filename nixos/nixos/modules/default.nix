@@ -28,7 +28,6 @@
         "https://cache.nixos.org"
         "https://niri.cachix.org" # niri flake cache
         "https://nix-community.cachix.org"
-        # "https://cachix.org" I think this might be unnecessary
         "https://cache.flox.dev"
 
       ];

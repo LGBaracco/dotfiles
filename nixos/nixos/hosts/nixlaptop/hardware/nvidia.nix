@@ -1,4 +1,5 @@
 {
+  config,
   ...
 }:
 
@@ -9,7 +10,7 @@
       enable = true;
       finegrained = true; # RTD3 suspend for dGPU when idle
     };
-    open = false; # TODO: switch to open
+    open = true;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
 
     # Hybrid Intel/NVIDIA via PRIME offload

@@ -2,5 +2,5 @@ TODO:
 - move actual workflow in here
   * upload onedrive from laptop, windows automount
 - gaming
-- custom theme in DMS, enforce it everywhere
-  * maybe, maybe not, but certainly fix dms and fish
+- enforce dms theme everywhere
+  * maybe not, but certainly fix fish

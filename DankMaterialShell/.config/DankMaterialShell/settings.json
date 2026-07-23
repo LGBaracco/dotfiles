@@ -1,12 +1,18 @@
 {
-  "currentThemeName": "blue",
-  "currentThemeCategory": "generic",
-  "customThemeFile": "/home/lorenzo/.config/DankMaterialShell/themes/oxocarbon/theme.json",
+  "currentThemeName": "custom",
+  "currentThemeCategory": "registry",
+  "customThemeFile": "/home/lorenzo/.config/DankMaterialShell/themes/myoxocarbon/theme.json",
   "registryThemeVariants": {
-    "oxocarbon": "blue",
+    "oxocarbon": "Purple",
     "deepdark": {
       "dark": {
         "flavor": "voltage",
+        "accent": "blue"
+      }
+    },
+    "amoledBlack": {
+      "dark": {
+        "flavor": "black",
         "accent": "blue"
       }
     }
@@ -22,7 +28,7 @@
   "widgetBackgroundCustomStrength": 0.5,
   "widgetColorMode": "default",
   "controlCenterTileColorMode": "primary",
-  "buttonColorMode": "primary",
+  "buttonColorMode": "secondary",
   "cornerRadius": 5,
   "niriLayoutGapsOverride": 4,
   "niriLayoutRadiusOverride": 3,

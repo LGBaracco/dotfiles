@@ -3,5 +3,5 @@ TODO:
   * check if emacs and vim work properly with proper python and julia projects
 - gaming
 - custom theme in DMS, enforce it everywhere
-  * maybe, maybe not
+  * maybe, maybe not, but certainly fix dms and fish
 - check whether cache problem is recurring or not

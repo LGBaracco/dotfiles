@@ -1,19 +1,10 @@
-{
-  config,
-  pkgs,
-  inputs,
-  lib,
-  ...
-}:
-
-{
-
+{pkgs, ...}: {
   # ── Boot ──────────────────────────────────────────────────────────────────
   boot.loader = {
     limine = {
       enable = true;
       efiSupport = true;
-      maxGenerations = 20;
+      maxGenerations = 10;
       style = {
         # Catpuccin palette, maybe will change one day
         interface.helpHidden = true;
@@ -29,7 +20,6 @@
     efi.canTouchEfiVariables = true;
   };
 
-
   # Enable numlock early on boot
   boot.initrd.systemd = {
     storePaths = [
@@ -37,8 +27,8 @@
     ];
     services.numlockon = {
       description = "Enable NumLock at startup";
-      wantedBy = [ "initrd.target" ];
-      before = [ "initrd-root-device.target" ];
+      wantedBy = ["initrd.target"];
+      before = ["initrd-root-device.target"];
       unitConfig = {
         DefaultDependencies = false;
       };

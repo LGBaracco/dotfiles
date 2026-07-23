@@ -1,12 +1,8 @@
 {
   config,
   pkgs,
-  inputs,
-  lib,
   ...
-}:
-
-{
+}: {
   imports = [
     ./boot
     ./hardware
@@ -29,7 +25,6 @@
         "https://niri.cachix.org" # niri flake cache
         "https://nix-community.cachix.org"
         "https://cache.flox.dev"
-
       ];
       trusted-public-keys = [
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
@@ -75,7 +70,7 @@
     ];
     shell = pkgs.fish;
   };
-  users.groups.lorenzo = { };
+  users.groups.lorenzo = {};
   programs.fish.enable = true; # needed for fish as login shell
 
   # ── Secrets / Keyring ─────────────────────────────────────────────────────
@@ -97,7 +92,7 @@
 
   # ── X11 ─────────────────────────────────────────────────────────
   services.xserver.enable = true;
-  services.xserver.videoDrivers = [ "nvidia" ];
+  services.xserver.videoDrivers = ["nvidia"];
 
   # ── Locale / Time ─────────────────────────────────────────────────────────
   time.timeZone = "Europe/Amsterdam";
@@ -125,5 +120,4 @@
   programs.dconf.enable = true; # needed by some GTK apps under KDE
   services.gvfs.enable = true; # needed for trash bin and partition mounts with nautilus outside of kde
   services.flatpak.enable = false;
-
 }

@@ -1,7 +1,6 @@
 TODO:
 - move actual workflow in here
-  * check if emacs and vim work properly with proper python and julia projects
+  * upload onedrive from laptop, windows automount
 - gaming
 - custom theme in DMS, enforce it everywhere
   * maybe, maybe not, but certainly fix dms and fish
-- check whether cache problem is recurring or not

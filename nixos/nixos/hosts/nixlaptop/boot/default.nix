@@ -1,5 +1,6 @@
-{ ... }:
-
-{
-  imports = [./patch-boot.nix];
+{...}: {
+  imports = [
+    ./patch-boot.nix
+    ./automount.nix
+  ];
 }

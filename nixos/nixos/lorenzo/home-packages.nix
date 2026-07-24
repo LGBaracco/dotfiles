@@ -1,12 +1,4 @@
-{
-  pkgs,
-  inputs,
-  lib,
-  config,
-  ...
-}:
-
-{
+{pkgs, ...}: {
   home.packages = with pkgs; [
     # --- Browsers ---
     brave
@@ -24,7 +16,7 @@
     nautilus
 
     # --- Editors / Dev ---
-    vscode # or vscodium
+    vscode
     code-cursor
 
     # --- Dev tools ---
@@ -80,6 +72,10 @@
     proselint # Markdown linter
     pandoc # Markdown syntax highlighting
     shellcheck
+
+    # --- Gaming ---
+    heroic
+    protonup-qt
 
     # --- Fonts / theming ---
     #papirus-icon-theme

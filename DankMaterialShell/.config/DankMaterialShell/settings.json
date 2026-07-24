@@ -7,7 +7,7 @@
     "deepdark": {
       "dark": {
         "flavor": "voltage",
-        "accent": "blue"
+        "accent": "purple"
       }
     },
     "amoledBlack": {
@@ -30,9 +30,9 @@
   "controlCenterTileColorMode": "primary",
   "buttonColorMode": "secondary",
   "cornerRadius": 5,
-  "niriLayoutGapsOverride": 4,
+  "niriLayoutGapsOverride": 5,
   "niriLayoutRadiusOverride": 3,
-  "niriLayoutBorderSize": 1,
+  "niriLayoutBorderSize": 2,
   "hyprlandLayoutGapsOverride": -1,
   "hyprlandLayoutGapsOutOverride": -1,
   "hyprlandLayoutRadiusOverride": -1,

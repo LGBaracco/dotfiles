@@ -9,6 +9,7 @@
     ./theming
     ./system-packages.nix
     ./desktop-environment.nix
+    ./gaming.nix
   ];
 
   # ── Nix / Flakes ──────────────────────────────────────────────────────────

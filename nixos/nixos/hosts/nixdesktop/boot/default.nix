@@ -1,5 +1,6 @@
-{ ... }:
-
-{
-  imports = [ ./extra-entries.nix ];
+{...}: {
+  imports = [
+    ./extra-entries.nix
+    ./automount.nix
+  ];
 }

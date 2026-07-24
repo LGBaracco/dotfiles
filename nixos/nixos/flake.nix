@@ -66,7 +66,6 @@
           niri-flake.nixosModules.niri
           silentSDDM.nixosModules.default
           home-manager.nixosModules.home-manager
-          nvf.homeManagerModules.default
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
@@ -76,6 +75,7 @@
               imports = [
                 ./hosts/nixlaptop/lorenzo.nix
                 ./lorenzo
+          	nvf.homeManagerModules.default
               ];
             };
           }

@@ -1,9 +1,4 @@
-{
-  config,
-  ...
-}:
-
-{
+{config, ...}: {
   # ── NVIDIA ────────────────────────────────────────────────────────────────
   hardware.nvidia = {
     powerManagement = {

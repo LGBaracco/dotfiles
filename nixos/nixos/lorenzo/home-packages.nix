@@ -84,5 +84,6 @@
     brightnessctl
     playerctl
     fastfetch
+    xwayland-satellite
   ];
 }

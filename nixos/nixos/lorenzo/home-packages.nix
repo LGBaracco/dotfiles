@@ -21,6 +21,7 @@
 
     # --- Dev tools ---
     stow
+    rclone
     ripgrep # fuzzy finder
     fd
     fzf
@@ -75,7 +76,6 @@
 
     # --- Gaming ---
     heroic
-    protonup-qt
 
     # --- Fonts / theming ---
     #papirus-icon-theme

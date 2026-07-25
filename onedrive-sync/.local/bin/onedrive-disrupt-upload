@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
 
 python3 ~/.local/share/onedrive-sync/fetch_cookie.py
 
 rclone sync "$HOME/OneDrive/" onedrive: \
-  --progress \
-  --filter-from ~/.config/rclone/filters.txt \
-  --log-file=/home/lorenzo/Documents/backuplocal/logs.txt \
-  --log-level INFO
+        --progress \
+        --log-file=/home/lorenzo/Documents/backuplocal/logs.txt \
+        --log-level INFO
+# --filter-from ~/.config/rclone/filters.txt \

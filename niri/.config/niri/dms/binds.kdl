@@ -15,4 +15,5 @@ binds {
     Super+Shift+J { focus-monitor-down; }
     Super+Shift+K { focus-monitor-up; }
     Super+Shift+L { focus-monitor-right; }
+    Mod+T hotkey-overlay-title="Open Terminal: Ghostty" { spawn "ghostty"; }
 }

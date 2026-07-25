@@ -1,21 +1,26 @@
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   imports = [
     ./git.nix
     ./home-packages.nix
-    ./fish.nix
+    ./starfish.nix
     ./neovim.nix
-    ];
-
+  ];
 
   # Let Home Manager manage itself
   programs.home-manager.enable = true;
 
   programs.emacs = {
     enable = true;
-    package = pkgs.emacs30-pgtk;
-    extraPackages = epkgs: [ epkgs.vterm ];
+    package = pkgs.emacs-pgtk; # emacs30-pgtk
+    extraPackages = epkgs: [epkgs.vterm];
+  };
+
+  programs.ghostty = {
+    enable = true;
+    settings = {
+      theme = "Oxocarbon";
+      font-size = 12;
+    };
   };
 
   home.sessionPath = [
@@ -26,7 +31,7 @@
   # ── Environment variables ─────────────────────────────────────────────────
   # These are either magical or already set in niri config
   #home.sessionVariables = {
-  #NIXOS_OZONE_WL = "1"; # forces Electron/CEF apps to use Wayland
+  # NIXOS_OZONE_WL = "1"; # forces Electron/CEF apps to use Wayland
   # MOZ_ENABLE_WAYLAND = "1";
   # #SDL_VIDEODRIVER = "wayland";
   # # NVIDIA-specific Wayland env vars
@@ -49,7 +54,6 @@
   #   };
   # };
   # # ── GTK theming ───────────────────────────────────────────────────────────
-  # eventually make theming fully declarative and find oxocarbon flake
   # gtk = {
   #    enable = true;
   #   iconTheme = {
@@ -65,5 +69,4 @@
   #   package     = pkgs.catppuccin-cursors.mochaDark;
   #   size        = 24;
   # };
-
 }

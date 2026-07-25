@@ -1,0 +1,11 @@
+- **/.*/**
+- Attachments/**
+- Registrazioni/**
+- Riunioni/**
+- **/__pycache__/**
+- Entertainment/**
+- Forms/**
+- **/venv/**
+- debug.log
+- *.ini
+- **/*.log

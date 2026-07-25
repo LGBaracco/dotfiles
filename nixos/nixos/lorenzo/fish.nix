@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{...}: {
   # ── Fish shell ────────────────────────────────────────────────────────────
   programs.fish = {
     enable = true;
@@ -33,19 +33,12 @@
 
       set fish_greeting
 
-      function fish_prompt
-        echo \n
-        echo (prompt_pwd)
-        echo -n "> "
-      end
-
     '';
 
     shellAliases = {
       ll = "eza";
       ls = "eza -lah --icons auto";
       tree = "eza --tree --icons";
-      #cat  = "bat";
       cd = "z"; # zoxide
       gs = "git status";
       lg = "lazygit";
@@ -55,4 +48,42 @@
       nrs = "sudo nixos-rebuild switch --flake $HOME/nixos#$hostname";
     };
   };
+
+  programs.starship = {
+    enable = true;
+    settings = {
+      add_newline = true;
+
+      format = "$directory$git_branch$line_break$character";
+
+      directory = {
+        style = "bold #42be65"; # oxocarbon green
+        truncation_length = 3;
+        truncate_to_repo = true;
+      };
+
+      git_branch = {
+        symbol = " ";
+        style = "italic #525252";
+        format = "[($symbol$branch)]($style) ";
+      };
+
+      git_status = {
+        style = "#ee5396";
+        format = "([$all_status$ahead_behind]($style)) ";
+      };
+
+      character = {
+        success_symbol = "[➜](bold #33b1ff)";
+        error_symbol = "[➜](bold #ee5396)";
+        vimcmd_symbol = "[➜](bold #be95ff)";
+      };
+    };
+  };
 }
+# function fish_prompt
+#      echo \n
+#      echo (color)(prompt_pwd)
+#      echo -n "> "
+#    end
+

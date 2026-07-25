@@ -81,8 +81,8 @@
     #papirus-icon-theme
 
     # --- Misc ---
-    qt5ct
-    qt6ct
+    libsForQt5.qt5ct
+    qt6Packages.qt6ct
     brightnessctl
     playerctl
     xwayland-satellite

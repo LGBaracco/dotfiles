@@ -18,7 +18,7 @@
 
       # vim.opts and vim.options are aliased
       opts.expandtab = true;
-      smartindent = true;
+      opts.smartindent = true;
 
       spellcheck = {
         enable = true;

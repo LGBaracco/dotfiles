@@ -59,6 +59,8 @@
   # zram
   zramSwap.enable = true;
 
+  # resize filesystem
+  fileSystems."/".autoResize = true;
   # ── User ──────────────────────────────────────────────────────────────────
   users.users.lorenzo = {
     isNormalUser = true;

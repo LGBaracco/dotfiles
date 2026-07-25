@@ -1,5 +1,9 @@
-{ inputs, pkgs, config, ... }:
 {
+  inputs,
+  pkgs,
+  config,
+  ...
+}: {
   programs.neovim.enable = true;
 
   programs.nvf = {
@@ -14,6 +18,7 @@
 
       # vim.opts and vim.options are aliased
       opts.expandtab = true;
+      smartindent = true;
 
       spellcheck = {
         enable = true;
@@ -279,7 +284,7 @@
         cord-nvim.enable = false;
       };
 
-      #repl.conjure.enable = true;
+      repl.conjure.enable = true;
     };
   };
 }

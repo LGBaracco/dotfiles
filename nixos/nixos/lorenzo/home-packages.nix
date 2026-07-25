@@ -81,9 +81,11 @@
     #papirus-icon-theme
 
     # --- Misc ---
+    qt5ct
+    qt6ct
     brightnessctl
     playerctl
-    fastfetch
     xwayland-satellite
+    fastfetch
   ];
 }

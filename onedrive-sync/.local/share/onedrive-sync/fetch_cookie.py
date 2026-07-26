@@ -2,6 +2,7 @@
 
 import sqlite3
 import subprocess
+
 # from pycookiecheat import BrowserType, get_cookies # only required for decrypting chromium cookies
 
 # This script fetches the current rtFa and FedAuth auth cookies of MS sharepoint.com from the Firefox
@@ -50,7 +51,7 @@ import subprocess
 rclone_conf = "/home/lorenzo/.config/rclone/rclone.conf"
 
 # chromium_cookies = "/home/lorenzo/.config/vivaldi/Default/Cookies" #define *either* chromium_cookies or firefox_cookies
-firefox_cookies = "/home/lorenzo/.config/mozilla/firefox/yxi3jflb.default-release/cookies.sqlite"  # replace user folder and XXX.default with your actual profile folder
+firefox_cookies = "/home/lorenzo/.config/mozilla/firefox/hlsamt7e.default/cookies.sqlite"  # replace user folder and XXX.default with your actual profile folder
 
 tennant = "itisvolta"  # replace with the actual Microsoft tennant name of your company (see notes above)
 
@@ -92,11 +93,9 @@ if "firefox_cookies" in globals():
     )  # , check_same_thread=False, isolation_level="IMMEDIATE")
 
     cursor = cookies.cursor()
-    auth = cursor.execute(
-        f"select value from main.moz_cookies \
+    auth = cursor.execute(f"select value from main.moz_cookies \
                         where host = '.sharepoint.com' and name = 'rtFa' \
-                        or host = '{tennant}-my.sharepoint.com' and name = 'FedAuth' ;"
-    )
+                        or host = '{tennant}-my.sharepoint.com' and name = 'FedAuth' ;")
 
     fetched = auth.fetchall()
     rtFa = fetched[0][0]

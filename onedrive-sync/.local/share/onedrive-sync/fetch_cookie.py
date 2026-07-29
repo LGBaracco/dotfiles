@@ -51,7 +51,7 @@ import subprocess
 rclone_conf = "/home/lorenzo/.config/rclone/rclone.conf"
 
 # chromium_cookies = "/home/lorenzo/.config/vivaldi/Default/Cookies" #define *either* chromium_cookies or firefox_cookies
-firefox_cookies = "/home/lorenzo/.config/mozilla/firefox/hlsamt7e.default/cookies.sqlite"  # replace user folder and XXX.default with your actual profile folder
+firefox_cookies = "/home/lorenzo/.config/mozilla/firefox/0rcj4d3a.default/cookies.sqlite"  # replace user folder and XXX.default with your actual profile folder
 
 tennant = "itisvolta"  # replace with the actual Microsoft tennant name of your company (see notes above)
 

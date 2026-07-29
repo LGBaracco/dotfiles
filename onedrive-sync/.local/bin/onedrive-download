@@ -1,13 +1,13 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
 
 python3 ~/.local/share/onedrive-sync/fetch_cookie.py
 
 rclone copy onedrive: "$HOME/OneDrive/" \
-  --progress \
-  --filter-from ~/.config/rclone/filters.txt \
-  --backup-dir ~/Documents/backuplocal \
-  --log-file=/home/lorenzo/Documents/backuplocal/logs.txt \
-  --log-level INFO \
-  --update \
-  -L
+        --progress \
+        --backup-dir ~/Documents/backuplocal \
+        --log-file=/home/lorenzo/Documents/backuplocal/logs.txt \
+        --log-level INFO \
+        --filter-from ~/.config/rclone/filters.txt \
+        --update \
+        -L

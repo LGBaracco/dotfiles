@@ -9,5 +9,9 @@
   },
   "dmsLenovoBatterySettings": {
     "enabled": true
+  },
+  "calculator": {
+    "enabled": true,
+    "trigger": "="
   }
 }

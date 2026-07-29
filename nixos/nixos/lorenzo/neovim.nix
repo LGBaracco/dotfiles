@@ -21,7 +21,7 @@
       opts.smartindent = true;
 
       spellcheck = {
-        enable = true;
+        enable = false; # Disable spell checking, maybe make it extension dependent in the future
       };
 
       lsp = {
@@ -53,6 +53,16 @@
         enableExtraDiagnostics = true;
 
         nix.enable = true;
+        nix.format.type = [ "nixfmt" ];
+
+        python = {
+          enable = true;
+          format.type = ["ruff"];
+          lsp.servers = ["ty"];
+        };
+
+        julia.enable = true;
+
         markdown.enable = true;
         bash.enable = true;
         fish.enable = true;
@@ -64,22 +74,21 @@
         json.enable = true;
         sql.enable = true;
         java.enable = true;
-        kotlin.enable = false;
-        typescript.enable = false;
-        go.enable = false;
         lua.enable = true;
-        zig.enable = false;
-        python.enable = true;
-        julia.enable = true;
         r.enable = true;
         typst.enable = true;
-        rust.enable = false;
         toml.enable = true;
         xml.enable = true;
         tex.enable = true;
         docker.enable = true;
         env.enable = true;
+        make.enable = true;
 
+        kotlin.enable = false;
+        typescript.enable = false;
+        go.enable = false;
+        rust.enable = false;
+        zig.enable = false;
         openscad.enable = false;
         arduino.enable = false;
         assembly.enable = false;
@@ -98,7 +107,6 @@
         ruby.enable = false;
         fsharp.enable = false;
         just.enable = false;
-        make.enable = false;
         qml.enable = false;
         jinja.enable = false;
         svelte.enable = false;

@@ -28,12 +28,6 @@
     "$HOME/.local/bin"
   ];
 
-  xdg.portal.config = {
-    niri = {
-      "org.freedesktop.impl.portal.FileChooser" = ["kde"];
-    };
-  };
-
   # ── Environment variables ─────────────────────────────────────────────────
   # These are either magical or already set in niri config
   #home.sessionVariables = {

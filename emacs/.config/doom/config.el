@@ -80,7 +80,7 @@
 (setq auto-save-default t)
 ;;
 ;; scrolling
-(setq scroll-margin 101
+(setq scroll-margin 5
       scroll-conservatively 101)
 
 ;; font size
@@ -125,4 +125,3 @@
 ;; Doom dashboard
 (assoc-delete-all "Open org-agenda" +dashboard-menu-sections)
 (assoc-delete-all "Jump to bookmark" +dashboard-menu-sections)
-

@@ -432,8 +432,8 @@
   "matugenTemplateWezterm": false,
   "matugenTemplateDgop": true,
   "matugenTemplateKcolorscheme": true,
-  "matugenTemplateVscode": false,
-  "matugenTemplateEmacs": false,
+  "matugenTemplateVscode": true,
+  "matugenTemplateEmacs": true,
   "matugenTemplateZed": false,
   "matugenTemplateNeovimSettings": {
     "dark": {

@@ -7,12 +7,13 @@
     # --- Desktop apps ---
     p3x-onenote
     whatsapp-electron
-    ghostty
-    foot
+    discord
     spotify-player
     mpv
     imv
     gparted
+    ghostty
+    foot
     nautilus
 
     # --- Editors / Dev ---
@@ -21,9 +22,8 @@
 
     # --- Dev tools ---
     stow
-    rclone
-    ripgrep # fuzzy finder
     fd
+    ripgrep
     fzf
     bat
     eza # modern ls
@@ -87,5 +87,6 @@
     playerctl
     xwayland-satellite
     fastfetch
+    proton-pass
   ];
 }

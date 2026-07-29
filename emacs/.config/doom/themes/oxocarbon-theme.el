@@ -1,4 +1,4 @@
-;;; noctalia-theme.el --- Theme using Template SCSS variables -*- lexical-binding: t -*-
+;;; oxocarbon-theme.el --- Theme using Template SCSS variables -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2025 
 
@@ -18,7 +18,7 @@
 
 ;;; Code:
 
-(deftheme noctalia "Theme using Template variables with quality of life improvements.")
+(deftheme oxocarbon "Theme using Template variables with quality of life improvements.")
 
 ;; Define all the color variables (replaced by template processor)
 (let* ((bg "#161616")
@@ -92,7 +92,7 @@
       (term15 "#f2f4f8"))
 
   (custom-theme-set-faces
-   'noctalia
+   'oxocarbon
    ;; Basic faces
    `(default ((t (:background ,bg :foreground ,on-background))))
    `(cursor ((t (:background ,primary))))
@@ -332,10 +332,10 @@
    `(tab-line-highlight ((t (:background ,surface-container-highest :foreground ,on-surface))))
 
    `(centaur-tabs-default ((t (:background ,surface-container-high :foreground ,on-surface))))
-   `(centaur-tabs-selected ((t (:background ,surface-container-high :foreground ,on-surface :weight bold))))
-   `(centaur-tabs-unselected ((t (:background ,surface :foreground ,on-surface-variant))))
-   `(centaur-tabs-selected-modified ((t (:background ,surface-container-high :foreground ,tertiary :weight bold))))
-   `(centaur-tabs-unselected-modified ((t (:background ,surface :foreground ,tertiary))))
+   `(centaur-tabs-unselected ((t (:background ,surface-container-high :foreground ,on-surface :weight bold))))
+   `(centaur-tabs-selected ((t (:background ,surface :foreground ,on-surface-variant))))
+   `(centaur-tabs-unselected-modified ((t (:background ,surface-container-high :foreground ,tertiary :weight bold))))
+   `(centaur-tabs-selected-modified ((t (:background ,surface :foreground ,tertiary))))
    `(centaur-tabs-active-bar-face ((t (:background ,primary))))
    
    ;; Fixed-pitch faces
@@ -356,6 +356,5 @@
   (add-to-list 'custom-theme-load-path
                (file-name-as-directory (file-name-directory load-file-name))))
 
-(provide-theme 'noctalia)
-;;; noctalia-theme.el ends here
-
+(provide-theme 'oxocarbon)
+;;; oxocarbon-theme.el ends here

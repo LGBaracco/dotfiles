@@ -86,7 +86,7 @@
 ;; font size
 (setq doom-font (font-spec :size 16))
 ;; Theme
-(load-theme 'noctalia t)
+(load-theme 'oxocarbon t)
 
 ;; Evil settings
 (setq-default evil-escape-key-sequence "kj")
@@ -108,11 +108,13 @@
 (setq-default explicit-shell-file-name "/run/current-system/sw/bin/fish")
 
 ;; Julia
-;; Fix: use eglot instead of lsp thing
 (with-eval-after-load 'eglot-jl
-  (setq eglot-jl-language-server-project "~/.julia/environments/v1.12"))
+  (setq eglot-jl-language-server-project "~/.julia/environments/v1.12")
 
-;; (after! julia-mode
+ (after! julia-snail
+  (setq julia-snail-terminal-type :vterm))) ;; Necessary until ghostel compatibility is guaranteed upstream
+;; ;
+                                   ; (after! julia-mode
 ;;   (setq lsp-julia-package-dir nil)
 ;;   (setq julia-program "/home/lorenzo/.juliaup/bin/julia")
 ;;   (setq lsp-julia-default-environment "~/.julia/environments/v1.11"))
@@ -125,3 +127,7 @@
 ;; Doom dashboard
 (assoc-delete-all "Open org-agenda" +dashboard-menu-sections)
 (assoc-delete-all "Jump to bookmark" +dashboard-menu-sections)
+
+;; Neotree
+(after! treemacs
+  (setq treemacs-width 25))

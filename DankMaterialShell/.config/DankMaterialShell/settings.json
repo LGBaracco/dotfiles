@@ -606,10 +606,6 @@
           "enabled": true
         },
         {
-          "id": "catWidget",
-          "enabled": true
-        },
-        {
           "id": "cpuUsage",
           "enabled": true,
           "minimumWidth": false
@@ -671,6 +667,10 @@
         },
         {
           "id": "clipboard",
+          "enabled": true
+        },
+        {
+          "id": "dmsLenovoBatterySettings",
           "enabled": true
         },
         {

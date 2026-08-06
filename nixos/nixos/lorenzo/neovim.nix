@@ -75,7 +75,7 @@
         sql.enable = true;
         java.enable = true;
         lua.enable = true;
-        r.enable = true;
+        r.enable = false;
         typst.enable = true;
         toml.enable = true;
         xml.enable = true;

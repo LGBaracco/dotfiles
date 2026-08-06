@@ -54,3 +54,4 @@
 ;; (unpin! t)
 (package! evil-tutor)
 ;;(unpin! julia-snail)
+(package! kdl-mode)

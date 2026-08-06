@@ -7,14 +7,6 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    niri-flake = {
-      url = "github:sodiboo/niri-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    silentSDDM = {
-      url = "github:uiriansan/SilentSDDM";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nvf = {
       url = "github:NotAShelf/nvf";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -26,8 +18,6 @@
       self,
       nixpkgs,
       home-manager,
-      niri-flake,
-      silentSDDM,
       nvf,
       ...
     }@inputs:
@@ -38,8 +28,6 @@
         modules = [
           ./hosts/nixdesktop
           ./modules
-          niri-flake.nixosModules.niri
-          silentSDDM.nixosModules.default
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
@@ -50,7 +38,7 @@
               imports = [
                 ./hosts/nixdesktop/lorenzo.nix
                 ./lorenzo
-	    	nvf.homeManagerModules.default
+                nvf.homeManagerModules.default
               ];
             };
           }
@@ -63,8 +51,6 @@
         modules = [
           ./hosts/nixlaptop
           ./modules
-          niri-flake.nixosModules.niri
-          silentSDDM.nixosModules.default
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
@@ -75,7 +61,7 @@
               imports = [
                 ./hosts/nixlaptop/lorenzo.nix
                 ./lorenzo
-          	nvf.homeManagerModules.default
+                nvf.homeManagerModules.default
               ];
             };
           }

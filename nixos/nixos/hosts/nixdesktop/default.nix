@@ -1,11 +1,10 @@
 { ... }:
 
 {
-  imports = [
-    ./hardware
-    ./boot
-  ];
-  networking.hostName = "nixdesktop";
-  system.stateVersion = "26.05";
-
+        imports = [
+                ./hardware
+                ./boot
+        ];
+        networking.hostName = "nixdesktop";
+        system.stateVersion = "26.05";
 }

@@ -44,16 +44,10 @@
     enable = true;
     systemd = {
       enable = true;
-      target = "niri-session.target";
+      target = "niri.service";
       restartIfChanged = true;
     };
   };
-
-  # systemd.user.services.dankmaterialshell = {
-  #   unitConfig = {
-  #     Conflicts = [ "plasma-workspace.target" "plasma-workspace-wayland.target" ];
-  #   };
-  # };
 
   # Old SDDM setup
   # services.displayManager.sddm = {

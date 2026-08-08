@@ -5,6 +5,6 @@
     ./boot
     ./hardware
   ];
-  networking.hostName = "nixlorenzo";
+  networking.hostName = "nixlaptop";
   system.stateVersion = "26.05";
 }

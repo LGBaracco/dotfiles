@@ -43,15 +43,6 @@
             ./modules
             home-manager.nixosModules.home-manager
             {
-              nixpkgs.overlays = [
-                helium.overlays.default
-
-                # Optional stable branch
-                (final: prev: {
-                  stable = import nixpkgs-stable { inherit (final) system; };
-                })
-              ];
-
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = { inherit inputs; };

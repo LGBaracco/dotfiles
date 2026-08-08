@@ -7,6 +7,7 @@
   imports = [
     ./boot
     ./hardware
+    ./overlays.nix
     ./theming
     ./system-packages.nix
     ./desktop-environment.nix
@@ -44,6 +45,8 @@
   };
 
   nixpkgs.config.allowUnfree = true;
+  #nixpkgs-stable.config.allowUnfree = true;
+
 
   programs.nix-ld.enable = true;
   programs.nix-ld.libraries = with pkgs; [

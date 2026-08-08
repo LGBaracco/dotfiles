@@ -3,6 +3,8 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-26.05";
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -11,14 +13,20 @@
       url = "github:NotAShelf/nvf";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    helium = {
+      url = "github:oxcl/nix-flake-helium-browser";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
     {
       self,
       nixpkgs,
+      nixpkgs-stable,
       home-manager,
       nvf,
+      helium,
       ...
     }@inputs:
     {
@@ -30,6 +38,8 @@
           ./modules
           home-manager.nixosModules.home-manager
           {
+            nixpkgs.overlays = [ helium.overlays.default ];
+
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs; };
@@ -53,6 +63,8 @@
           ./modules
           home-manager.nixosModules.home-manager
           {
+            nixpkgs.overlays = [ helium.overlays.default ];
+
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs; };

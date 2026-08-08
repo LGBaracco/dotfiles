@@ -3,6 +3,7 @@
     # --- Browsers ---
     brave
     firefox-bin
+    helium
 
     # --- Desktop apps ---
     p3x-onenote
@@ -19,6 +20,8 @@
     # --- Editors / Dev ---
     vscode
     code-cursor
+    jetbrains.pycharm
+    jetbrains.clion
 
     # --- Dev tools ---
     stow

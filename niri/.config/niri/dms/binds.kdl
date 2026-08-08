@@ -4,16 +4,24 @@ binds {
     Print hotkey-overlay-title="Screenshot: Full Screen" { spawn "dms" "ipc" "call" "niri" "screenshotScreen"; }
     Super+Alt+L hotkey-overlay-title="Lock Screen" { spawn "dms" "ipc" "call" "lock" "lock"; }
     Super+Shift+S hotkey-overlay-title="Screenshot: Interactive" { spawn "dms" "ipc" "call" "niri" "screenshot"; }
-    XF86AudioLowerVolume allow-when-locked=true hotkey-overlay-title="Volume Down" { spawn "dms" "ipc" "call" "audio" "decrement" "5"; }
+    XF86AudioLowerVolume hotkey-overlay-title="Volume Down" allow-when-locked=true { spawn "dms" "ipc" "call" "audio" "decrement" "5"; }
     XF86AudioMedia hotkey-overlay-title="Media: Play/Pause" { spawn "dms" "ipc" "call" "mpris" "playPause"; }
     XF86AudioMute allow-when-locked=true hotkey-overlay-title="Volume Mute Toggle" { spawn "dms" "ipc" "call" "audio" "mute"; }
     XF86AudioPlay hotkey-overlay-title="Media: Play/Pause" { spawn "dms" "ipc" "call" "mpris" "playPause"; }
     XF86AudioRaiseVolume hotkey-overlay-title="Volume Up" { spawn "dms" "ipc" "call" "audio" "increment" "5"; }
     XF86MonBrightnessDown hotkey-overlay-title="Brightness Down" { spawn "dms" "ipc" "call" "brightness" "decrement" "5" ""; }
     XF86MonBrightnessUp hotkey-overlay-title="Brightness Up" { spawn "dms" "ipc" "call" "brightness" "increment" "5" ""; }
+    Mod+Alt+Ctrl+Down cooldown-ms=150 { move-column-to-workspace-down; }
+    Mod+Alt+Ctrl+J cooldown-ms=150 { move-column-to-workspace-down; }
+    Mod+Alt+Ctrl+K cooldown-ms=150 { move-column-to-workspace-up; }
+    Mod+Alt+Ctrl+Up cooldown-ms=150 { move-column-to-workspace-up; }
+    Mod+Alt+Down cooldown-ms=150 { focus-workspace-down; }
+    Mod+Alt+J cooldown-ms=150 { focus-workspace-down; }
+    Mod+Alt+K cooldown-ms=150 { focus-workspace-up; }
+    Mod+Alt+Up cooldown-ms=150 { focus-workspace-up; }
+    Mod+Ctrl+Shift+H { move-column-to-monitor-left; }
+    Mod+Ctrl+Shift+L { move-column-to-monitor-right; }
     Super+Shift+H { focus-monitor-left; }
-    Super+Shift+J { focus-monitor-down; }
-    Super+Shift+K { focus-monitor-up; }
     Super+Shift+L { focus-monitor-right; }
     Mod+T hotkey-overlay-title="Open Terminal: Ghostty" { spawn "ghostty"; }
 }

@@ -19,7 +19,9 @@
                 dgop
                 efibootmgr
                 gcc
+                texliveMedium # For emacs' org mode
         ];
+
         programs.partition-manager.enable = true;
-        services.gvfs.enable = true;
+
 }

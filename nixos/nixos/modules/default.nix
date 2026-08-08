@@ -47,9 +47,9 @@
 
   programs.nix-ld.enable = true;
   programs.nix-ld.libraries = with pkgs; [
-    #   stdenv.cc.cc.lib
-    #   libgcc
-    #   zlib
+    stdenv.cc.cc.lib
+    libgcc
+    zlib
     config.hardware.nvidia.package
   ];
 

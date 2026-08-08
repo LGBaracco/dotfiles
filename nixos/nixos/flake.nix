@@ -29,55 +29,52 @@
       helium,
       ...
     }@inputs:
+    let # Scope for all common config among flakes
+      mkHost =
+        {
+          hostPath,
+          userConfigPath,
+        }:
+        nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = { inherit inputs; };
+          modules = [
+            hostPath
+            ./modules
+            home-manager.nixosModules.home-manager
+            {
+              nixpkgs.overlays = [
+                helium.overlays.default
+
+                # Optional stable branch
+                (final: prev: {
+                  stable = import nixpkgs-stable { inherit (final) system; };
+                })
+              ];
+
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.extraSpecialArgs = { inherit inputs; };
+              home-manager.backupFileExtension = "bak";
+              home-manager.users.lorenzo = {
+                imports = [
+                  userConfigPath
+                  ./lorenzo
+                  nvf.homeManagerModules.default
+                ];
+              };
+            }
+          ];
+        };
+    in # Here the actual unique flakes
     {
-      nixosConfigurations.nixdesktop = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = { inherit inputs; };
-        modules = [
-          ./hosts/nixdesktop
-          ./modules
-          home-manager.nixosModules.home-manager
-          {
-            nixpkgs.overlays = [ helium.overlays.default ];
-
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.backupFileExtension = "bak";
-            home-manager.users.lorenzo = {
-              imports = [
-                ./hosts/nixdesktop/lorenzo.nix
-                ./lorenzo
-                nvf.homeManagerModules.default
-              ];
-            };
-          }
-        ];
-      };
-
-      nixosConfigurations.nixlorenzo = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = { inherit inputs; };
-        modules = [
-          ./hosts/nixlaptop
-          ./modules
-          home-manager.nixosModules.home-manager
-          {
-            nixpkgs.overlays = [ helium.overlays.default ];
-
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.backupFileExtension = "bak";
-            home-manager.users.lorenzo = {
-              imports = [
-                ./hosts/nixlaptop/lorenzo.nix
-                ./lorenzo
-                nvf.homeManagerModules.default
-              ];
-            };
-          }
-        ];
+      nixosConfigurations.nixdesktop = mkHost {
+      hostPath = ./hosts/nixdesktop;
+      userConfigPath = ./hosts/nixdesktop/lorenzo.nix;
+    };
+      nixosConfigurations.nixlaptop = mkHost {
+        hostPath = ./hosts/nixlaptop;
+        userConfigPath = ./hosts/nixlaptop/lorenzo.nix;
       };
     };
 }

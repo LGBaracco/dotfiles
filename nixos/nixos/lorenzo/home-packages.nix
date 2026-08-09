@@ -13,15 +13,13 @@
     mpv
     imv
     gparted
+    nautilus
     ghostty
     foot
-    nautilus
 
     # --- Editors / Dev ---
     vscode
     code-cursor
-    jetbrains.pycharm
-    jetbrains.clion
 
     # --- Dev tools ---
     stow
@@ -43,6 +41,7 @@
     nvd # diff nixos generations
     alejandra # nix formatter
     nixfmt # Doom compatible formatter
+    nil
 
     # --- Python (scientific) ---
     uv

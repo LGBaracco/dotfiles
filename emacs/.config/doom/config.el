@@ -73,26 +73,34 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
-;;
+
+;;; Doom dashboard
+(assoc-delete-all "Open org-agenda" +dashboard-menu-sections)
+(assoc-delete-all "Jump to bookmark" +dashboard-menu-sections)
+
+;
 ;; Send files to trash instead of fully deleting
 (setq delete-by-moving-to-trash t)
 ;; Save automatically
 (setq auto-save-default t)
 ;;
 ;; scrolling
-(setq scroll-margin 5
-      scroll-conservatively 101)
+(setq scroll-margin 5)
+      ;;scroll-conservatively 101
 
 ;; font size
 (setq doom-font (font-spec :size 16))
 ;; Theme
-(load-theme 'oxocarbon t)
+(load-theme 'oxocarbon2 t)
 
 ;; Evil settings
 (setq-default evil-escape-key-sequence "kj")
 (setq-default evil-escape-delay 0.1)
 ;; Enable paste from system clipboard with C-v in insert mode
 (evil-define-key 'insert global-map (kbd "C-v") 'clipboard-yank)
+
+
+(setq which-key-idle-delay 1.5) ;; extend which-key delay
 
 ;; ask for buffer after splitting
 (setq evil-vsplit-window-right t
@@ -108,13 +116,15 @@
 (setq-default explicit-shell-file-name "/run/current-system/sw/bin/fish")
 
 ;; Julia
+(add-hook 'julia-mode-hook #'rainbow-delimiters-mode-enable)
+
 (with-eval-after-load 'eglot-jl
   (setq eglot-jl-language-server-project "~/.julia/environments/v1.12")
 
  (after! julia-snail
   (setq julia-snail-terminal-type :vterm))) ;; Necessary until ghostel compatibility is guaranteed upstream
-;; ;
-                                   ; (after! julia-mode
+
+;; (after! julia-mode
 ;;   (setq lsp-julia-package-dir nil)
 ;;   (setq julia-program "/home/lorenzo/.juliaup/bin/julia")
 ;;   (setq lsp-julia-default-environment "~/.julia/environments/v1.11"))
@@ -123,10 +133,6 @@
 (with-eval-after-load 'python
   (set-formatter! 'ruff :modes '(python-mode python-ts-mode))
   (set-eglot-client! '(python-mode python-ts-mode) '("ty" "server")))
-
-;; Doom dashboard
-(assoc-delete-all "Open org-agenda" +dashboard-menu-sections)
-(assoc-delete-all "Jump to bookmark" +dashboard-menu-sections)
 
 ;; Neotree
 (after! treemacs

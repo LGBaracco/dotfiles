@@ -1,4 +1,5 @@
 {
+        pkgs,
         ...
 }:
 {
@@ -300,6 +301,36 @@
                         presence = {
                                 neocord.enable = false;
                                 cord-nvim.enable = false;
+                        };
+                        iron-nvim = {
+                                package = pkgs.vimPlugins.iron-nvim;
+                                setup = ''
+                                        require("iron.core").setup({
+                                          config = {
+                                            repl_definition = {
+                                              python = {
+                                                command = { "python3" },
+                                                -- or ipython: command = { "ipython", "--no-autoindent" },
+                                              },
+                                              julia = {
+                                                command = { "julia" },
+                                              },
+                                            },
+                                            repl_open_cmd = require("iron.view").bottom(15),
+                                          },
+                                          keymaps = {
+                                            send_motion = "<space>sc",
+                                            visual_send = "<space>sc",
+                                            send_file = "<space>sf",
+                                            send_line = "<space>sl",
+                                            send_mark = "<space>sm",
+                                            cr = "<space>s<cr>",
+                                            interrupt = "<space>s<space>",
+                                            exit = "<space>sq",
+                                            clear = "<space>cl",
+                                          },
+                                        })
+                                '';
                         };
 
                         repl.conjure.enable = true;

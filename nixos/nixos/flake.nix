@@ -29,16 +29,17 @@
       helium,
       ...
     }@inputs:
-    let # Scope for all common config among flakes
+    let # Scope for all common configurations among flakes
       mkHost =
         {
           hostPath,
           userConfigPath,
         }:
         nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
+
           specialArgs = { inherit inputs; };
           modules = [
+            { nixpkgs.hostPlatform = "x86_64-linux"; }
             hostPath
             ./modules
             home-manager.nixosModules.home-manager
@@ -57,12 +58,13 @@
             }
           ];
         };
-    in # Here the actual unique flakes
+    in
+    # Here the actual unique flakes
     {
       nixosConfigurations.nixdesktop = mkHost {
-      hostPath = ./hosts/nixdesktop;
-      userConfigPath = ./hosts/nixdesktop/lorenzo.nix;
-    };
+        hostPath = ./hosts/nixdesktop;
+        userConfigPath = ./hosts/nixdesktop/lorenzo.nix;
+      };
       nixosConfigurations.nixlaptop = mkHost {
         hostPath = ./hosts/nixlaptop;
         userConfigPath = ./hosts/nixlaptop/lorenzo.nix;

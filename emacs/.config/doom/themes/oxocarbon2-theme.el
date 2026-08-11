@@ -46,7 +46,7 @@
        (warning2  base0D)
        (unspec   (when (>= emacs-major-version 29) 'unspecified)))
   (custom-theme-set-faces
-   'oxocarbon
+   'oxocarbon2
    ;;; emacs <built-in>
    `(default ((,class (:background ,bg1 :foreground ,fg1))))
    `(region ((,class (:background ,selection))))
@@ -382,7 +382,7 @@
   (add-to-list 'custom-theme-load-path
                (file-name-as-directory (file-name-directory load-file-name))))
 
-(provide-theme 'oxocarbon)
+(provide-theme 'oxocarbon2)
 
 ;; Local Variables:
 ;; no-byte-compile: t

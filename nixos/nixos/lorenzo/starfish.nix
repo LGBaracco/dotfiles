@@ -1,4 +1,4 @@
-{...}: {
+{ ... }: {
   # ── Fish shell ────────────────────────────────────────────────────────────
   programs.fish = {
     enable = true;
@@ -46,6 +46,7 @@
       vim = "nvim";
       # Rebuild shortcut
       nrs = "sudo nixos-rebuild switch --flake $HOME/nixos#$hostname";
+      nrt = "sudo nixos-rebuild test --flake $HOME/nixos#$hostname";
     };
   };
 
@@ -86,4 +87,3 @@
 #      echo (color)(prompt_pwd)
 #      echo -n "> "
 #    end
-

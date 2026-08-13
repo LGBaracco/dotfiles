@@ -1,95 +1,96 @@
 { pkgs, ... }: {
-        home.packages = with pkgs; [
-                # --- Browsers ---
-                brave
-                firefox-bin
-                helium
+  home.packages = with pkgs; [
+    # --- Browsers ---
+    brave
+    firefox-bin
+    helium
 
-                # --- Desktop apps ---
-                p3x-onenote
-                whatsapp-electron
-                discord
-                spotify-player
-                mpv
-                imv
-                gparted
-                nautilus
-                ghostty
-                foot
+    # --- Desktop apps ---
+    p3x-onenote
+    whatsapp-electron
+    discord
+    spotify-player
+    mpv
+    imv
+    gparted
+    nautilus
+    ghostty
+    foot
 
-                # --- Editors / Dev ---
-                vscode
-                code-cursor
-                neovide
+    # --- Editors / Dev ---
+    vscode
+    code-cursor
+    neovide
+    stable.jetbrains.pycharm
 
-                # --- Dev tools ---
-                stow
-                fd
-                ripgrep
-                fzf
-                bat
-                eza # modern ls
-                zoxide # smarter cd
-                jq
-                yq
-                lazygit
-                gnumake
-                coreutils
-                zellij
+    # --- Dev tools ---
+    stow
+    fd
+    ripgrep
+    fzf
+    bat
+    eza # modern ls
+    zoxide # smarter cd
+    jq
+    yq
+    lazygit
+    gnumake
+    coreutils
+    zellij
 
-                # --- Nix tooling ---
-                nix-output-monitor # prettier `nix build` output
-                nvd # diff nixos generations
-                alejandra # nix formatter
-                nixfmt # Doom compatible formatter
-                nil
+    # --- Nix tooling ---
+    nix-output-monitor # prettier `nix build` output
+    nvd # diff nixos generations
+    alejandra # nix formatter
+    nixfmt # Doom compatible formatter
+    nil
 
-                # --- Python (scientific) ---
-                uv
-                python3
-                # (python3.withPackages (
-                #   ps: with ps; [
-                #     numpy
-                #     scipy
-                #     # torch-bin
-                #     matplotlib
-                #     pandas
-                #     jupyter
-                #     ipython
-                #   ]
-                # ))
+    # --- Python (scientific) ---
+    uv
+    python3
+    # (python3.withPackages (
+    #   ps: with ps; [
+    #     numpy
+    #     scipy
+    #     # torch-bin
+    #     matplotlib
+    #     pandas
+    #     jupyter
+    #     ipython
+    #   ]
+    # ))
 
-                # --- Julia ---
-                julia-bin # official Julia binary (faster than building from source)
+    # --- Julia ---
+    julia-bin # official Julia binary (faster than building from source)
 
-                # --- C/C++ ---
-                clang
-                cmake
+    # --- C/C++ ---
+    clang
+    cmake
 
-                # --- Rust ---
-                cargo
-                rustc
+    # --- Rust ---
+    cargo
+    rustc
 
-                # --- Other languages ---
-                sbcl # Common Lisp
-                racket
-                proselint # Markdown linter
-                pandoc # Markdown syntax highlighting
-                shellcheck
+    # --- Other languages ---
+    sbcl # Common Lisp
+    racket
+    proselint # Markdown linter
+    pandoc # Markdown syntax highlighting
+    shellcheck
 
-                # --- Gaming ---
-                heroic
+    # --- Gaming ---
+    heroic
 
-                # --- Fonts / theming ---
-                #papirus-icon-theme
+    # --- Fonts / theming ---
+    #papirus-icon-theme
 
-                # --- Misc ---
-                libsForQt5.qt5ct
-                qt6Packages.qt6ct
-                brightnessctl
-                playerctl
-                xwayland-satellite
-                fastfetch
-                proton-pass
-        ];
+    # --- Misc ---
+    libsForQt5.qt5ct
+    qt6Packages.qt6ct
+    brightnessctl
+    playerctl
+    xwayland-satellite
+    fastfetch
+    proton-pass
+  ];
 }

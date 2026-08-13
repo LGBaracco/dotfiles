@@ -21,7 +21,6 @@
     gcc
     texliveMedium # For emacs' org mode
 
-    stable.jetbrains.pycharm
   ];
 
   programs.partition-manager.enable = true;

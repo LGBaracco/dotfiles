@@ -580,7 +580,7 @@
     "niri": "profile_1784283398101_lkyihfp"
   },
   "displayProfileAutoSelect": false,
-  "displayShowDisconnected": false,
+  "displayShowDisconnected": true,
   "displaySnapToEdge": true,
   "connectedFrameBarStyleBackups": {},
   "barConfigs": [

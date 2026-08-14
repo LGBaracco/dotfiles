@@ -1,9 +1,10 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   imports = [
     ./git.nix
     ./home-packages.nix
     ./starfish.nix
     ./neovim.nix
+    ./chromium.nix
   ];
 
   # Let Home Manager manage itself
@@ -12,7 +13,7 @@
   programs.emacs = {
     enable = true;
     package = pkgs.emacs-pgtk; # emacs30-pgtk
-    extraPackages = epkgs: [epkgs.vterm];
+    extraPackages = epkgs: [ epkgs.vterm ];
   };
 
   programs.ghostty = {

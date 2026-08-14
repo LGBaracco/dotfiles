@@ -1,5 +1,6 @@
 {
   pkgs,
+  lib,
   ...
 }:
 {
@@ -197,6 +198,10 @@
         otter-nvim.enable = true;
         nvim-docs-view.enable = true;
         presets.harper.enable = true;
+
+        servers.fennel_ls = {
+          cmd = [ (lib.getExe pkgs.fennel-ls) ];
+        };
       };
 
       debugger = {
@@ -326,8 +331,11 @@
         nvimBufferline.enable = true;
       };
 
-      treesitter.enable = true;
-      treesitter.context.enable = true;
+      treesitter = {
+        enable = true;
+        context.enable = true;
+        grammars = [ pkgs.vimPlugins.nvim-treesitter.builtGrammars.fennel ]; # non-packages fennel-grammar      };
+      };
 
       binds = {
         whichKey = {

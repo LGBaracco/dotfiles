@@ -3,11 +3,11 @@ set -e
 
 python3 ~/.local/share/onedrive-sync/fetch_cookie.py
 
-rclone copy onedrive: "$HOME/OneDrive/" \
-        --progress \
-        --backup-dir ~/Documents/backuplocal \
-        --log-file=/home/lorenzo/Documents/backuplocal/logs.txt \
-        --log-level INFO \
-        --filter-from ~/.config/rclone/filters.txt \
-        --update \
-        -L
+rclone sync onedrive: "$HOME/OneDrive/" \
+    --progress \
+    --backup-dir ~/Documents/backuplocal \
+    --log-file=/home/lorenzo/Documents/backuplocal/logs.txt \
+    --log-level INFO \
+    --filter-from ~/.config/rclone/filters.txt \
+    --update \
+    -L

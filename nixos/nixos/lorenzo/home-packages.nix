@@ -1,14 +1,9 @@
 { pkgs, ... }: {
   home.packages = with pkgs; [
     # --- Browsers ---
-    brave
     firefox-bin
-    helium
 
     # --- Desktop apps ---
-    p3x-onenote
-    whatsapp-electron
-    discord
     spotify-player
     mpv
     imv
@@ -18,10 +13,8 @@
     foot
 
     # --- Editors / Dev ---
-    vscode
-    code-cursor
     neovide
-    stable.jetbrains.pycharm
+    jetbrains.pycharm
 
     # --- Dev tools ---
     stow

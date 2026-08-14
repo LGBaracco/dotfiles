@@ -1,7 +1,7 @@
 {
   config,
   pkgs,
-    ...
+  ...
 }:
 {
   imports = [
@@ -14,7 +14,7 @@
     ./gaming.nix
   ];
 
-# ── nix / flakes ──────────────────────────────────────────────────────────
+  # ── nix / flakes ──────────────────────────────────────────────────────────
   nix = {
     settings = {
       experimental-features = [
@@ -46,7 +46,6 @@
 
   nixpkgs.config.allowUnfree = true;
   #nixpkgs-stable.config.allowUnfree = true;
-
 
   programs.nix-ld.enable = true;
   programs.nix-ld.libraries = with pkgs; [

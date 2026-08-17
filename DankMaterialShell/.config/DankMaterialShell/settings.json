@@ -415,7 +415,7 @@
   "matugenTemplatePywalfox": false,
   "matugenTemplateZenBrowser": false,
   "matugenTemplateVesktop": false,
-  "matugenTemplateVencord": true,
+  "matugenTemplateVencord": false,
   "matugenTemplateEquibop": false,
   "matugenTemplateGhostty": true,
   "matugenTemplateKitty": false,

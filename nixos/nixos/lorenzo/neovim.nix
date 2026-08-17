@@ -48,11 +48,20 @@
           mode = "n";
           action = "<cmd>w<cr>";
           desc = "Save buffer";
+          nowait = true;
+        }
+        {
+          key = "<leader>bS";
+          mode = "n";
+          action = "<cmd>wa<cr>";
+          desc = "Save all buffers";
+          nowait = true;
         }
 
         {
           key = "<leader>bk";
           mode = "n";
+          # All this to have dashboard when closing all buffers
           action = "<cmd>bdelete<cr><cmd>lua vim.schedule(function() local b = vim.fn.getbufinfo({buflisted = 1}); if #b == 0 or (#b == 1 and b[1].name == '' and vim.bo[b[1].bufnr].buftype == '') then vim.cmd('Alpha') end end)<cr>";
           desc = "Kill buffer";
         }
@@ -333,6 +342,12 @@
       binds = {
         whichKey = {
           enable = true;
+          register = {
+            "<leader>b" = "+buffer";
+            "<leader>w" = "+window";
+            "<leader>d" = "+debugger";
+            "<leader>l" = "+lsp";
+          };
           setupOpts = {
             preset = "helix";
             win.border = "rounded";
@@ -380,6 +395,7 @@
         smart-splits.enable = true;
         undotree.enable = true;
         grug-far-nvim.enable = true;
+        oil-nvim.enable = true;
 
         motion = {
           hop.enable = true;
@@ -387,7 +403,13 @@
           precognition.enable = true;
         };
         images = {
-          image-nvim.enable = false;
+          image-nvim = {
+            enable = true;
+            setupOpts = {
+              backend = "kitty";
+              processor = "magick_cli";
+            };
+          };
           img-clip.enable = true;
         };
       };

@@ -173,11 +173,6 @@
           ];
           command = "setlocal shiftwidth=2 tabstop=2 softtabstop=2";
         }
-        #  {
-        #     event = [ "BufDelete" ];
-        #     pattern = [ "*" ];
-        #     command = "lua vim.schedule(function() local b = vim.fn.getbufinfo({buflisted=1}); if #b <= 1 and (not b[1] or (b[1].name == '' and vim.bo[b[1].bufnr].buftype == '')) then vim.cmd('Alpha') end end)";
-        #   }
       ];
 
       spellcheck = {
@@ -373,6 +368,7 @@
 
       projects = {
         project-nvim.enable = true;
+        project-nvim.setupOpts.manual_mode = false;
       };
 
       utility = {

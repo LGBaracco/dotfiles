@@ -12,6 +12,7 @@
     settings.vim = {
       # Set Space as the leader key
       globals.mapleader = " ";
+      globals.maplocalleader = ",";
 
       # User-defined keymaps overwrite nvf defaults, preventing conflicts
       keymaps = [
@@ -158,6 +159,7 @@
         tabstop = 4;
         scrolloff = 6;
         sidescrolloff = 3;
+        timeoutlen = 5000;
       };
 
       # Two-spacing for nix and configuration find_files
@@ -184,12 +186,8 @@
       lsp = {
         enable = true;
         formatOnSave = true;
-        lspkind.enable = false;
         lightbulb.enable = true;
-        lspsaga.enable = false;
         trouble.enable = true;
-        lspSignature.enable = false; # conflicts with blink in maximal
-
         otter-nvim.enable = true;
         nvim-docs-view.enable = true;
         presets.harper.enable = true;
@@ -232,13 +230,14 @@
         sql.enable = true;
         java.enable = true;
         lua.enable = true;
-        r.enable = false;
+        r.enable = true;
         toml.enable = true;
         xml.enable = true;
         tex.enable = true;
         docker.enable = true;
         env.enable = true;
         make.enable = true;
+        qml.enable = true;
 
         typst.enable = false;
         scss.enable = false;
@@ -265,7 +264,6 @@
         ruby.enable = false;
         fsharp.enable = false;
         just.enable = false;
-        qml.enable = false;
         jinja.enable = false;
         svelte.enable = false;
         vue.enable = false;
@@ -323,13 +321,13 @@
       };
 
       tabline = {
-        nvimBufferline.enable = true;
+        nvimBufferline.enable = false; # will see, maybe ill activate eventually
       };
 
       treesitter = {
         enable = true;
         context.enable = true;
-        grammars = [ pkgs.vimPlugins.nvim-treesitter.builtGrammars.fennel ]; # non-packages fennel-grammar      };
+        grammars = [ pkgs.vimPlugins.nvim-treesitter.builtGrammars.fennel ]; # non-packages fennel-grammar
       };
 
       binds = {
@@ -381,7 +379,6 @@
         multicursors.enable = false;
         smart-splits.enable = true;
         undotree.enable = true;
-        nvim-biscuits.enable = true;
         grug-far-nvim.enable = true;
 
         motion = {

@@ -34,7 +34,6 @@
     # --- Nix tooling ---
     nix-output-monitor # prettier `nix build` output
     nvd # diff nixos generations
-    alejandra # nix formatter
     nixfmt # Doom compatible formatter
     nil
 

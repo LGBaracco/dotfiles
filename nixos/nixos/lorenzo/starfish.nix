@@ -44,6 +44,7 @@
       lg = "lazygit";
       vi = "nvim";
       vim = "nvim";
+      neovim = "nvim";
       # Rebuild shortcut
       nrs = "sudo nixos-rebuild switch --flake $HOME/nixos#$hostname";
       nrt = "sudo nixos-rebuild test --flake $HOME/nixos#$hostname";

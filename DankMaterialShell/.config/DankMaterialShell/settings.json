@@ -32,7 +32,7 @@
   "cornerRadius": 5,
   "niriLayoutGapsOverride": 5,
   "niriLayoutRadiusOverride": 3,
-  "niriLayoutBorderSize": 2,
+  "niriLayoutBorderSize": 1,
   "hyprlandLayoutGapsOverride": -1,
   "hyprlandLayoutGapsOutOverride": -1,
   "hyprlandLayoutRadiusOverride": -1,

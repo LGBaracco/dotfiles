@@ -3,6 +3,25 @@
   lib,
   ...
 }:
+let
+  # Swap this list for another banner, or drop it and use setupOpts.preview
+  # (command + file_path) if you want an image instead.
+  dashboardHeader = [
+    ""
+    "      ⣴⣶⣤⡤⠦⣤⣀⣤⠆     ⣈⣭⣿⣶⣿⣦⣼⣆          "
+    "       ⠉⠻⢿⣿⠿⣿⣿⣶⣦⠤⠄⡠⢾⣿⣿⡿⠋⠉⠉⠻⣿⣿⡛⣦       "
+    "             ⠈⢿⣿⣟⠦ ⣾⣿⣿⣷    ⠻⠿⢿⣿⣧⣄     "
+    "              ⣸⣿⣿⢧ ⢻⠻⣿⣿⣷⣄⣀⠄⠢⣀⡀⠈⠙⠿⠄    "
+    "             ⢠⣿⣿⣿⠈    ⣻⣿⣿⣿⣿⣿⣿⣿⣛⣳⣤⣀⣀   "
+    "      ⢠⣧⣶⣥⡤⢄ ⣸⣿⣿⠘  ⢀⣴⣿⣿⡿⠛⣿⣿⣧⠈⢿⠿⠟⠛⠻⠿⠄  "
+    "     ⣰⣿⣿⠛⠻⣿⣿⡦⢹⣿⣷   ⢊⣿⣿⡏  ⢸⣿⣿⡇ ⢀⣠⣄⣾⠄   "
+    "    ⣠⣿⠿⠛ ⢀⣿⣿⣷⠘⢿⣿⣦⡀ ⢸⢿⣿⣿⣄ ⣸⣿⣿⡇⣪⣿⡿⠿⣿⣷⡄  "
+    "    ⠙⠃   ⣼⣿⡟  ⠈⠻⣿⣿⣦⣌⡇⠻⣿⣿⣷⣿⣿⣿ ⣿⣿⡇ ⠛⠻⢷⣄ "
+    "         ⢻⣿⣿⣄   ⠈⠻⣿⣿⣿⣷⣿⣿⣿⣿⣿⡟ ⠫⢿⣿⡆     "
+    "          ⠻⣿⣿⣿⣿⣶⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⡟⢀⣀⣤⣾⡿⠃     "
+    ""
+  ];
+in
 {
   programs.neovim.enable = true;
 
@@ -62,13 +81,13 @@
           key = "<leader>bk";
           mode = "n";
           # All this to have dashboard when closing all buffers
-          action = "<cmd>bdelete<cr><cmd>lua vim.schedule(function() local b = vim.fn.getbufinfo({buflisted = 1}); if #b == 0 or (#b == 1 and b[1].name == '' and vim.bo[b[1].bufnr].buftype == '') then vim.cmd('Alpha') end end)<cr>";
+          action = "<cmd>bdelete<cr><cmd>lua vim.schedule(function() local b = vim.fn.getbufinfo({buflisted = 1}); if #b == 0 or (#b == 1 and b[1].name == '' and vim.bo[b[1].bufnr].buftype == '') then vim.cmd('Dashboard') end end)<cr>";
           desc = "Kill buffer";
         }
         {
           key = "<leader>bd";
           mode = [ "n" ];
-          action = "<cmd>bdelete<cr><cmd>lua vim.schedule(function() local b = vim.fn.getbufinfo({buflisted = 1}); if #b == 0 or (#b == 1 and b[1].name == '' and vim.bo[b[1].bufnr].buftype == '') then vim.cmd('Alpha') end end)<cr>";
+          action = "<cmd>bdelete<cr><cmd>lua vim.schedule(function() local b = vim.fn.getbufinfo({buflisted = 1}); if #b == 0 or (#b == 1 and b[1].name == '' and vim.bo[b[1].bufnr].buftype == '') then vim.cmd('Dashboard') end end)<cr>";
           desc = "kill buffer";
         }
         {
@@ -150,6 +169,20 @@
           ];
           action = "<cmd>HopWord<cr>";
           desc = "Hop to a word";
+        }
+
+        # --- Files (<leader> f) ---
+        {
+          key = "<leader>fn";
+          mode = "n";
+          action = "<cmd>Neotree toggle reveal<cr>";
+          desc = "Toggle Neo-tree";
+        }
+        {
+          key = "<leader>fo";
+          mode = "n";
+          action = "<cmd>Oil<cr>";
+          desc = "Open oil.nvim";
         }
       ];
 
@@ -347,6 +380,7 @@
             "<leader>w" = "+window";
             "<leader>d" = "+debugger";
             "<leader>l" = "+lsp";
+            "<leader>f" = "+file";
           };
           setupOpts = {
             preset = "helix";
@@ -370,8 +404,55 @@
       };
 
       dashboard = {
-        dashboard-nvim.enable = false;
-        alpha.enable = true;
+        alpha.enable = false;
+        dashboard-nvim = {
+          enable = true;
+          setupOpts = {
+            theme = "doom";
+            hide = {
+              statusline = true;
+              tabline = true;
+              winbar = true;
+            };
+            config = {
+              header = dashboardHeader;
+              vertical_center = true;
+              footer = [ "" ];
+              center = [
+                {
+                  icon = " ";
+                  desc = "Open project           ";
+                  key = "p";
+                  keymap = "SPC f p";
+                  key_format = " %s";
+                  action = "Telescope projects";
+                }
+                {
+                  icon = "󰈞 ";
+                  desc = "Find file              ";
+                  key = "f";
+                  keymap = "SPC f f";
+                  key_format = " %s";
+                  action = "Telescope find_files";
+                }
+                {
+                  icon = " ";
+                  desc = "Recently opened files  ";
+                  key = "r";
+                  key_format = " %s";
+                  action = "Telescope oldfiles";
+                }
+                {
+                  icon = " ";
+                  desc = "New file               ";
+                  key = "e";
+                  key_format = " %s";
+                  action = "enew";
+                }
+              ];
+            };
+          };
+        };
       };
 
       notify = {

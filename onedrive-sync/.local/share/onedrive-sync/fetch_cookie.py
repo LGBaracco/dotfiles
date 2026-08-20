@@ -1,7 +1,9 @@
 #!/bin/python3
 
+import configparser
 import sqlite3
 import subprocess
+from pathlib import Path
 
 # from pycookiecheat import BrowserType, get_cookies # only required for decrypting chromium cookies
 
@@ -16,7 +18,7 @@ import subprocess
 # This script needs to be executed again when the cookies have expired, which is usually every few days.
 # It may need to be run as root, depending on the locations of davfs2.conf and the chosen profile folder of firefox.
 
-# adapt firefox_cookies or chromium_cooies variable below to match the browser's profile path
+# firefox_cookies is resolved automatically from profiles.ini (hashed profile dirs like XXX.default).
 # adapt davfs2_conf and/or rclone_conf variables to the respective path of each file (both can be used simultaneously for testing)
 # adapt the tennant variable to your sharepoint's tennant name
 # the tennant name equals the prefix of the sharepoint url as shown after logging in
@@ -45,13 +47,60 @@ import subprocess
 #
 # more references here: https://github.com/johnbeard/onedrive_davfs_cookie_ext/blob/master/README.md (the AddOn itself didn't work for me)
 
+# Common Firefox profile roots across distros / install methods.
+FIREFOX_PROFILE_ROOTS = (
+    Path.home() / ".mozilla" / "firefox",
+    Path.home() / ".config" / "mozilla" / "firefox",
+    Path.home() / ".var" / "app" / "org.mozilla.firefox" / ".mozilla" / "firefox",
+)
+
+
+def find_firefox_cookies_db() -> str:
+    """Locate cookies.sqlite for the default Firefox profile via profiles.ini."""
+    for root in FIREFOX_PROFILE_ROOTS:
+        profiles_ini = root / "profiles.ini"
+        if not profiles_ini.is_file():
+            continue
+
+        parser = configparser.ConfigParser()
+        parser.read(profiles_ini)
+
+        # Prefer Install* Default= (current Firefox); fall back to Profile* Default=1.
+        profile_path = None
+        for section in parser.sections():
+            if section.startswith("Install") and parser.has_option(section, "Default"):
+                profile_path = parser.get(section, "Default")
+                break
+        if profile_path is None:
+            for section in parser.sections():
+                if section.startswith("Profile") and parser.get(section, "Default", fallback="0") == "1":
+                    profile_path = parser.get(section, "Path")
+                    is_relative = parser.get(section, "IsRelative", fallback="1") == "1"
+                    profile_dir = root / profile_path if is_relative else Path(profile_path)
+                    break
+            else:
+                continue
+        else:
+            # Install* Default is a relative path under the firefox root.
+            profile_dir = root / profile_path
+
+        cookies_db = profile_dir / "cookies.sqlite"
+        if cookies_db.is_file():
+            return str(cookies_db)
+
+    raise FileNotFoundError(
+        "Could not find Firefox cookies.sqlite via profiles.ini. "
+        f"Checked: {', '.join(str(p) for p in FIREFOX_PROFILE_ROOTS)}"
+    )
+
+
 # adapt the following three/four variables to your setup (see notes above):
 
 # davfs2_conf = "/etc/davfs2/davfs2.conf" #(could be also in the local user folder, ~/.davfs2/davfs2.conf)
-rclone_conf = "/home/lorenzo/.config/rclone/rclone.conf"
+rclone_conf = str(Path.home() / ".config" / "rclone" / "rclone.conf")
 
 # chromium_cookies = "/home/lorenzo/.config/vivaldi/Default/Cookies" #define *either* chromium_cookies or firefox_cookies
-firefox_cookies = "/home/lorenzo/.config/mozilla/firefox/0rcj4d3a.default/cookies.sqlite"  # replace user folder and XXX.default with your actual profile folder
+firefox_cookies = find_firefox_cookies_db()
 
 tennant = "itisvolta"  # replace with the actual Microsoft tennant name of your company (see notes above)
 
@@ -85,7 +134,7 @@ else:
 # python3 -m pycookiecheat -b chromium -c ~/.config/microsoft-edge/Default/Cookies -vvv  https://TENNANT-my.sharepoint.com
 
 if "firefox_cookies" in globals():
-    print("Fetching cookies from Firefox database...")
+    print(f"Fetching cookies from Firefox database: {firefox_cookies}")
     uri = "file:" + firefox_cookies + "?immutable=1"
 
     cookies = sqlite3.connect(

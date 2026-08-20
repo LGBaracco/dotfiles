@@ -130,5 +130,8 @@
   # ── misc ──────────────────────────────────────────────────────────────────
   programs.dconf.enable = true; # needed by some gtk apps under kde
   services.gvfs.enable = true; # needed for trash bin and partition mounts with nautilus outside of kde
-  services.flatpak.enable = false;
+  services.flatpak.enable = true;
+  services.flatpak.packages = [
+    "com.jetbrains.PyCharm-Professional"
+  ];
 }

@@ -14,7 +14,6 @@
 
     # --- Editors / Dev ---
     neovide
-    jetbrains.pycharm
 
     # --- Dev tools ---
     stow
@@ -84,5 +83,6 @@
     xwayland-satellite
     fastfetch
     proton-pass
+    rclone
   ];
 }

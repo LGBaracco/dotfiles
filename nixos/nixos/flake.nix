@@ -17,6 +17,9 @@
       url = "github:oxcl/nix-flake-helium-browser";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-flatpak = {
+      url = "github:gmodena/nix-flatpak/?ref=latest";
+    };
   };
 
   outputs =
@@ -27,6 +30,7 @@
       home-manager,
       nvf,
       helium,
+      nix-flatpak,
       ...
     }@inputs:
     let # Scope for all common configurations among flakes
@@ -42,6 +46,7 @@
             { nixpkgs.hostPlatform = "x86_64-linux"; }
             hostPath
             ./modules
+            nix-flatpak.nixosModules.nix-flatpak
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;

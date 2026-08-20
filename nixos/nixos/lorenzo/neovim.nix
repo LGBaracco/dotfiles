@@ -318,6 +318,10 @@
       statusline = {
         lualine = {
           enable = true;
+          integrations.breadcrumbs = {
+            nvim-navic.enable = true;
+            navbuddy.enable = true;
+          };
         };
       };
 
@@ -510,10 +514,6 @@
         colorizer.enable = true;
         modes-nvim.enable = false;
         illuminate.enable = true;
-        breadcrumbs = {
-          enable = true;
-          navbuddy.enable = true;
-        };
         smartcolumn = {
           enable = true;
           setupOpts.custom_colorcolumn = {

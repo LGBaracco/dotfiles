@@ -1,12 +1,28 @@
-#!/bin/bash
-set -e
+#!/usr/bin/env bash
+set -euo pipefail
+
+disrupt=false
+extra_args=()
+for arg in "$@"; do
+  case "$arg" in
+    --disrupt) disrupt=true ;;
+    *) extra_args+=("$arg") ;;
+  esac
+done
+
+if "$disrupt"; then
+  rclone_cmd=sync
+else
+  rclone_cmd=copy
+fi
 
 python3 ~/.local/share/onedrive-sync/fetch_cookie.py
 
-rclone copy "$HOME/OneDrive/" onedrive: \
+rclone "$rclone_cmd" "$HOME/OneDrive/" onedrive: \
   --progress \
   --filter-from ~/.config/rclone/filters.txt \
-  --log-file=/home/lorenzo/Documents/backuplocal/logs.txt \
+  --log-file="$HOME/Documents/backuplocal/logs.txt" \
   --log-level INFO \
   --update \
-  -L
+  -L \
+  "${extra_args[@]}"

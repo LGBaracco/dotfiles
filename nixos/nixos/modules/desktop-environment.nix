@@ -1,4 +1,4 @@
-{ pkgs, inputs, lib, ... }:
+{ pkgs, lib, ... }:
 {
   # ── Display Manager: DMS Greeter ─────────────────────────────────────────────────
   services.displayManager.dms-greeter = {

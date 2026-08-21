@@ -12,6 +12,7 @@
     ./system-packages.nix
     ./desktop-environment.nix
     ./gaming.nix
+    ./home-manager.nix
   ];
 
   # ── nix / flakes ──────────────────────────────────────────────────────────

@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  inputs,
-  ...
-}: {
+{ ... }: {
   # ── Boot ──────────────────────────────────────────────────────────────────
   boot.loader.limine.extraEntries = ''
     /Windows Boot Manager

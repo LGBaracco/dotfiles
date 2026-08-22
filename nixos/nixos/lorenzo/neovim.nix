@@ -4,7 +4,6 @@
   ...
 }:
 {
-  programs.neovim.enable = true;
 
   programs.nvf = {
     enable = true;
@@ -166,12 +165,6 @@
           desc = "Open oil.nvim";
         }
       ];
-
-      debugMode = {
-        enable = false;
-        level = 16;
-        logFile = "/tmp/nvim.log";
-      };
 
       opts = {
         shada.enable = true;
@@ -536,7 +529,7 @@
           cmp.enable = false;
         };
         codecompanion-nvim.enable = false;
-        avante-nvim.enable = false;
+        avante-nvim.enable = true; # TODO actually configure this to work with cursor-agent
       };
 
       session = {

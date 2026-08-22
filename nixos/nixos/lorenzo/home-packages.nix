@@ -14,6 +14,7 @@
 
     # --- Editors / Dev ---
     neovide
+    cursor-cli
 
     # --- Dev tools ---
     stow

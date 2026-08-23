@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  inputs,
   ...
 }:
 {
@@ -13,6 +14,7 @@
     ./desktop-environment.nix
     ./gaming.nix
     ./home-manager.nix
+    inputs.dms-plugin-registry.nixosModules.default
   ];
 
   # ── nix / flakes ──────────────────────────────────────────────────────────
@@ -98,6 +100,9 @@
     ];
     config.niri = {
       "org.freedesktop.impl.portal.filechooser" = [ "gnome" ];
+    };
+    config.mango = {
+      "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
     };
     config.common.default = "*";
   };

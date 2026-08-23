@@ -9,11 +9,9 @@
     enable = true;
 
     settings.vim = {
-      # Set Space as the leader key
       globals.mapleader = " ";
       globals.maplocalleader = ",";
 
-      # User-defined keymaps overwrite nvf defaults, preventing conflicts
       keymaps = [
         # --- Global ---
         {
@@ -523,13 +521,24 @@
       };
 
       assistant = {
-        chatgpt.enable = false;
-        copilot = {
-          enable = false;
-          cmp.enable = false;
+        avante-nvim = {
+          enable = true;
+          setupOpts = {
+            provider = "cursor";
+            mode = "agentic";
+            acp_providers = {
+              cursor = {
+                command = lib.getExe pkgs.cursor-cli;
+                args = [ "acp" ];
+                auth_method = "cursor_login";
+                env = {
+                  HOME = lib.generators.mkLuaInline "os.getenv('HOME')";
+                  PATH = lib.generators.mkLuaInline "os.getenv('PATH')";
+                };
+              };
+            };
+          };
         };
-        codecompanion-nvim.enable = false;
-        avante-nvim.enable = true; # TODO actually configure this to work with cursor-agent
       };
 
       session = {

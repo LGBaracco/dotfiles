@@ -408,7 +408,7 @@
   "terminalsAlwaysDark": false,
   "muxType": "zellij",
   "muxUseCustomCommand": false,
-  "muxCustomCommand": "",
+  "muxCustomCommand": "zellij",
   "muxSessionFilter": "",
   "runDmsMatugenTemplates": true,
   "matugenTemplateGtk": true,
@@ -583,7 +583,7 @@
   "hyprlandOutputSettings": {},
   "displayProfiles": {},
   "activeDisplayProfile": {
-    "niri": "profile_1784283398101_lkyihfp"
+    "niri": ""
   },
   "displayProfileAutoSelect": false,
   "displayShowDisconnected": true,
@@ -627,6 +627,10 @@
       ],
       "centerWidgets": [
         {
+          "id": "focusedWindow",
+          "enabled": true
+        },
+        {
           "id": "music",
           "enabled": true
         },
@@ -652,10 +656,6 @@
         }
       ],
       "rightWidgets": [
-        {
-          "id": "focusedWindow",
-          "enabled": true
-        },
         {
           "id": "systemTray",
           "enabled": true

@@ -11,6 +11,7 @@
     nautilus
     ghostty
     foot
+    proton-pass
 
     # --- Editors / Dev ---
     neovide
@@ -73,9 +74,6 @@
     # --- Gaming ---
     heroic
 
-    # --- Fonts / theming ---
-    #papirus-icon-theme
-
     # --- Misc ---
     libsForQt5.qt5ct
     qt6Packages.qt6ct
@@ -83,7 +81,6 @@
     playerctl
     xwayland-satellite
     fastfetch
-    proton-pass
     rclone
   ];
 }

@@ -11,25 +11,14 @@
     configHome = "/home/lorenzo"; # copies that user's DMS settings (and wallpaper) into the greeter data directory before greetd starts
     compositor.name = "niri"; # greeter UI compositor only; sessions come from wayland-sessions (niri, mango, plasma, …)
   };
-  # Check whether monitor settings create trouble on laptop
+  #
   environment.etc."greetd/niri_overrides.kdl".text = ''
-      input {
-        keyboard {
-          numlock
-        }
+    input {
+      keyboard {
+        numlock
       }
-
-      output "DVI-D-1" {
-        position x=3840 y=0
-      }
-      output "DP-2" {
-        position x=1920 y=0
-        focus-at-startup
-      }
-      output "HDMI-A-4" {
-        position x=0 y=0
-      }
-    '';
+    }
+  '';
   # All DEs try to enforce their own session as default, override to fix
   services.displayManager.defaultSession = lib.mkForce "niri";
 

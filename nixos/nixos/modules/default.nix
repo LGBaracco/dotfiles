@@ -86,7 +86,7 @@
 
   # ── secrets / keyring ─────────────────────────────────────────────────────
   services.gnome.gnome-keyring.enable = true;
-  security.pam.services.sddm.enableGnomeKeyring = true;
+  security.pam.services.greetd.enableGnomeKeyring = true;
 
   security.polkit.enablePkexecWrapper = true;
 
@@ -102,7 +102,7 @@
       "org.freedesktop.impl.portal.filechooser" = [ "gnome" ];
     };
     config.mango = {
-      "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
+      "org.freedesktop.impl.portal.FileChooser" = [ "gnome" ];
     };
     config.common.default = "*";
   };
@@ -136,8 +136,4 @@
   # ── misc ──────────────────────────────────────────────────────────────────
   programs.dconf.enable = true; # needed by some gtk apps under kde
   services.gvfs.enable = true; # needed for trash bin and partition mounts with nautilus outside of kde
-  services.flatpak.enable = true;
-  services.flatpak.packages = [
-    "com.jetbrains.PyCharm-Professional"
-  ];
 }

@@ -25,4 +25,9 @@
 
   programs.partition-manager.enable = true;
 
+  services.flatpak.enable = true;
+  services.flatpak.packages = [
+    "com.jetbrains.PyCharm-Community"
+  ];
+
 }

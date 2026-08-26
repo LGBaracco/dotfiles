@@ -30,26 +30,26 @@
       "rd.udev.log_level=3"
       "rd.systemd.show_status=auto"
     ];
-
-    # Enable numlock early on boot
-    initrd.systemd = {
-      storePaths = [
-        "${pkgs.kbd}/bin/setleds"
-      ];
-      services.numlockon = {
-        description = "Enable NumLock at startup";
-        wantedBy = [ "initrd.target" ];
-        before = [ "initrd-root-device.target" ];
-        unitConfig = {
-          DefaultDependencies = false;
-        };
-        serviceConfig = {
-          Type = "oneshot";
-          ExecStart = "${pkgs.kbd}/bin/setleds -D +num";
-          StandardInput = "tty";
-          TTYPath = "/dev/tty0";
-        };
-      };
-    };
+    # TODO maybe delete altogether
+    # # Enable numlock early on boot
+    # initrd.systemd = {
+    #   storePaths = [
+    #     "${pkgs.kbd}/bin/setleds"
+    #   ];
+    #   services.numlockon = {
+    #     description = "Enable NumLock at startup";
+    #     wantedBy = [ "initrd.target" ];
+    #     before = [ "initrd-root-device.target" ];
+    #     unitConfig = {
+    #       DefaultDependencies = false;
+    #     };
+    #     serviceConfig = {
+    #       Type = "oneshot";
+    #       ExecStart = "${pkgs.kbd}/bin/setleds -D +num";
+    #       StandardInput = "tty";
+    #       TTYPath = "/dev/tty0";
+    #     };
+    #   };
+    # };
   };
 }

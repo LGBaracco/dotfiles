@@ -1,5 +1,8 @@
 { ... }:
 
 {
-  imports = [./boot.nix];
+  imports = [
+    ./boot.nix
+    ./kernel-variants.nix
+  ];
 }

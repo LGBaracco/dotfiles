@@ -46,6 +46,7 @@
       vim = "nvim";
       neovim = "nvim";
       # Rebuild shortcut
+      nfu = "nix flake update --commit-lock-file";
       nrs = "sudo nixos-rebuild switch --flake $HOME/nixos#$hostname";
       nrt = "sudo nixos-rebuild test --flake $HOME/nixos#$hostname";
     };

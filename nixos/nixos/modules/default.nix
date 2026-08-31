@@ -102,6 +102,7 @@
     ];
     config.niri = {
       "org.freedesktop.impl.portal.filechooser" = [ "gnome" ];
+      "org.freedesktop.impl.portal.Settings" = [ "gtk" ];
     };
     config.mango = {
       "org.freedesktop.impl.portal.FileChooser" = [ "gnome" ];

@@ -12,8 +12,8 @@ environment {
 }
 
 cursor {
-  xcursor-theme "capitaine-cursors"
-  xcursor-size 30
+  xcursor-theme "breeze_cursors"
+  xcursor-size 24
 }
 
 debug {

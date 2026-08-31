@@ -5,6 +5,8 @@
     ./starfish.nix
     ./neovim.nix
     ./chromium.nix
+    ./theming
+    ./vscode.nix
   ];
 
   # Let Home Manager manage itself
@@ -52,21 +54,5 @@
   #   binds = with config.lib.niri.actions; {
   #     "Mod+Q".action      = close-window;
   #   };
-  # };
-  # # ── GTK theming ───────────────────────────────────────────────────────────
-  # gtk = {
-  #    enable = true;
-  #   iconTheme = {
-  #     name    = "Papirus-Dark";
-  #     package = pkgs.papirus-icon-theme;
-  #   };
-  # };
-
-  # ── Cursor ────────────────────────────────────────────────────────────────
-  # home.pointerCursor = {
-  #   gtk.enable  = true;
-  #   name        = "Catppuccin-Mocha-Dark-Cursors";
-  #   package     = pkgs.catppuccin-cursors.mochaDark;
-  #   size        = 24;
   # };
 }

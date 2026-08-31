@@ -6,7 +6,6 @@
     ./neovim.nix
     ./chromium.nix
     ./theming
-    ./vscode.nix
   ];
 
   # Let Home Manager manage itself

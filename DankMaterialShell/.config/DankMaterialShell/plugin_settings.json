@@ -16,5 +16,12 @@
   },
   "nixPackageRunner": {
     "enabled": true
+  },
+  "dgpuStatus": {
+    "enabled": false,
+    "refreshInterval": 10
+  },
+  "tabsLauncher": {
+    "enabled": true
   }
 }

@@ -39,7 +39,6 @@
   # GBM_BACKEND = "nvidia-drm";
   # __GLX_VENDOR_LIBRARY_NAME = "nvidia";
   # WLR_NO_HARDWARE_CURSORS = "1"; # fixes cursor rendering on NVIDIA+Wayland
-  #LD_LIBRARY_PATH = "${stdenv.cc.cc.lib}/lib/:/run/opengl-driver/lib/";
   #};
 
   # ── niri config ───────────────────────────────────────────────────────────

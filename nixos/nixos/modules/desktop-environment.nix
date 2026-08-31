@@ -1,7 +1,6 @@
 {
   pkgs,
   lib,
-  config,
   ...
 }:
 {
@@ -11,7 +10,7 @@
     configHome = "/home/lorenzo"; # copies that user's DMS settings (and wallpaper) into the greeter data directory before greetd starts
     compositor.name = "niri"; # greeter UI compositor only; sessions come from wayland-sessions (niri, mango, plasma, …)
   };
-  #
+
   environment.etc."greetd/niri_overrides.kdl".text = ''
     input {
       keyboard {
@@ -37,8 +36,7 @@
   programs.mango = {
     enable = true;
   };
-
-  # systemd target started from mango autostart (stow: mango/cfg/autostart.conf)
+  # systemd target started from mango autostart
   systemd.user.targets.mango-session = {
     description = "Mango compositor session";
     unitConfig = {
@@ -60,29 +58,12 @@
     plugins = {
       calculator.enable = true;
       nixPackageRunner.enable = true;
-      # Lenovo conservation-mode widget — laptop host only
-      dmsLenovoBatterySettings.enable = config.networking.hostName == "nixlaptop";
+      tabsLauncher.enable = true;
     };
+    enableCalendarEvents = true;
   };
 
   # Also start DMS when logging into mango
   systemd.user.services.dms.wantedBy = [ "mango-session.target" ];
-
-  # nixPackageRunner plugin deps (jq is already in home packages)
-  environment.systemPackages = with pkgs; [
-    wl-clipboard
-  ];
-
-  # Old SDDM setup
-  # services.displayManager.sddm = {
-  #   enable = true;
-  #   wayland.enable = false;
-  #   autoNumlock = true;
-  # };
-  # programs.silentSDDM = {
-  #   enable = true;
-  #   theme = "default";
-  #   # settings = { ... }; see example in module
-  # };
 
 }

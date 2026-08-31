@@ -264,8 +264,8 @@
   "browserPickerViewMode": "grid",
   "browserUsageHistory": {
     "brave-browser": {
-      "count": 3,
-      "lastUsed": 1786966873581,
+      "count": 4,
+      "lastUsed": 1788174439910,
       "name": "Brave Web Browser"
     }
   },
@@ -617,7 +617,7 @@
         {
           "id": "memUsage",
           "enabled": true,
-          "minimumWidth": false,
+          "minimumWidth": true,
           "showSwap": true
         },
         {
@@ -628,7 +628,8 @@
       "centerWidgets": [
         {
           "id": "focusedWindow",
-          "enabled": true
+          "enabled": true,
+          "focusedWindowSize": 0
         },
         {
           "id": "music",
@@ -640,7 +641,8 @@
         },
         {
           "id": "clock",
-          "enabled": true
+          "enabled": true,
+          "clockCompactMode": false
         },
         {
           "id": "runningApps",
@@ -648,7 +650,7 @@
           "runningAppsCompactMode": true,
           "runningAppsGroupByApp": true,
           "runningAppsCurrentWorkspace": true,
-          "runningAppsCurrentMonitor": false
+          "runningAppsCurrentMonitor": true
         },
         {
           "id": "workspaceSwitcher",

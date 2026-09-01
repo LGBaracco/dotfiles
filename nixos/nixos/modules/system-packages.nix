@@ -21,6 +21,7 @@
     gcc
     texliveMedium # For emacs' org mode
     wl-clipboard
+    system-config-printer
 
   ];
 

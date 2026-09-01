@@ -2,6 +2,7 @@
   home.packages = with pkgs; [
     # --- Browsers ---
     firefox-bin
+    tabctl
 
     # --- Desktop apps ---
     spotify-player

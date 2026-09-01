@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, inputs, ... }: {
   imports = [
     ./git.nix
     ./home-packages.nix
@@ -6,6 +6,7 @@
     ./neovim
     ./chromium.nix
     ./theming
+    ./dcal.nix
   ];
 
   # Let Home Manager manage itself

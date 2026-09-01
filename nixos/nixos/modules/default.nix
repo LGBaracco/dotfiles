@@ -80,6 +80,7 @@
       "video"
       "audio"
       "greeter"
+      "lp"
     ];
     shell = pkgs.fish;
   };
@@ -135,6 +136,13 @@
   };
 
   hardware.bluetooth.enable = true;
+
+  # ── printing ──────────────────────────────────────────────────────────────
+  services.printing.enable = true;
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+  };
 
   # ── misc ──────────────────────────────────────────────────────────────────
   programs.dconf.enable = true; # needed by some gtk apps under kde

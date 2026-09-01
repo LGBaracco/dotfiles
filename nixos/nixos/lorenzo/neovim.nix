@@ -321,6 +321,41 @@
         name = "oxocarbon";
         style = "dark";
         transparent = false;
+        extraConfig = ''
+          local function set_dashboard_hl()
+            local links = {
+              DashboardHeader = "Function",
+              DashboardHeaderArt = "Constant",
+              DashboardKey = "Special",
+              DashboardDesc = "Comment",
+              DashboardIcon = "String",
+              DashboardFooter = "Comment",
+            }
+            for group, link in pairs(links) do
+              vim.api.nvim_set_hl(0, group, { link = link })
+            end
+          end
+
+          set_dashboard_hl()
+          vim.api.nvim_create_autocmd("ColorScheme", { callback = set_dashboard_hl })
+
+          vim.api.nvim_create_autocmd("FileType", {
+            pattern = "dashboard",
+            callback = function(args)
+              vim.schedule(function()
+                local buf = args.buf
+                for i = 0, vim.api.nvim_buf_line_count(buf) - 1 do
+                  local line = vim.api.nvim_buf_get_lines(buf, i, i + 1, false)[1]
+                  if line:find("⠀", 1, true) then
+                    vim.api.nvim_buf_add_highlight(buf, 0, "DashboardHeaderArt", i, 0, -1)
+                  elseif line:match("[█╗║╚═╔╝]") then
+                    vim.api.nvim_buf_add_highlight(buf, 0, "DashboardHeader", i, 0, -1)
+                  end
+                end
+              end)
+            end,
+          })
+        '';
       };
 
       autopairs.nvim-autopairs.enable = true;
@@ -393,6 +428,13 @@
             config = {
               header = [
                 ""
+                "██╗ █████╗ ███████╗██╗   ██╗██╗███╗   ███╗"
+                "██║██╔══██╗╚══███╔╝██║   ██║██║████╗ ████║"
+                "██║███████║  ███╔╝ ██║   ██║██║██╔████╔██║"
+                "██║██╔══██║ ███╔╝  ╚██╗ ██╔╝██║██║╚██╔╝██║"
+                "██║██║  ██║███████╗ ╚████╔╝ ██║██║ ╚═╝ ██║"
+                "╚═╝╚═╝  ╚═╝╚══════╝  ╚═══╝  ╚═╝╚═╝     ╚═╝"
+                ""
                 "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⣶⣶⠿⠿⠿⣶⣦⣀⠀⠀⠀"
                 "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⡾⠛⠉⠀⠀⠀⠀⠀⠀⠉⠻⣧⡀⠀"
                 "⢠⣄⣀⣀⣀⣀⣀⣀⣀⣴⠋⠀⠀⠀⠀⠀⣴⣆⠀⠀⠀⠀⠘⣿⡀"
@@ -411,31 +453,43 @@
               center = [
                 {
                   icon = " ";
+                  icon_hl = "String";
                   desc = "Open project           ";
+                  desc_hl = "Comment";
                   key = "p";
+                  key_hl = "Special";
                   keymap = "SPC f";
                   key_format = " %s";
                   action = "Telescope projects";
                 }
                 {
                   icon = "󰈞 ";
+                  icon_hl = "String";
                   desc = "Find file              ";
+                  desc_hl = "Comment";
                   key = "f";
+                  key_hl = "Special";
                   keymap = "SPC f";
                   key_format = " %s";
                   action = "Telescope find_files";
                 }
                 {
                   icon = " ";
+                  icon_hl = "String";
                   desc = "Recently opened files  ";
+                  desc_hl = "Comment";
                   key = "r";
+                  key_hl = "Special";
                   key_format = " %s";
                   action = "Telescope oldfiles";
                 }
                 {
                   icon = " ";
+                  icon_hl = "String";
                   desc = "New file               ";
+                  desc_hl = "Comment";
                   key = "e";
+                  key_hl = "Special";
                   key_format = " %s";
                   action = "enew";
                 }

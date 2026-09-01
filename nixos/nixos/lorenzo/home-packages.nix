@@ -82,6 +82,9 @@
     playerctl
     xwayland-satellite
     fastfetch
+    mu
+    offlineimap
+    imagemagick
     rclone
   ];
 }

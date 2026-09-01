@@ -168,6 +168,16 @@
       "id": "doNotDisturb",
       "enabled": true,
       "width": 50
+    },
+    {
+      "id": "battery",
+      "enabled": true,
+      "width": 50
+    },
+    {
+      "id": "plugin_dmsLenovoBatterySettings",
+      "enabled": true,
+      "width": 50
     }
   ],
   "showWorkspaceIndex": true,

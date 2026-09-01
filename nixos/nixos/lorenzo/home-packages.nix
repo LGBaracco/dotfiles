@@ -92,7 +92,7 @@
     # --- Misc ---
     texliveMedium # emacs org/latex export
     mu
-    offlineimap
+    isync
     imagemagick
     wl-clipboard
     libsForQt5.qt5ct

@@ -15,7 +15,10 @@
   programs.emacs = {
     enable = true;
     package = pkgs.emacs-pgtk; # emacs30-pgtk
-    extraPackages = epkgs: [ epkgs.vterm ];
+    extraPackages = epkgs: [
+      epkgs.vterm
+      epkgs.mu4e
+    ];
   };
 
   programs.ghostty = {
@@ -32,27 +35,7 @@
   ];
 
   # ── Environment variables ─────────────────────────────────────────────────
-  # These are either magical or already set in niri config
   #home.sessionVariables = {
-  # NIXOS_OZONE_WL = "1"; # forces Electron/CEF apps to use Wayland
-  # MOZ_ENABLE_WAYLAND = "1";
-  # #SDL_VIDEODRIVER = "wayland";
-  # # NVIDIA-specific Wayland env vars
-  # GBM_BACKEND = "nvidia-drm";
-  # __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-  # WLR_NO_HARDWARE_CURSORS = "1"; # fixes cursor rendering on NVIDIA+Wayland
   #};
 
-  # ── niri config ───────────────────────────────────────────────────────────
-  # niri-flake exposes a home-manager module for niri's config.kdl
-  # Uncomment and extend once you've imported niri-flake's HM module:
-  #
-  # programs.niri.settings = {
-  #   outputs."eDP-1" = {
-  #     scale = 1.0;
-  #   };
-  #   binds = with config.lib.niri.actions; {
-  #     "Mod+Q".action      = close-window;
-  #   };
-  # };
 }

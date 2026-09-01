@@ -323,17 +323,12 @@
         transparent = false;
         extraConfig = ''
           local function set_dashboard_hl()
-            local links = {
-              DashboardHeader = "Function",
-              DashboardHeaderArt = "Constant",
-              DashboardKey = "Special",
-              DashboardDesc = "Comment",
-              DashboardIcon = "String",
-              DashboardFooter = "Comment",
-            }
-            for group, link in pairs(links) do
-              vim.api.nvim_set_hl(0, group, { link = link })
-            end
+            vim.api.nvim_set_hl(0, "DashboardHeader", { fg = "#4589ff", bg = "NONE" })
+            vim.api.nvim_set_hl(0, "DashboardHeaderArt", { fg = "#4589ff", bg = "NONE" })
+            vim.api.nvim_set_hl(0, "DashboardKey", { fg = "#be95ff", bg = "NONE" })
+            vim.api.nvim_set_hl(0, "DashboardIcon", { fg = "#42be65", bg = "NONE" })
+            vim.api.nvim_set_hl(0, "DashboardDesc", { fg = "#f2f4f8", bg = "NONE" })
+            vim.api.nvim_set_hl(0, "DashboardFooter", { fg = "#878d96", bg = "NONE" })
           end
 
           set_dashboard_hl()
@@ -428,12 +423,15 @@
             config = {
               header = [
                 ""
-                "██╗ █████╗ ███████╗██╗   ██╗██╗███╗   ███╗"
-                "██║██╔══██╗╚══███╔╝██║   ██║██║████╗ ████║"
-                "██║███████║  ███╔╝ ██║   ██║██║██╔████╔██║"
-                "██║██╔══██║ ███╔╝  ╚██╗ ██╔╝██║██║╚██╔╝██║"
-                "██║██║  ██║███████╗ ╚████╔╝ ██║██║ ╚═╝ ██║"
-                "╚═╝╚═╝  ╚═╝╚══════╝  ╚═══╝  ╚═╝╚═╝     ╚═╝"
+                "███▄▄▄▄      ▄████████  ▄██████▄   ▄█    █▄   ▄█    ▄▄▄▄███▄▄▄▄  "
+                "███▀▀▀██▄   ███    ███ ███    ███ ███    ███ ███  ▄██▀▀▀███▀▀▀██▄ "
+                "███   ███   ███    █▀  ███    ███ ███    ███ ███▌ ███   ███   ███ "
+                "███   ███  ▄███▄▄▄     ███    ███ ███    ███ ███▌ ███   ███   ███ "
+                "███   ███ ▀▀███▀▀▀     ███    ███ ███    ███ ███▌ ███   ███   ███ "
+                "███   ███   ███    █▄  ███    ███ ███    ███ ███  ███   ███   ███ "
+                "███   ███   ███    ███ ███    ███ ███    ███ ███  ███   ███   ███ "
+                " ▀█   █▀    ██████████  ▀██████▀   ▀██████▀  █▀    ▀█   ███   █▀  "
+
                 ""
                 "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⣶⣶⠿⠿⠿⣶⣦⣀⠀⠀⠀"
                 "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⡾⠛⠉⠀⠀⠀⠀⠀⠀⠉⠻⣧⡀⠀"
@@ -453,43 +451,43 @@
               center = [
                 {
                   icon = " ";
-                  icon_hl = "String";
+                  icon_hl = "DashboardIcon";
                   desc = "Open project           ";
-                  desc_hl = "Comment";
+                  desc_hl = "DashboardDesc";
                   key = "p";
-                  key_hl = "Special";
-                  keymap = "SPC f";
+                  key_hl = "DashboardKey";
+                  #keymap = "SPC f";
                   key_format = " %s";
                   action = "Telescope projects";
                 }
                 {
                   icon = "󰈞 ";
-                  icon_hl = "String";
+                  icon_hl = "DashboardIcon";
                   desc = "Find file              ";
-                  desc_hl = "Comment";
+                  desc_hl = "DashboardDesc";
                   key = "f";
-                  key_hl = "Special";
-                  keymap = "SPC f";
+                  key_hl = "DashboardKey";
+                  # keymap = "SPC f";
                   key_format = " %s";
                   action = "Telescope find_files";
                 }
                 {
                   icon = " ";
-                  icon_hl = "String";
+                  icon_hl = "DashboardIcon";
                   desc = "Recently opened files  ";
-                  desc_hl = "Comment";
+                  desc_hl = "DashboardDesc";
                   key = "r";
-                  key_hl = "Special";
+                  key_hl = "DashboardKey";
                   key_format = " %s";
                   action = "Telescope oldfiles";
                 }
                 {
                   icon = " ";
-                  icon_hl = "String";
+                  icon_hl = "DashboardIcon";
                   desc = "New file               ";
-                  desc_hl = "Comment";
+                  desc_hl = "DashboardDesc";
                   key = "e";
-                  key_hl = "Special";
+                  key_hl = "DashboardKey";
                   key_format = " %s";
                   action = "enew";
                 }
@@ -548,7 +546,6 @@
       terminal = {
         toggleterm = {
           enable = true;
-          #mappings.open = "<leader>ot";
           lazygit.enable = true;
         };
       };

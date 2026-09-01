@@ -2,37 +2,49 @@
   home.packages = with pkgs; [
     # --- Browsers ---
     firefox-bin
-    tabctl
 
     # --- Desktop apps ---
     spotify-player
     mpv
-    imv
+    system-config-printer
     gparted
     kdePackages.partitionmanager
     nautilus
-    ghostty
-    foot
     proton-pass
 
-    # --- Editors / Dev ---
+    # --- terminals ---
+    ghostty
+    foot
+    zellij
+
+    # --- Editors ---
     neovide
     cursor-cli
 
-    # --- Dev tools ---
+    # --- Cli tools ---
     stow
-    fd
-    ripgrep
-    fzf
-    bat
-    eza # modern ls
+    imv
+    eza # ls
     zoxide # smarter cd
-    jq
+    bat
     yq
-    lazygit
+    jq
     gnumake
-    coreutils
-    zellij
+    fastfetch
+    rclone
+
+    # --- Fuzzy finders ---
+    fzf
+    ripgrep
+    fd
+
+    # --- TUI ---
+    lazygit
+    alsa-utils
+    nvtopPackages.full
+    htop
+    btop
+    dgop
 
     # --- Nix tooling ---
     nix-output-monitor # prettier `nix build` output
@@ -61,6 +73,7 @@
     # --- C/C++ ---
     clang
     cmake
+    coreutils
 
     # --- Rust ---
     cargo
@@ -77,23 +90,16 @@
     heroic
 
     # --- Misc ---
-    alsa-utils
-    nvtopPackages.full
-    htop
-    btop
-    dgop
     texliveMedium # emacs org/latex export
+    mu
+    offlineimap
+    imagemagick
     wl-clipboard
-    system-config-printer
     libsForQt5.qt5ct
     qt6Packages.qt6ct
     brightnessctl
     playerctl
+    tabctl
     xwayland-satellite
-    fastfetch
-    mu
-    offlineimap
-    imagemagick
-    rclone
   ];
 }

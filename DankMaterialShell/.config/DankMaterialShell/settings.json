@@ -446,7 +446,7 @@
   },
   "matugenTemplateNeovimSetBackground": true,
   "showDock": true,
-  "dockAutoHide": false,
+  "dockAutoHide": true,
   "dockSmartAutoHide": false,
   "dockUseOverlayLayer": false,
   "dockGroupByApp": false,

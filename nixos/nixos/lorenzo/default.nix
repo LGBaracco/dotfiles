@@ -3,7 +3,7 @@
     ./git.nix
     ./home-packages.nix
     ./starfish.nix
-    ./neovim.nix
+    ./neovim
     ./chromium.nix
     ./theming
   ];

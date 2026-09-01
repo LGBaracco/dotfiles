@@ -6,26 +6,17 @@
 {
   # ── System-wide packages ───────────────────────────────────────────────────
   environment.systemPackages = with pkgs; [
-    git
     curl
     wget
     coreutils
     pciutils # lspci — useful for GPU debugging
     usbutils
-    alsa-utils
-    nvtopPackages.full # GPU monitor
-    htop
-    btop
-    dgop
     efibootmgr
     gcc
-    texliveMedium # For emacs' org mode
-    wl-clipboard
-    system-config-printer
-
   ];
 
-  programs.partition-manager.enable = true;
+  # kpmcore dbus/polkit backend for KDE Partition Manager (GUI in home.packages)
+  services.dbus.packages = [ pkgs.kdePackages.partitionmanager.kpmcore ];
 
   services.flatpak.enable = true;
   services.flatpak.packages = [

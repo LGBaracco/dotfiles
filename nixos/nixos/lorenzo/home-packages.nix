@@ -9,6 +9,7 @@
     mpv
     imv
     gparted
+    kdePackages.partitionmanager
     nautilus
     ghostty
     foot
@@ -76,6 +77,14 @@
     heroic
 
     # --- Misc ---
+    alsa-utils
+    nvtopPackages.full
+    htop
+    btop
+    dgop
+    texliveMedium # emacs org/latex export
+    wl-clipboard
+    system-config-printer
     libsForQt5.qt5ct
     qt6Packages.qt6ct
     brightnessctl

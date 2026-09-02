@@ -15,11 +15,19 @@
     # --- terminals ---
     ghostty
     foot
-    zellij
+    tmux
 
     # --- Editors ---
     neovide
     cursor-cli
+
+    # --- TUI ---
+    lazygit
+    alsa-utils
+    nvtopPackages.full
+    htop
+    btop
+    dgop
 
     # --- Cli tools ---
     stow
@@ -37,14 +45,6 @@
     fzf
     ripgrep
     fd
-
-    # --- TUI ---
-    lazygit
-    alsa-utils
-    nvtopPackages.full
-    htop
-    btop
-    dgop
 
     # --- Nix tooling ---
     nix-output-monitor # prettier `nix build` output
@@ -91,8 +91,6 @@
 
     # --- Misc ---
     texliveMedium # emacs org/latex export
-    mu
-    isync
     imagemagick
     wl-clipboard
     libsForQt5.qt5ct

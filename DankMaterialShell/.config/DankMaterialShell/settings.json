@@ -3,7 +3,7 @@
   "currentThemeCategory": "registry",
   "customThemeFile": "/home/lorenzo/.config/DankMaterialShell/themes/myoxocarbon/theme.json",
   "registryThemeVariants": {
-    "oxocarbon": "Purple",
+    "oxocarbon": "blue",
     "deepdark": {
       "dark": {
         "flavor": "voltage",
@@ -61,7 +61,7 @@
   "modalCustomAnimationDuration": 150,
   "enableRippleEffects": false,
   "animationVariant": 0,
-  "motionEffect": 0,
+  "motionEffect": 1,
   "m3ElevationEnabled": true,
   "m3ElevationIntensity": 12,
   "m3ElevationOpacity": 30,
@@ -160,22 +160,22 @@
       "width": 50
     },
     {
-      "id": "idleInhibitor",
-      "enabled": true,
-      "width": 50
-    },
-    {
-      "id": "doNotDisturb",
-      "enabled": true,
-      "width": 50
-    },
-    {
       "id": "battery",
       "enabled": true,
       "width": 50
     },
     {
       "id": "plugin_dmsLenovoBatterySettings",
+      "enabled": true,
+      "width": 50
+    },
+    {
+      "id": "idleInhibitor",
+      "enabled": true,
+      "width": 50
+    },
+    {
+      "id": "doNotDisturb",
       "enabled": true,
       "width": 50
     }

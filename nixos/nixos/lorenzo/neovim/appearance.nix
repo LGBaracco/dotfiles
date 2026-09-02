@@ -91,7 +91,7 @@
             ""
             "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⣶⣶⠿⠿⠿⣶⣦⣀⠀⠀⠀"
             "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⡾⠛⠉⠀⠀⠀⠀⠀⠀⠉⠻⣧⡀⠀"
-            "⢠⣄⣀⣀⣀⣀⣀⣀⣴⠋⠀⠀⠀⠀⠀⣴⣆⠀⠀⠀⠀⠘⣿⡀"
+            " ⢠⣄⣀⣀⣀⣀⣀⣀⣴⠋⠀⠀⠀⠀⠀⣴⣆⠀⠀⠀⠀⠘⣿⡀"
             "⠀⠙⠻⣿⣟⠛⠛⠛⠋⠁⠀⠀⠀⠀⠀⠘⠿⠋⠀⠀⠀⠀⠀⣿⡇"
             "⠀⠀⠀⠀⠙⢷⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⡇"
             "⠀⠀⠀⠀⠀⠀⠘⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣽⠃"
@@ -122,7 +122,7 @@
             {
               icon = " ";
               icon_hl = "DashboardIcon";
-              desc = "Open project           ";
+              desc = "Open project                           ";
               desc_hl = "DashboardDesc";
               key = "p";
               key_hl = "DashboardKey";
@@ -132,7 +132,7 @@
             {
               icon = "󰈞 ";
               icon_hl = "DashboardIcon";
-              desc = "Find file              ";
+              desc = "Find file                              ";
               desc_hl = "DashboardDesc";
               key = "f";
               key_hl = "DashboardKey";
@@ -142,7 +142,7 @@
             {
               icon = " ";
               icon_hl = "DashboardIcon";
-              desc = "Recently opened files  ";
+              desc = "Recently opened files                  ";
               desc_hl = "DashboardDesc";
               key = "r";
               key_hl = "DashboardKey";
@@ -152,7 +152,7 @@
             {
               icon = " ";
               icon_hl = "DashboardIcon";
-              desc = "New file               ";
+              desc = "New file                               ";
               desc_hl = "DashboardDesc";
               key = "e";
               key_hl = "DashboardKey";

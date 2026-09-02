@@ -15,10 +15,7 @@
   programs.emacs = {
     enable = true;
     package = pkgs.emacs-pgtk; # emacs30-pgtk
-    extraPackages = epkgs: [
-      epkgs.vterm
-      epkgs.mu4e
-    ];
+    extraPackages = epkgs: [ epkgs.vterm ];
   };
 
   programs.ghostty = {

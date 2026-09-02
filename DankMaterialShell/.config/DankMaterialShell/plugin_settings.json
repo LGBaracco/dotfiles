@@ -15,13 +15,15 @@
     "trigger": "="
   },
   "nixPackageRunner": {
-    "enabled": true
+    "enabled": true,
+    "terminal": "ghostty"
   },
   "dgpuStatus": {
     "enabled": false,
     "refreshInterval": 10
   },
   "tabsLauncher": {
-    "enabled": true
+    "enabled": true,
+    "trigger": "."
   }
 }

@@ -32,20 +32,6 @@
     enable = true;
   };
 
-  # ── mango (mangowc) — selectable alongside niri in the DMS greeter
-  programs.mango = {
-    enable = true;
-  };
-  # systemd target started from mango autostart
-  systemd.user.targets.mango-session = {
-    description = "Mango compositor session";
-    unitConfig = {
-      BindsTo = [ "graphical-session.target" ];
-      Wants = [ "graphical-session-pre.target" ];
-      After = [ "graphical-session-pre.target" ];
-    };
-  };
-
   # DMS shell
   programs.dms-shell = {
     enable = true;
@@ -59,10 +45,24 @@
       calculator.enable = true;
       nixPackageRunner.enable = true;
       tabsLauncher.enable = true;
+      dmsSessionizer.enable = true;
     };
     enableCalendarEvents = true;
   };
 
+  # ── mango (mangowc) — selectable alongside niri in the DMS greeter
+  programs.mango = {
+    enable = true;
+  };
+  # systemd target started from mango autostart
+  systemd.user.targets.mango-session = {
+    description = "Mango compositor session";
+    unitConfig = {
+      BindsTo = [ "graphical-session.target" ];
+      Wants = [ "graphical-session-pre.target" ];
+      After = [ "graphical-session-pre.target" ];
+    };
+  };
   # Also start DMS when logging into mango
   systemd.user.services.dms.wantedBy = [ "mango-session.target" ];
 

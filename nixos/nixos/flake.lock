@@ -141,11 +141,11 @@
         ]
       },
       "locked": {
-        "path": "../../neovim",
+        "path": "../../neovim/.config/nvim",
         "type": "path"
       },
       "original": {
-        "path": "../../neovim",
+        "path": "../../neovim/.config/nvim",
         "type": "path"
       },
       "parent": []

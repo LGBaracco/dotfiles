@@ -1,3 +1,4 @@
+-- Eager editor plugins only. Deferred setups live in plugins.lazy after hooks.
 require("which-key").setup({
   preset = "helix",
   win = { border = "rounded" },
@@ -10,23 +11,8 @@ require("project").setup({
   manual_mode = false,
 })
 
-require("telescope").setup({
-  defaults = {
-    sorting_strategy = "ascending",
-    layout_config = {
-      height = 0.8,
-      prompt_position = "top",
-    },
-  },
-})
-pcall(require("telescope").load_extension, "projects")
-
-require("neo-tree").setup({})
-require("oil").setup({})
-
 require("hop").setup({})
 require("precognition").setup({
-  -- Welcome/dashboard must not show motion hints (nvf effectively kept this clean).
   disabled_fts = {
     "startify",
     "dashboard",
@@ -38,7 +24,7 @@ require("precognition").setup({
 })
 
 -- mappings.basic/extra disabled; replacement gc/gb/gcc/gbc maps live in
--- config.keymaps-nvf.
+-- config.keymaps.
 require("Comment").setup({
   mappings = { basic = false, extra = false },
 })
@@ -82,28 +68,13 @@ vim.keymap.set("n", "gZR", "<Plug>(nvim-surround-change-line)", {
 })
 
 require("smart-splits").setup({})
--- mbbill/undotree is pure Vimscript; nothing to `require()`/setup, it's
--- driven entirely by the `:UndotreeToggle` command.
-require("grug-far").setup({})
-require("diffview").setup({})
-
 require("todo-comments").setup({})
-
 require("toggleterm").setup({
   direction = "horizontal",
 })
 
-require("img-clip").setup({})
-require("image").setup({
-  backend = "kitty",
-  processor = "magick_cli",
-})
-
-require("cheatsheet").setup({})
 require("nvim-autopairs").setup({})
 require("luasnip").setup({})
-
-require("run").setup({})
-
--- conjure configures itself per-filetype (fennel/clojure/etc.); nothing to
--- call here, just make sure the plugin is on the runtimepath.
+-- TODO: load friendly-snippets into luasnip, e.g.
+--   require("luasnip.loaders.from_vscode").lazy_load()
+-- (plugin is already on the runtimepath via module.nix.)

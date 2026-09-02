@@ -6,7 +6,6 @@ require("config.options")
 require("config.autocmds")
 require("plugins")
 require("config.keymaps")
-require("config.keymaps-nvf").setup()
 
 -- Doom theme does not call disable_move_key. Bind buffer-local Nops on the
 -- actual dashboard buffer (FileType provides ev.buf; DashboardLoaded can race).

@@ -3,11 +3,13 @@
     ./git.nix
     ./home-packages.nix
     ./starfish.nix
-    ./neovim
     ./chromium.nix
     ./theming
     ./dcal.nix
   ];
+
+  # Neovim via nix-wrapper-modules (flake at ~/dotfiles/neovim/.config/nvim).
+  wrappers.neovim.enable = true;
 
   # Let Home Manager manage itself
   programs.home-manager.enable = true;

@@ -61,9 +61,6 @@ require("conform").setup({
 -- Misc LSP UI ---------------------------------------------------------------
 
 require("nvim-lightbulb").setup({ autocmd = { enabled = true } })
-require("otter").setup({})
-require("docs-view").setup({})
-require("trouble").setup({})
 
 -- Treesitter (nvim-treesitter main rewrite for Nvim 0.12+)
 -- Parsers come from Nix (`withAllGrammars`); highlighting/indent use core APIs.
@@ -81,11 +78,12 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 require("treesitter-context").setup({})
+require("nvim-ts-autotag").setup({})
 
 -- LSP servers -----------------------------------------------------------------
 -- cmd entries are bare PATH binary names (no /nix/store paths); Nix puts the
 -- right packages on PATH via the wrapper module.
--- LspAttach keymaps live in config.keymaps-nvf; this only wires up
+-- LspAttach keymaps live in config.keymaps; this only wires up
 -- navic breadcrumbs and completion capabilities on attach.
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()

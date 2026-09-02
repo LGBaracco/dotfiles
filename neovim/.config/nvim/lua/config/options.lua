@@ -16,9 +16,6 @@ opt.timeoutlen = 400
 opt.cursorline = true
 opt.cursorlineopt = "line"
 
--- shada.enable in nvf just kept the default 'shada' setting, so nothing to
--- override here.
-
 opt.spell = false
 
 -- Read by conform's format-on-save guard (see plugins/lsp.lua).

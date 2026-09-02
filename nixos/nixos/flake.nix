@@ -14,7 +14,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     neovim-config = {
-      url = "path:../../neovim";
+      url = "path:../../neovim/.config/nvim";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.wrappers.follows = "wrappers";
     };

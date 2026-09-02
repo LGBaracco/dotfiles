@@ -25,5 +25,13 @@
   "tabsLauncher": {
     "enabled": true,
     "trigger": "."
+  },
+  "dmsSessionizer": {
+    "enabled": true,
+    "projectsDir": "~/OneDrive/Projects, ~/dotfiles",
+    "terminal": "ghostty",
+    "trigger": ",",
+    "mruData": "{\"/home/lorenzo/OneDrive/Projects/Cortical Disinhibition\":1788365093934,\"/home/lorenzo/OneDrive/Projects/Jisp\":1788369647273,\"/home/lorenzo/Documents/Jisp\":1788365456964,\"/home/lorenzo/dotfiles/nixos\":1788368252680,\"/home/lorenzo/OneDrive/Projects/Mazer\":1788368269130,\"/home/lorenzo/dotfiles/niri\":1788368795027,\"/home/lorenzo/dotfiles/mango\":1788369606407}",
+    "includeHidden": true
   }
 }

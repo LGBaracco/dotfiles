@@ -172,12 +172,22 @@
     {
       "id": "idleInhibitor",
       "enabled": true,
-      "width": 50
+      "width": 25
     },
     {
       "id": "doNotDisturb",
       "enabled": true,
-      "width": 50
+      "width": 25
+    },
+    {
+      "id": "nightMode",
+      "enabled": true,
+      "width": 25
+    },
+    {
+      "id": "colorPicker",
+      "enabled": true,
+      "width": 25
     }
   ],
   "showWorkspaceIndex": true,
@@ -294,7 +304,7 @@
   "niriOverviewLauncherStyle": "full",
   "dankLauncherV2Size": "compact",
   "dankLauncherV2ShowSourceBadges": true,
-  "dankLauncherV2BorderEnabled": false,
+  "dankLauncherV2BorderEnabled": true,
   "dankLauncherV2BorderThickness": 2,
   "dankLauncherV2BorderColor": "primary",
   "dankLauncherV2ShowFooter": true,
@@ -416,7 +426,7 @@
   "qtThemingEnabled": false,
   "syncModeWithPortal": true,
   "terminalsAlwaysDark": false,
-  "muxType": "zellij",
+  "muxType": "tmux",
   "muxUseCustomCommand": false,
   "muxCustomCommand": "zellij",
   "muxSessionFilter": "",

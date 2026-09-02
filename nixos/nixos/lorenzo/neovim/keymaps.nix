@@ -61,16 +61,29 @@
   }
 
   # --- Windows (<leader> w) ---
+  # Mirror Doom: after split, prompt for which buffer to show (consult-buffer)
   {
     key = "<leader>wv";
     mode = "n";
-    action = "<C-w>v";
+    action = "<cmd>vsplit | Telescope buffers<cr>";
     desc = "Split vertical";
   }
   {
     key = "<leader>ws";
     mode = "n";
-    action = "<C-w>s";
+    action = "<cmd>split | Telescope buffers<cr>";
+    desc = "Split horizontal";
+  }
+  {
+    key = "<C-w>v";
+    mode = "n";
+    action = "<cmd>vsplit | Telescope buffers<cr>";
+    desc = "Split vertical";
+  }
+  {
+    key = "<C-w>s";
+    mode = "n";
+    action = "<cmd>split | Telescope buffers<cr>";
     desc = "Split horizontal";
   }
   {

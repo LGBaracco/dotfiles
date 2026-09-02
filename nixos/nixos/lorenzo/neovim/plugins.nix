@@ -90,7 +90,6 @@
     diffview-nvim.enable = true;
     #yanky-nvim.enable = true; # TODO disable until figure out fix for buffer access prompt
     qmk-nvim.enable = false;
-    icon-picker.enable = true;
     surround.enable = true;
     multicursors.enable = false;
     smart-splits.enable = true;

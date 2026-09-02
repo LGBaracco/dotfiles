@@ -13,7 +13,7 @@
     users.lorenzo = {
       imports = [
         ../lorenzo
-        inputs.nvf.homeManagerModules.default
+        inputs.neovim-config.homeModules.neovim
       ];
     };
   };

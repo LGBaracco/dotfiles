@@ -9,9 +9,14 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nvf = {
-      url = "github:NotAShelf/nvf";
+    wrappers = {
+      url = "github:BirdeeHub/nix-wrapper-modules";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    neovim-config = {
+      url = "path:../../neovim";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.wrappers.follows = "wrappers";
     };
     helium = {
       url = "github:oxcl/nix-flake-helium-browser";

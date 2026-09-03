@@ -98,7 +98,9 @@ require("noice").setup({
     },
   },
 })
-require("notify").setup()
+require("notify").setup({
+  background_colour = "#161616",
+})
 vim.notify = require("notify")
 
 require("nvim-navic").setup()

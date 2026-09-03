@@ -88,7 +88,16 @@ require("dashboard").setup({
 
 require("nvim-web-devicons").setup()
 require("fidget").setup()
-require("noice").setup()
+require("noice").setup({
+  views = {
+    cmdline_popup = {
+      position = {
+        row = 2,
+        col = "50%",
+      },
+    },
+  },
+})
 require("notify").setup()
 vim.notify = require("notify")
 

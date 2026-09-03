@@ -13,6 +13,9 @@ opt.scrolloff = 6
 opt.sidescrolloff = 3
 opt.timeoutlen = 400
 
+opt.number = true
+opt.relativenumber = true
+
 opt.cursorline = true
 opt.cursorlineopt = "line"
 

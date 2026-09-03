@@ -6,8 +6,6 @@ include "./cfg/layout.kdl"
 include "./cfg/rules.kdl"
 include "./cfg/misc.kdl"
 
-include "./noctalia.kdl"
-
 include "dms/binds.kdl"
 include "dms/alttab.kdl"
 include "dms/outputs.kdl"

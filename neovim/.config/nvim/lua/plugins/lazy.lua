@@ -307,12 +307,9 @@ require("lze").load({
     "trouble.nvim",
     cmd = { "Trouble" },
     keys = {
-      { "<leader>lwd", "<cmd>Trouble toggle diagnostics<CR>", desc = "Workspace diagnostics [trouble]" },
-      { "<leader>ld", "<cmd>Trouble toggle diagnostics filter.buf=0<CR>", desc = "Document diagnostics [trouble]" },
-      { "<leader>lr", "<cmd>Trouble toggle lsp_references<CR>", desc = "LSP References [trouble]" },
-      { "<leader>xq", "<cmd>Trouble toggle quickfix<CR>", desc = "QuickFix [trouble]" },
-      { "<leader>xl", "<cmd>Trouble toggle loclist<CR>", desc = "LOCList [trouble]" },
-      { "<leader>xs", "<cmd>Trouble toggle symbols<CR>", desc = "Symbols [trouble]" },
+      { "<leader>lwd", "<cmd>Trouble diagnostics toggle<CR>", desc = "Workspace diagnostics [trouble]" },
+      { "<leader>ld", "<cmd>Trouble diagnostics toggle filter.buf=0<CR>", desc = "Document diagnostics [trouble]" },
+      { "<leader>lr", "<cmd>Trouble lsp_references toggle<CR>", desc = "LSP References [trouble]" },
     },
     after = function()
       require("trouble").setup({})

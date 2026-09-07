@@ -13,11 +13,6 @@
       url = "github:BirdeeHub/nix-wrapper-modules";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    neovim-config = {
-      url = "path:../../neovim/.config/nvim";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.wrappers.follows = "wrappers";
-    };
     helium = {
       url = "github:oxcl/nix-flake-helium-browser";
       inputs.nixpkgs.follows = "nixpkgs";

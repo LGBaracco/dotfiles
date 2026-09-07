@@ -4,13 +4,13 @@
     firefox-bin
 
     # --- Desktop apps ---
-    spotify-player
     mpv
     system-config-printer
     gparted
     kdePackages.partitionmanager
     nautilus
     proton-pass
+    heroic
 
     # --- terminals ---
     ghostty
@@ -22,6 +22,7 @@
     cursor-cli
 
     # --- TUI ---
+    spotify-player
     lazygit
     alsa-utils
     nvtopPackages.full
@@ -41,34 +42,24 @@
     fastfetch
     rclone
 
-    # --- Fuzzy finders ---
-    fzf
-    ripgrep
-    fd
-
     # --- Nix tooling ---
     nix-output-monitor # prettier `nix build` output
     nvd # diff nixos generations
     nixfmt # Doom compatible formatter
-    nil
+    nil # nix lsp
 
-    # --- Python (scientific) ---
+    # --- Python ---
     uv
     python3
     # (python3.withPackages (
     #   ps: with ps; [
-    #     numpy
-    #     scipy
-    #     # torch-bin
-    #     matplotlib
-    #     pandas
-    #     jupyter
+    #     torch-bin
     #     ipython
     #   ]
     # ))
 
     # --- Julia ---
-    julia-bin # official Julia binary (faster than building from source)
+    julia-bin
 
     # --- C/C++ ---
     clang
@@ -86,8 +77,10 @@
     pandoc # Markdown syntax highlighting
     shellcheck
 
-    # --- Gaming ---
-    heroic
+    # --- Fuzzy finders ---
+    fzf
+    ripgrep
+    fd
 
     # --- Misc ---
     texliveMedium # emacs org/latex export

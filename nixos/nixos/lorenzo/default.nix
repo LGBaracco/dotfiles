@@ -8,7 +8,7 @@
     ./dcal.nix
   ];
 
-  # Neovim via nix-wrapper-modules (flake at ~/dotfiles/neovim/.config/nvim).
+  # Neovim via nix-wrapper-modules (module at ~/dotfiles/neovim/.config/nvim).
   wrappers.neovim.enable = true;
 
   # Let Home Manager manage itself

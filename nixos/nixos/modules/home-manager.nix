@@ -13,7 +13,10 @@
     users.lorenzo = {
       imports = [
         ../lorenzo
-        inputs.neovim-config.homeModules.neovim
+        (inputs.wrappers.lib.getInstallModule {
+          name = "neovim";
+          value = ../../../neovim/.config/nvim/module.nix;
+        })
       ];
     };
   };

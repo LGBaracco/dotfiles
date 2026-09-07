@@ -428,7 +428,7 @@
   "terminalsAlwaysDark": false,
   "muxType": "tmux",
   "muxUseCustomCommand": false,
-  "muxCustomCommand": "zellij",
+  "muxCustomCommand": "tmux",
   "muxSessionFilter": "",
   "runDmsMatugenTemplates": true,
   "matugenTemplateGtk": false,

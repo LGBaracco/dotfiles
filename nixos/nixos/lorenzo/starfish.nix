@@ -84,8 +84,3 @@
     };
   };
 }
-# function fish_prompt
-#      echo \n
-#      echo (color)(prompt_pwd)
-#      echo -n "> "
-#    end

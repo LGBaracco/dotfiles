@@ -131,25 +131,6 @@
         "type": "github"
       }
     },
-    "neovim-config": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "wrappers": [
-          "wrappers"
-        ]
-      },
-      "locked": {
-        "path": "../../neovim/.config/nvim",
-        "type": "path"
-      },
-      "original": {
-        "path": "../../neovim/.config/nvim",
-        "type": "path"
-      },
-      "parent": []
-    },
     "nix-cachyos-kernel": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -256,7 +237,6 @@
         "dms-plugin-registry": "dms-plugin-registry",
         "helium": "helium",
         "home-manager": "home-manager",
-        "neovim-config": "neovim-config",
         "nix-cachyos-kernel": "nix-cachyos-kernel",
         "nix-flatpak": "nix-flatpak",
         "nixpkgs": "nixpkgs_2",

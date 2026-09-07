@@ -137,9 +137,23 @@ vim.lsp.config("jdt-language-server", {
   filetypes = { "java" },
 })
 
-vim.lsp.config("julia-languageserver", {
-  cmd = { "julia-languageserver" },
+-- LanguageServer.jl is a Julia package, not a PATH binary. Launch via julia.
+-- --project=@v#.# loads the default versioned env (where LanguageServer lives).
+vim.lsp.config("julials", {
+  cmd = {
+    "julia",
+    "--startup-file=no",
+    "--history-file=no",
+    "--project=@v#.#",
+    "-e",
+    [[
+      using LanguageServer
+      @info "Running language server" VERSION pwd()
+      LanguageServer.runserver()
+    ]],
+  },
   filetypes = { "julia" },
+  root_markers = { "Project.toml", "JuliaProject.toml" },
 })
 
 vim.lsp.config("lemminx", {
@@ -226,7 +240,7 @@ vim.lsp.enable({
   "fish-lsp",
   "harper",
   "jdt-language-server",
-  "julia-languageserver",
+  "julials",
   "lemminx",
   "lua-language-server",
   "marksman",

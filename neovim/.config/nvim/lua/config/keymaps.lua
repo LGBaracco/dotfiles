@@ -31,8 +31,9 @@ map("n", "<leader>bS", "<cmd>wa<cr>", { desc = "Save all buffers", nowait = true
 map("n", "<leader>br", "<cmd>e!<cr>", { desc = "Reload buffer" })
 
 -- Kill buffer; reopen dashboard if only an empty scratch remains.
-local function kill_buffer()
-	vim.cmd("bdelete")
+---@param force boolean|nil If true, discard unsaved changes (`:bdelete!`).
+local function kill_buffer(force)
+	vim.cmd({ cmd = "bdelete", bang = not not force })
 	vim.schedule(function()
 		local bufs = vim.fn.getbufinfo({ buflisted = 1 })
 		local only_empty_scratch = #bufs == 1 and bufs[1].name == "" and vim.bo[bufs[1].bufnr].buftype == ""
@@ -42,8 +43,15 @@ local function kill_buffer()
 	end)
 end
 
-map("n", "<leader>bk", kill_buffer, { desc = "Kill buffer" })
-map("n", "<leader>bd", kill_buffer, { desc = "Kill buffer" })
+map("n", "<leader>bk", function()
+	kill_buffer()
+end, { desc = "Kill buffer" })
+map("n", "<leader>bd", function()
+	kill_buffer()
+end, { desc = "Kill buffer" })
+map("n", "<leader>bK", function()
+	kill_buffer(true)
+end, { desc = "Kill buffer without saving" })
 
 --- Windows (<leader> w) ---
 

@@ -45,7 +45,7 @@
       calculator.enable = true;
       nixPackageRunner.enable = true;
       tabsLauncher.enable = true;
-      dmsSessionizer.enable = true;
+      #dmsSessionizer.enable = true;
     };
     enableCalendarEvents = true;
   };

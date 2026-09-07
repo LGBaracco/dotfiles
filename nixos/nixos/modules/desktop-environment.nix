@@ -10,7 +10,6 @@
     configHome = "/home/lorenzo"; # copies that user's DMS settings (and wallpaper) into the greeter data directory before greetd starts
     compositor.name = "niri"; # greeter UI compositor only; sessions come from wayland-sessions (niri, mango, plasma, …)
   };
-
   environment.etc."greetd/niri_overrides.kdl".text = ''
     input {
       keyboard {
@@ -45,7 +44,7 @@
       calculator.enable = true;
       nixPackageRunner.enable = true;
       tabsLauncher.enable = true;
-      #dmsSessionizer.enable = true;
+      #dmsSessionizer.enable = true; currently substituted by own unpackaged fork
     };
     enableCalendarEvents = true;
   };

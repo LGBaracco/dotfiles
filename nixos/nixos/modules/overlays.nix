@@ -8,6 +8,7 @@
       tabctl = final.callPackage ../pkgs/tabctl.nix { };
     })
 
+    # Stable packages through pkgs.stable.<pkg>
     (final: _prev: {
       stable = import inputs.nixpkgs-stable {
         system = final.stdenv.hostPlatform.system;

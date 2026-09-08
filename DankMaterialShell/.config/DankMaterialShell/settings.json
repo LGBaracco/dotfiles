@@ -3,7 +3,7 @@
   "currentThemeCategory": "registry",
   "customThemeFile": "/home/lorenzo/.config/DankMaterialShell/themes/myoxocarbon/theme.json",
   "registryThemeVariants": {
-    "oxocarbon": "Purple",
+    "oxocarbon": "blue",
     "deepdark": {
       "dark": {
         "flavor": "voltage",
@@ -38,10 +38,10 @@
   "hyprlandLayoutRadiusOverride": -1,
   "hyprlandLayoutBorderSize": -1,
   "hyprlandResizeOnBorder": false,
-  "mangoLayoutGapsOverride": 1,
-  "mangoLayoutGapsOutOverride": -1,
-  "mangoLayoutRadiusOverride": 10,
-  "mangoLayoutBorderSize": 2,
+  "mangoLayoutGapsOverride": 4,
+  "mangoLayoutGapsOutOverride": 4,
+  "mangoLayoutRadiusOverride": 3,
+  "mangoLayoutBorderSize": 1,
   "mangoTrackpadNaturalScrolling": true,
   "firstDayOfWeek": -1,
   "showWeekNumber": false,
@@ -346,7 +346,7 @@
   "lastAppliedIconTheme": "",
   "cursorSettings": {
     "theme": "breeze_cursors",
-    "size": 24,
+    "size": 26,
     "niri": {
       "hideWhenTyping": true,
       "hideAfterInactiveMs": 5000
@@ -356,8 +356,11 @@
       "hideOnTouch": false,
       "inactiveTimeout": 0
     },
+    "mango": {
+      "cursorHideTimeout": 5
+    },
     "dwl": {
-      "cursorHideTimeout": 0
+      "cursorHideTimeout": 5
     }
   },
   "launcherLogoMode": "os",
@@ -434,7 +437,7 @@
   "matugenTemplateGtk": false,
   "matugenTemplateNiri": true,
   "matugenTemplateHyprland": false,
-  "matugenTemplateMangowc": false,
+  "matugenTemplateMangowc": true,
   "matugenTemplateQt5ct": false,
   "matugenTemplateQt6ct": false,
   "matugenTemplateFirefox": false,
@@ -696,7 +699,9 @@
         },
         {
           "id": "battery",
-          "enabled": true
+          "enabled": true,
+          "batteryPillStyle": true,
+          "batteryPillPercentSign": false
         },
         {
           "id": "controlCenterButton",
@@ -725,9 +730,9 @@
       "maximizeWidgetText": false,
       "removeWidgetPadding": false,
       "widgetPadding": 8,
-      "gothCornersEnabled": false,
+      "gothCornersEnabled": true,
       "gothCornerRadiusOverride": false,
-      "gothCornerRadiusValue": 42,
+      "gothCornerRadiusValue": 12,
       "borderEnabled": false,
       "borderColor": "surfaceText",
       "borderOpacity": 0.67,
@@ -745,7 +750,7 @@
       "visible": true,
       "popupGapsAuto": false,
       "popupGapsManual": 4,
-      "maximizeDetection": true,
+      "maximizeDetection": false,
       "scrollEnabled": true,
       "scrollXBehavior": "column",
       "scrollYBehavior": "workspace",
@@ -753,7 +758,8 @@
       "shadowOpacity": 60,
       "shadowColorMode": "default",
       "shadowCustomColor": "#000000",
-      "clickThrough": true
+      "clickThrough": true,
+      "barInsetPadding": 5
     }
   ],
   "desktopClockEnabled": false,

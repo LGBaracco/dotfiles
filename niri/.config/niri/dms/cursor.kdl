@@ -5,7 +5,7 @@
 
 cursor {
     xcursor-theme "breeze_cursors"
-    xcursor-size 24
+    xcursor-size 26
     hide-when-typing
     hide-after-inactive-ms 5000
 }

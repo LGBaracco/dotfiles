@@ -17,9 +17,6 @@
       url = "github:oxcl/nix-flake-helium-browser";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nix-flatpak = {
-      url = "github:gmodena/nix-flatpak/?ref=latest";
-    };
     dms-plugin-registry = {
       url = "github:AvengeMedia/dms-plugin-registry";
       inputs.nixpkgs.follows = "nixpkgs";

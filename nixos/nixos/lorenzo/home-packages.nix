@@ -6,8 +6,6 @@
     # --- Desktop apps ---
     mpv
     system-config-printer
-    gparted
-    kdePackages.partitionmanager
     proton-pass
     heroic
 

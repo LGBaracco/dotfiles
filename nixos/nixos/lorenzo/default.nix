@@ -25,6 +25,7 @@
     enable = true;
     settings = {
       theme = "Oxocarbon";
+      confirm-close-surface = false;
       font-size = 12;
     };
   };

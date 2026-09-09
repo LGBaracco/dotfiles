@@ -13,14 +13,10 @@
     usbutils
     efibootmgr
     gcc
-  ];
-
-  # kpmcore dbus/polkit backend for KDE Partition Manager (GUI in home.packages)
-  services.dbus.packages = [ pkgs.kdePackages.partitionmanager.kpmcore ];
-
-  services.flatpak.enable = true;
-  services.flatpak.packages = [
-    "com.jetbrains.PyCharm-Community"
+    kdePackages.partitionmanager # system profile so kpmcore polkit/dbus are registered
+    gparted # system profile so org.gnome.gparted polkit (allow_gui) is registered
+    # system profile: avoids HM activation flakiness; binary pkg (Community discontinued)
+    jetbrains.pycharm
   ];
 
 }

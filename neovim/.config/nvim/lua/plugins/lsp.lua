@@ -215,6 +215,13 @@ vim.lsp.config("taplo", {
 vim.lsp.config("texlab", {
   cmd = { "texlab" },
   filetypes = { "tex", "plaintex", "bib" },
+  settings = {
+    texlab = {
+      -- VimTeX owns build + SyncTeX; texlab is completions/diagnostics only.
+      build = { onSave = false },
+      forwardSearch = { executable = "", args = {} },
+    },
+  },
 })
 
 vim.lsp.config("ty", {

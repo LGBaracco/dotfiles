@@ -31,7 +31,7 @@
     "projectsDir": "~/OneDrive/Projects/, ~/dotfiles, ~/nixos, ~/Projects/",
     "terminal": "ghostty",
     "trigger": ",",
-    "mruData": "{\"/home/lorenzo/OneDrive/Projects/Cortical Disinhibition\":1788365093934,\"/home/lorenzo/OneDrive/Projects/Jisp\":1788369647273,\"/home/lorenzo/Documents/Jisp\":1788365456964,\"/home/lorenzo/dotfiles/nixos\":1788471821885,\"/home/lorenzo/OneDrive/Projects/Mazer\":1788514100894,\"/home/lorenzo/dotfiles/niri\":1788431467200,\"/home/lorenzo/dotfiles/mango\":1788369606407,\"/home/lorenzo/dotfiles/neovim\":1788513550596,\"/home/lorenzo/OneDrive/Projects/Neurosolver\":1788514008477,\"/home/lorenzo/dotfiles/tmux\":1788514091393,\"/home/lorenzo/dotfiles\":1788880827833,\"/home/lorenzo/OneDrive/Projects\":1788515977707,\"/home/lorenzo/nixos\":1788789335546}",
+    "mruData": "{\"/home/lorenzo/OneDrive/Projects/Cortical Disinhibition\":1788365093934,\"/home/lorenzo/OneDrive/Projects/Jisp\":1788369647273,\"/home/lorenzo/Documents/Jisp\":1788365456964,\"/home/lorenzo/dotfiles/nixos\":1788471821885,\"/home/lorenzo/OneDrive/Projects/Mazer\":1788514100894,\"/home/lorenzo/dotfiles/niri\":1788431467200,\"/home/lorenzo/dotfiles/mango\":1788369606407,\"/home/lorenzo/dotfiles/neovim\":1788513550596,\"/home/lorenzo/OneDrive/Projects/Neurosolver\":1788514008477,\"/home/lorenzo/dotfiles/tmux\":1788514091393,\"/home/lorenzo/dotfiles\":1788888006386,\"/home/lorenzo/OneDrive/Projects\":1788515977707,\"/home/lorenzo/nixos\":1788789335546}",
     "includeHidden": true,
     "killPrefix": "<",
     "terminalBehavior": "reuseSession"

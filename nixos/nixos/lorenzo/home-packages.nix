@@ -45,6 +45,7 @@
     # --- Nix tooling ---
     nix-output-monitor # prettier `nix build` output
     nvd # diff nixos generations
+    nh
     nixfmt # Doom compatible formatter
     nil # nix lsp
 
@@ -83,7 +84,10 @@
     fd
 
     # --- Misc ---
-    texliveMedium # emacs org/latex export
+    texliveFull # LaTeX (Neovim VimTeX + emacs org export)
+    (zathura.override {
+      plugins = with zathuraPkgs; [ zathura_pdf_mupdf ];
+    })
     imagemagick
     wl-clipboard
     libsForQt5.qt5ct

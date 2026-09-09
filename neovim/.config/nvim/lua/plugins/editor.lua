@@ -65,6 +65,5 @@ require("toggleterm").setup({
 
 require("nvim-autopairs").setup({})
 require("luasnip").setup({})
--- TODO: load friendly-snippets into luasnip, e.g.
---   require("luasnip.loaders.from_vscode").lazy_load()
--- (plugin is already on the runtimepath via module.nix.)
+-- friendly-snippets is on the runtimepath via module.nix (includes LaTeX).
+require("luasnip.loaders.from_vscode").lazy_load()

@@ -49,7 +49,10 @@
       project-nvim
       nvim-autopairs
       luasnip
-      friendly-snippets # TODO: wire into luasnip (from_vscode loader)
+      friendly-snippets
+
+      # LaTeX (eager: inverse search breaks if vimtex is lazy-loaded)
+      vimtex
 
       # LSP / completion / treesitter
       blink-cmp

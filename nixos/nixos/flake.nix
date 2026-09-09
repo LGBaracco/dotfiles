@@ -24,6 +24,10 @@
       url = "github:AvengeMedia/dms-plugin-registry";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    dms-sessionizer = {
+      url = "github:LGBaracco/dms-sessionizer";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     dankcalendar = {
       url = "github:AvengeMedia/dankcalendar";
       inputs.nixpkgs.follows = "nixpkgs";

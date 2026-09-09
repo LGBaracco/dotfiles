@@ -1,6 +1,7 @@
 {
   pkgs,
   lib,
+  inputs,
   ...
 }:
 {
@@ -44,7 +45,11 @@
       calculator.enable = true;
       nixPackageRunner.enable = true;
       tabsLauncher.enable = true;
-      #dmsSessionizer.enable = true; currently substituted by own unpackaged fork
+      dmsSessionizer = {
+        enable = true;
+        # Override registry package with our fork (pinned via flake.lock)
+        src = lib.mkForce inputs.dms-sessionizer.packages.${pkgs.stdenv.hostPlatform.system}.default;
+      };
     };
     enableCalendarEvents = true;
   };

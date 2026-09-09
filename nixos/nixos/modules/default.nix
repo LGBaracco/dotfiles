@@ -13,6 +13,7 @@
     ./system-packages.nix
     ./desktop-environment.nix
     ./gaming.nix
+    ./nautilus.nix
     ./home-manager.nix
     inputs.dms-plugin-registry.nixosModules.default
   ];

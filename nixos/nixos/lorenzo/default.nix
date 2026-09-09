@@ -4,6 +4,7 @@
     ./home-packages.nix
     ./starfish.nix
     ./chromium.nix
+    ./nautilus.nix
     ./theming
     ./dcal.nix
   ];

@@ -8,7 +8,6 @@
     system-config-printer
     gparted
     kdePackages.partitionmanager
-    nautilus
     proton-pass
     heroic
 

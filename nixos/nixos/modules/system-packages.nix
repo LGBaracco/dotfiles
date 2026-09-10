@@ -4,8 +4,7 @@
 }:
 
 let
-  # PyCharm 2026 WLToolkit software-renders by default → enable Vulkan GPU path.
-  # (XToolkit looked worse on this machine; keep native Wayland.)
+  # enable Vulkan GPU rendering.
   pycharm =
     let
       base = pkgs.jetbrains.pycharm;
@@ -30,14 +29,13 @@ in
     curl
     wget
     coreutils
-    pciutils # lspci — useful for GPU debugging
+    pciutils # lspci
     usbutils
     efibootmgr
     gcc
-    kdePackages.partitionmanager # system profile so kpmcore polkit/dbus are registered
-    gparted # system profile so org.gnome.gparted polkit (allow_gui) is registered
-    # system profile: avoids HM activation flakiness; binary pkg (Community discontinued)
+    gparted
     pycharm
+    kdePackages.partitionmanager
   ];
 
 }

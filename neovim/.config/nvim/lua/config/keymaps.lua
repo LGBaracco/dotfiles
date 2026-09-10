@@ -111,7 +111,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		lmap("n", "<leader>lh", vim.lsp.buf.hover, "Trigger hover")
 		lmap("n", "<leader>ls", vim.lsp.buf.signature_help, "Signature help")
 		lmap("n", "<leader>ln", vim.lsp.buf.rename, "Rename symbol")
-		lmap("n", "<leader>la", vim.lsp.buf.code_action, "Code action")
+		-- Reuse existing <leader>la; fastaction is deferred (on_require + DeferredUIEnter).
+		lmap({ "n", "x" }, "<leader>la", function()
+			require("fastaction").code_action()
+		end, "Code action")
 		lmap("n", "<leader>lf", vim.lsp.buf.format, "Format")
 		lmap("n", "<leader>ltf", function()
 			vim.b.disableFormatSave = not vim.b.disableFormatSave

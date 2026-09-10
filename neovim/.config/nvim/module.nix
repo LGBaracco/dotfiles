@@ -103,6 +103,7 @@
       conjure
 
       # Git
+      gitsigns-nvim
       neogit
 
       # LSP UI extras

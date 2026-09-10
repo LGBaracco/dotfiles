@@ -1,5 +1,6 @@
 -- Mid-tier lazy loading via lze. Pack names match nixpkgs vimPlugins.pname.
 -- Eager plugins are set up in plugins.{ui,editor,lsp}; deferred setups run in `after`.
+
 require("lze").load({
   --- Light UI (one tick after UIEnter) ---
   {
@@ -76,6 +77,16 @@ require("lze").load({
       require("colorizer").setup({
         filetypes = { "*", "!dashboard" },
       })
+      -- setup only registers FileType; buffers opened before DeferredUIEnter
+      -- (e.g. `nvim tmux.conf`) already have ft set, so attach them now.
+      for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+        if vim.api.nvim_buf_is_loaded(bufnr) then
+          local ft = vim.bo[bufnr].filetype
+          if ft ~= "" and ft ~= "dashboard" then
+            pcall(require("colorizer").attach_to_buffer, bufnr)
+          end
+        end
+      end
     end,
   },
   {
@@ -100,6 +111,7 @@ require("lze").load({
   {
     "fastaction.nvim",
     event = "DeferredUIEnter",
+    on_require = "fastaction",
     after = function()
       require("fastaction").setup({
         popup = { border = "rounded" },
@@ -108,6 +120,7 @@ require("lze").load({
   },
   {
     "nvim-navbuddy",
+    event = "LspAttach",
     cmd = { "Navbuddy" },
     keys = { { "<leader>lN", "<cmd>Navbuddy<CR>", desc = "Navbuddy" } },
     after = function()
@@ -267,6 +280,13 @@ require("lze").load({
   },
 
   --- Git ---
+  {
+    "gitsigns.nvim",
+    event = "DeferredUIEnter",
+    after = function()
+      require("gitsigns").setup({})
+    end,
+  },
   {
     "neogit",
     cmd = { "Neogit" },

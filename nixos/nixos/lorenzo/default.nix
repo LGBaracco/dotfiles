@@ -21,7 +21,7 @@
   programs.emacs = {
     enable = true;
     package = pkgs.emacs-pgtk; # emacs30-pgtk
-    extraPackages = epkgs: [ epkgs.vterm ];
+    #extraPackages = epkgs: [ epkgs.vterm ]; # currently using ghostel
   };
 
   programs.ghostty = {

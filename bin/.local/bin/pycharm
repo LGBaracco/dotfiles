@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Temporary Vulkan trial — bypasses system wrap that still forces XToolkit
+export PYCHARM_VM_OPTIONS=/home/lorenzo/.config/JetBrains/PyCharm2026.2/pycharm64.vmoptions
+exec /nix/store/0xf6p0awmia86qw4xc1m2p02r9jfjwsz-pycharm-2026.2.0.1/pycharm/bin/pycharm "$@"

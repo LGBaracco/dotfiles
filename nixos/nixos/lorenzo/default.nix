@@ -12,7 +12,7 @@
   # Neovim via nix-wrapper-modules (liveLua=true by default: ~/.config/nvim via stow)
   wrappers.neovim = {
     enable = true;
-    # liveLua = false;  # store-baked; rebuild after lua edits
+    # liveLua = false;  # uncomment to force rebuild after lua edits
   };
 
   # Let Home Manager manage itself

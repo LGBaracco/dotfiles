@@ -8,8 +8,20 @@
 {
   imports = [ wlib.wrapperModules.neovim ];
 
-  # Pure: bake this directory (init.lua + lua/) into the store.
-  config.settings.config_directory = ./.;
+  options.liveLua = lib.mkOption {
+    type = lib.types.bool;
+    default = true;
+    description = ''
+      When true, load Lua from vim.fn.stdpath("config") (~/.config/nvim).
+      When false, bake this directory into the store (pure).
+    '';
+  };
+
+  config.settings.config_directory =
+    if config.liveLua then
+      lib.generators.mkLuaInline "vim.fn.stdpath('config')"
+    else
+      ./.;
 
   # Lazy-load library (must be on start so Lua can require it at boot).
   config.specs.lze = {

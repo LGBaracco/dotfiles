@@ -14,7 +14,7 @@
         ../lorenzo
         (inputs.wrappers.lib.getInstallModule {
           name = "neovim";
-          value = ../../../neovim/.config/nvim/module.nix;
+          value = inputs.nvim-config.homeModules.neovim;
         })
       ];
     };

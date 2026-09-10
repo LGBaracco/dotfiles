@@ -4,13 +4,16 @@
     ./home-packages.nix
     ./starfish.nix
     ./chromium.nix
-    ./nautilus.nix
     ./theming
     ./dcal.nix
+    ./desktop-entries.nix
   ];
 
-  # Neovim via nix-wrapper-modules (module at ~/dotfiles/neovim/.config/nvim).
-  wrappers.neovim.enable = true;
+  # Neovim via nix-wrapper-modules (liveLua=true by default: ~/.config/nvim via stow)
+  wrappers.neovim = {
+    enable = true;
+    # liveLua = false;  # store-baked; rebuild after lua edits
+  };
 
   # Let Home Manager manage itself
   programs.home-manager.enable = true;
@@ -24,6 +27,7 @@
   programs.ghostty = {
     enable = true;
     settings = {
+      # DMS writes ~/.config/ghostty/themes/dankcolors; keep Ghostty in sync.
       theme = "Oxocarbon";
       confirm-close-surface = false;
       font-size = 12;
@@ -35,7 +39,7 @@
     "$HOME/.local/bin"
   ];
 
-  # ── Environment variables ─────────────────────────────────────────────────
+  # ── Environment variables ────────────────────────────────────────────────
   #home.sessionVariables = {
   #};
 

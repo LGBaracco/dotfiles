@@ -1,13 +1,13 @@
 { pkgs, ... }: {
   home.packages = with pkgs; [
-    # --- Browsers ---
-    firefox-bin
 
     # --- Desktop apps ---
     mpv
     system-config-printer
     proton-pass
     heroic
+    firefox-bin
+    nautilus
 
     # --- terminals ---
     ghostty
@@ -16,7 +16,6 @@
 
     # --- Editors ---
     neovide
-    cursor-cli
 
     # --- TUI ---
     spotify-player
@@ -38,6 +37,7 @@
     gnumake
     fastfetch
     rclone
+    cursor-cli
 
     # --- Nix tooling ---
     nix-output-monitor # prettier `nix build` output

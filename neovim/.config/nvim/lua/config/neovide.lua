@@ -1,6 +1,6 @@
 -- Neovide GUI (font matches Ghostty: JetBrainsMono @ 12pt).
 if not vim.g.neovide then
-	return
+    return
 end
 
 vim.o.guifont = "JetBrainsMono Nerd Font:h12"

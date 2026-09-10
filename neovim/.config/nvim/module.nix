@@ -18,10 +18,7 @@
   };
 
   config.settings.config_directory =
-    if config.liveLua then
-      lib.generators.mkLuaInline "vim.fn.stdpath('config')"
-    else
-      ./.;
+    if config.liveLua then lib.generators.mkLuaInline "vim.fn.stdpath('config')" else ./.;
 
   # Lazy-load library (must be on start so Lua can require it at boot).
   config.specs.lze = {

@@ -45,6 +45,9 @@ require("conform").setup({
     jsonfmt = { command = "jsonfmt", args = { "--write", "-" }, stdin = true },
     mbake = { command = "mbake", args = { "format", "$FILENAME" }, stdin = false },
     ["tex-fmt"] = { command = "tex-fmt", args = { "--stdin" }, stdin = true },
+    stylua = {
+      prepend_args = { "--indent-type", "Spaces", "--indent-width", "4" },
+    },
   },
   format_on_save = function(bufnr)
     if not vim.g.formatsave or vim.b[bufnr].disableFormatSave then

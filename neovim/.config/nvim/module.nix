@@ -116,6 +116,9 @@
       # AI / REPL
       avante-nvim
       iron-nvim
+
+      # Practice
+      vim-be-good
     ];
   };
 

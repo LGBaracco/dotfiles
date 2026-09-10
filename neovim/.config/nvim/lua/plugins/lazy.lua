@@ -443,4 +443,10 @@ require("lze").load({
       require("plugins.iron")
     end,
   },
+
+  --- Practice ---
+  {
+    "vim-be-good",
+    cmd = { "VimBeGood" },
+  },
 })

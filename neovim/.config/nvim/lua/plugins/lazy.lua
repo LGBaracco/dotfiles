@@ -165,12 +165,33 @@ require("lze").load({
       { "<leader>fld", "<cmd>Telescope diagnostics<CR>", desc = "Diagnostics [Telescope]" },
     },
     after = function()
+      local dotfiles = require("config.dotfiles")
       require("telescope").setup({
         defaults = {
           sorting_strategy = "ascending",
           layout_config = {
             height = 0.8,
             prompt_position = "top",
+          },
+        },
+        pickers = {
+          find_files = {
+            -- Dynamic: :Telescope find_files and keymaps pick this up.
+            find_command = function()
+              local cmd = { "fd", "--type", "f", "--color", "never" }
+              if dotfiles.is_project() then
+                vim.list_extend(cmd, { "--hidden", "--exclude", ".git" })
+              end
+              return cmd
+            end,
+          },
+          live_grep = {
+            additional_args = function()
+              if dotfiles.is_project() then
+                return { "--hidden", "--glob", "!.git/*" }
+              end
+              return {}
+            end,
           },
         },
       })
@@ -196,7 +217,22 @@ require("lze").load({
       { "<leader>fo", "<cmd>Oil<cr>", desc = "Open oil.nvim" },
     },
     after = function()
-      require("oil").setup({})
+      local dotfiles = require("config.dotfiles")
+      require("oil").setup({
+        view_options = {
+          show_hidden = false,
+          is_hidden_file = function(name, bufnr)
+            if name == ".." then
+              return false
+            end
+            local dir = require("oil").get_current_dir(bufnr)
+            if dotfiles.path_is_inside(dir) or dotfiles.is_project(bufnr) then
+              return false
+            end
+            return vim.startswith(name, ".")
+          end,
+        },
+      })
     end,
   },
   {

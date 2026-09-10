@@ -63,6 +63,16 @@ require("dashboard").setup({
         action = "Telescope find_files",
       },
       {
+        icon = " ",
+        icon_hl = "DashboardIcon",
+        desc = "Open file explorer                     ",
+        desc_hl = "DashboardDesc",
+        key = "o",
+        key_hl = "DashboardKey",
+        key_format = " %s",
+        action = "Oil",
+      },
+      {
         icon = " ",
         icon_hl = "DashboardIcon",
         desc = "Recently opened files                  ",

@@ -24,7 +24,7 @@ let
     };
 in
 {
-  # ── System-wide packages ───────────────────────────────────────────────────
+  # ── System-wide packages ─────────────────────────────────────────────────
   environment.systemPackages = with pkgs; [
     curl
     wget

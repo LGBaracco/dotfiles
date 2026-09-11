@@ -27,5 +27,5 @@ vim.api.nvim_create_autocmd("User", {
 })
 
 require("which-key").add({
-  { "<localleader>l", group = "vimtex" },
+  { "<localleader>l", group = "vimtex", ft = { "tex", "plaintex", "bib" } },
 })

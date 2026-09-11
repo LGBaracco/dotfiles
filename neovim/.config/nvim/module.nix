@@ -97,7 +97,7 @@
       img-clip-nvim
       image-nvim
       run-nvim
-      conjure
+      # conjure  # parked: see lua/plugins/conjure.lua
 
       # Git
       gitsigns-nvim
@@ -116,6 +116,8 @@
       # AI / REPL
       avante-nvim
       iron-nvim
+      molten-nvim
+      quarto-nvim
 
       # Practice
       vim-be-good
@@ -129,6 +131,30 @@
     tree-sitter
     imagemagick
     cursor-cli
+
+    # Molten / neovim python3 host — Nix fallback only.
+    # Preferred host is the uv tool from install-nvim-molten-host (see options.lua).
+    (let
+      moltenPy = python3.withPackages (
+        ps: with ps; [
+          pynvim
+          jupyter-client
+          ipykernel
+          pillow
+          nbformat
+          cairosvg
+          plotly
+          kaleido
+          pnglatex
+          pyperclip
+          requests
+          websocket-client
+        ]
+      );
+    in
+    writeShellScriptBin "nvim-python3-host" ''
+      exec ${moltenPy}/bin/python "$@"
+    '')
 
     # Formatters (conform)
     nixfmt

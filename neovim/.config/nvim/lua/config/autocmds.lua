@@ -8,3 +8,10 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.opt_local.softtabstop = 2
     end,
 })
+
+-- Quarto documents (needed before lazy-loading quarto-nvim on ft=quarto).
+vim.filetype.add({
+  extension = {
+    qmd = "quarto",
+  },
+})

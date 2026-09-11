@@ -71,6 +71,7 @@
     # --- Other languages ---
     sbcl # Common Lisp
     racket
+    quarto # Quarto CLI (qmd preview/render; used by quarto-nvim)
     proselint # Markdown linter
     pandoc # Markdown syntax highlighting
     shellcheck

@@ -262,11 +262,18 @@ require("lze").load({
   },
   {
     "image.nvim",
-    ft = { "markdown", "norg", "vimwiki" },
+    ft = { "markdown", "norg", "vimwiki", "quarto" },
+    dep_of = { "molten-nvim" },
     after = function()
       require("image").setup({
         backend = "kitty",
         processor = "magick_cli",
+        max_width = 100,
+        max_height = 12,
+        max_height_window_percentage = math.huge,
+        max_width_window_percentage = math.huge,
+        window_overlap_clear_enabled = true,
+        window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },
       })
     end,
   },
@@ -310,32 +317,40 @@ require("lze").load({
       end
     end,
   },
+  -- conjure parked: see lua/plugins/conjure.lua
+
+  --- Molten / Quarto literate REPL ---
   {
-    "conjure",
-    ft = { "clojure", "fennel", "janet", "hy", "julia", "racket", "scheme", "lua", "lisp", "python", "sql", "r" },
+    "molten-nvim",
+    -- Keys without rhs: packadd + setup (registers maps) + re-feed lhs.
+    keys = {
+      { "<localleader>I", ft = { "quarto", "python" }, desc = "Molten literate init" },
+      { "<localleader>k", ft = "quarto", desc = "Molten run cell" },
+      { "<localleader>l", ft = "quarto", desc = "Molten run line" },
+      { "<localleader>;", mode = { "n", "v" }, ft = "quarto", desc = "Molten evaluate" },
+      { "<localleader>h", ft = "quarto", desc = "Molten enter output" },
+      { "<localleader>H", ft = "quarto", desc = "Molten hide output" },
+      { "<localleader>u", ft = "quarto", desc = "Molten re-evaluate cell" },
+      { "<localleader>i", ft = "quarto", desc = "Molten interrupt" },
+      { "<localleader>q", ft = "quarto", desc = "Molten quit" },
+      { "<localleader>a", ft = "quarto", desc = "Molten run above" },
+      { "<localleader>A", ft = "quarto", desc = "Molten run all" },
+      { "<localleader>d", ft = "quarto", desc = "Molten delete cell" },
+      { "<localleader>p", ft = "quarto", desc = "Quarto preview" },
+    },
+    -- Do NOT list Molten* here: they are remote-plugin commands defined by the
+    -- rplugin manifest at startup; lze's cmd handler would delete them on load.
+    cmd = { "MoltenLiterateInit" },
     after = function()
-      -- Conjure's log prefix is <localleader>l; keep the which-key label
-      -- scoped so it doesn't fight VimTeX's group on TeX buffers.
-      require("which-key").add({
-        {
-          "<localleader>l",
-          group = "conjure log",
-          ft = {
-            "clojure",
-            "fennel",
-            "janet",
-            "hy",
-            "julia",
-            "racket",
-            "scheme",
-            "lua",
-            "lisp",
-            "python",
-            "sql",
-            "r",
-          },
-        },
-      })
+      require("plugins.molten")
+    end,
+  },
+  {
+    "quarto-nvim",
+    ft = { "quarto" },
+    dep_of = { "molten-nvim" },
+    after = function()
+      require("plugins.quarto")
     end,
   },
 
@@ -364,6 +379,7 @@ require("lze").load({
   --- LSP UI extras ---
   {
     "otter.nvim",
+    dep_of = { "quarto-nvim" },
     keys = {
       { "<leader>lo", "<cmd>OtterActivate<CR>", desc = "Activate LSP on Cursor Position [otter-nvim]" },
     },

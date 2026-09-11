@@ -118,6 +118,7 @@
       iron-nvim
       molten-nvim
       quarto-nvim
+      render-markdown-nvim
 
       # Practice
       vim-be-good

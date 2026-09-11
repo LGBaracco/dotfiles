@@ -274,7 +274,23 @@ require("lze").load({
         max_width_window_percentage = math.huge,
         window_overlap_clear_enabled = true,
         window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },
+        -- Document ![](…) images: cursor-gated so they don't fight Molten plots.
+        integrations = {
+          markdown = {
+            enabled = true,
+            filetypes = { "markdown", "vimwiki", "quarto" },
+            only_render_image_at_cursor = true,
+            only_render_image_at_cursor_mode = "popup",
+          },
+        },
       })
+    end,
+  },
+  {
+    "render-markdown.nvim",
+    ft = { "markdown", "quarto" },
+    after = function()
+      require("plugins.render-markdown")
     end,
   },
   {
@@ -324,14 +340,15 @@ require("lze").load({
     "molten-nvim",
     -- Keys without rhs: packadd + setup (registers maps) + re-feed lhs.
     keys = {
-      { "<localleader>I", ft = { "quarto", "python" }, desc = "Molten literate init" },
-      { "<localleader>k", ft = "quarto", desc = "Molten run cell" },
+      { "<localleader>i", ft = { "quarto", "python" }, desc = "Molten literate init" },
+      { "<localleader>e", ft = "quarto", desc = "Molten run cell" },
+      { "<CR>", ft = "quarto", desc = "Molten run cell" },
       { "<localleader>l", ft = "quarto", desc = "Molten run line" },
       { "<localleader>;", mode = { "n", "v" }, ft = "quarto", desc = "Molten evaluate" },
-      { "<localleader>h", ft = "quarto", desc = "Molten enter output" },
-      { "<localleader>H", ft = "quarto", desc = "Molten hide output" },
-      { "<localleader>u", ft = "quarto", desc = "Molten re-evaluate cell" },
-      { "<localleader>i", ft = "quarto", desc = "Molten interrupt" },
+      { "<localleader>o", ft = "quarto", desc = "Molten enter output" },
+      { "<localleader>O", ft = "quarto", desc = "Molten hide output" },
+      { "<localleader>r", ft = "quarto", desc = "Molten re-evaluate cell" },
+      { "<localleader>x", ft = "quarto", desc = "Molten interrupt" },
       { "<localleader>q", ft = "quarto", desc = "Molten quit" },
       { "<localleader>a", ft = "quarto", desc = "Molten run above" },
       { "<localleader>A", ft = "quarto", desc = "Molten run all" },

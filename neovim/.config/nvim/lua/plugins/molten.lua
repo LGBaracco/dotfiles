@@ -1,9 +1,9 @@
 -- Molten literate REPL for Quarto (.qmd).
 -- Python host: uv tool env `pynvim` (see options.lua). Restart Neovim after installing/refreshing it.
 -- Molten* commands are remote-plugin commands from the rplugin manifest (sourced at
--- startup). ,I regenerates the manifest itself when it is missing/stale (e.g. after a
+-- startup). ,i regenerates the manifest itself when it is missing/stale (e.g. after a
 -- nixpkgs bump changed molten's store path) and asks for a restart.
--- From a .py buffer, ,I opens project-root repl.qmd (or an in-memory template) and owns the kernel.
+-- From a .py buffer, ,i opens project-root repl.qmd (or an in-memory template) and owns the kernel.
 
 vim.g.molten_image_provider = "image.nvim"
 vim.g.molten_virt_text_output = true
@@ -284,10 +284,11 @@ end
 
 local function build_repl_template(root, pkg_name)
   local cell = bootstrap_cell_lines(root, pkg_name)
+  local kernel = kernel_name_for(root, pkg_name)
   local out = {
     "---",
     "title: Literate REPL",
-    "jupyter: python3",
+    ("jupyter: %s"):format(kernel),
     "---",
     "",
     "# Literate REPL",
@@ -309,6 +310,60 @@ local function build_repl_template(root, pkg_name)
     "",
   })
   return out
+end
+
+---Ensure YAML `jupyter:` uses the Molten UV kernel. QuartoPreview reads the file on disk.
+---@return boolean changed
+local function ensure_jupyter_frontmatter(bufnr, kernel)
+  local line_count = vim.api.nvim_buf_line_count(bufnr)
+  local limit = math.min(line_count, 80)
+  local lines = vim.api.nvim_buf_get_lines(bufnr, 0, limit, false)
+  if not lines[1] or not lines[1]:match("^---%s*$") then
+    return false
+  end
+  local changed = false
+  for i = 2, #lines do
+    local line = lines[i]
+    if line:match("^---%s*$") then
+      break
+    end
+    local replaced = line:gsub("^jupyter:%s*.*$", "jupyter: " .. kernel)
+    if replaced ~= line then
+      lines[i] = replaced
+      changed = true
+    end
+  end
+  if not changed then
+    return false
+  end
+  vim.api.nvim_buf_set_lines(bufnr, 0, limit, false, lines)
+  vim.api.nvim_buf_call(bufnr, function()
+    vim.cmd("silent update")
+  end)
+  return true
+end
+
+local function literate_preview()
+  local buf = vim.api.nvim_get_current_buf()
+  local path = vim.api.nvim_buf_get_name(buf)
+  local root, pyproject = find_project_root(path ~= "" and vim.fs.dirname(path) or nil)
+  if not pyproject then
+    notify(("Not a UV project (no pyproject.toml above %s)."):format(root), vim.log.levels.ERROR)
+    return
+  end
+  local pkg_name = project_name_from_toml(pyproject)
+  local kernel = kernel_name_for(root, pkg_name)
+  if not ensure_kernel_spec(root, kernel) then
+    return
+  end
+  ensure_jupyter_frontmatter(buf, kernel)
+
+  local ok, err = pcall(function()
+    require("quarto").quartoPreview()
+  end)
+  if not ok then
+    notify("QuartoPreview failed: " .. tostring(err), vim.log.levels.ERROR)
+  end
 end
 
 local function evaluate_inject(kernel_id, code)
@@ -333,25 +388,45 @@ local function find_buf_by_name(path)
   return nil
 end
 
+---Jump to a window showing `bufnr`, or open a vertical split on the right for it.
+local function open_repl_window(bufnr)
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    if vim.api.nvim_win_get_buf(win) == bufnr then
+      vim.api.nvim_set_current_win(win)
+      return
+    end
+  end
+  vim.cmd("vertical rightbelow split")
+  vim.api.nvim_set_current_buf(bufnr)
+end
+
 local map_quarto_buf -- forward decl
 
----Open root/repl.qmd if on disk or already in memory; else create an unsaved in-memory buffer.
+---Open root/repl.qmd in a right-hand vertical split (or jump to an existing window).
+---If missing on disk, create an unsaved in-memory buffer named repl.qmd.
 ---@return integer bufnr
 ---@return boolean is_new_template
 local function ensure_repl_buffer(root, pkg_name)
   local path = repl_path(root)
 
   if vim.uv.fs_stat(path) then
+    local existing = find_buf_by_name(path)
+    if existing then
+      open_repl_window(existing)
+      return existing, false
+    end
+    vim.cmd("vertical rightbelow split")
     vim.cmd.edit(vim.fn.fnameescape(path))
     return vim.api.nvim_get_current_buf(), false
   end
 
   local existing = find_buf_by_name(path)
   if existing then
-    vim.api.nvim_set_current_buf(existing)
+    open_repl_window(existing)
     return existing, false
   end
 
+  vim.cmd("vertical rightbelow split")
   vim.cmd.enew()
   local buf = vim.api.nvim_get_current_buf()
   -- Named path so :w writes repl.qmd; not written until the user saves.
@@ -418,7 +493,7 @@ local function ensure_remote_plugin()
   end
   local ok, err = pcall(vim.cmd, "UpdateRemotePlugins")
   if ok then
-    notify("Molten rplugin manifest regenerated. Restart Neovim, then run ,I again.", vim.log.levels.WARN)
+    notify("Molten rplugin manifest regenerated. Restart Neovim, then run ,i again.", vim.log.levels.WARN)
   else
     notify(
       "UpdateRemotePlugins failed: " .. tostring(err) .. "\nCheck :checkhealth provider.python",
@@ -520,24 +595,25 @@ map_quarto_buf = function(bufnr)
     vim.keymap.set(mode, lhs, rhs, vim.tbl_extend("force", opts, { desc = desc }))
   end
 
-  map("n", "<localleader>I", literate_init, "Molten literate init")
-  map("n", "<localleader>k", with_runner("run_cell"), "Molten run cell")
+  map("n", "<localleader>i", literate_init, "Molten literate init")
+  map("n", "<localleader>e", with_runner("run_cell"), "Molten run cell")
+  map("n", "<CR>", with_runner("run_cell"), "Molten run cell")
   map("n", "<localleader>l", with_runner("run_line"), "Molten run line")
   map("n", "<localleader>;", ":MoltenEvaluateOperator<CR>", "Molten evaluate operator")
   map("v", "<localleader>;", ":<C-u>MoltenEvaluateVisual<CR>gv", "Molten evaluate visual")
-  map("n", "<localleader>h", ":noautocmd MoltenEnterOutput<CR>", "Molten enter output")
-  map("n", "<localleader>H", ":MoltenHideOutput<CR>", "Molten hide output")
-  map("n", "<localleader>u", ":MoltenReevaluateCell<CR>", "Molten re-evaluate cell")
-  map("n", "<localleader>i", ":MoltenInterrupt<CR>", "Molten interrupt")
+  map("n", "<localleader>o", ":noautocmd MoltenEnterOutput<CR>", "Molten enter output")
+  map("n", "<localleader>O", ":MoltenHideOutput<CR>", "Molten hide output")
+  map("n", "<localleader>r", ":MoltenReevaluateCell<CR>", "Molten re-evaluate cell")
+  map("n", "<localleader>x", ":MoltenInterrupt<CR>", "Molten interrupt")
   map("n", "<localleader>q", ":MoltenDeinit<CR>", "Molten quit")
   map("n", "<localleader>a", with_runner("run_above"), "Molten run above")
   map("n", "<localleader>A", with_runner("run_all"), "Molten run all")
   map("n", "<localleader>d", ":MoltenDelete<CR>", "Molten delete cell")
-  map("n", "<localleader>p", "<Cmd>QuartoPreview<CR>", "Quarto preview")
+  map("n", "<localleader>p", literate_preview, "Quarto preview")
 end
 
 local function map_python_buf(bufnr)
-  vim.keymap.set("n", "<localleader>I", literate_init, {
+  vim.keymap.set("n", "<localleader>i", literate_init, {
     buffer = bufnr,
     silent = true,
     desc = "Molten literate init (open repl.qmd)",
@@ -566,7 +642,7 @@ vim.api.nvim_create_autocmd("FileType", {
     map_python_buf(ev.buf)
     pcall(function()
       require("which-key").add({
-        { "<localleader>I", desc = "Molten literate init", buffer = ev.buf },
+        { "<localleader>i", desc = "Molten literate init", buffer = ev.buf },
       })
     end)
   end,

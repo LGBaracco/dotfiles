@@ -1,4 +1,4 @@
--- Quarto + otter for .qmd literate buffers. Code running uses molten (opt-in via ,I).
+-- Quarto + otter for .qmd literate buffers. Code running uses molten (opt-in via ,i).
 -- *.qmd → quarto filetype is registered early in ftdetect/quarto.lua.
 
 require("quarto").setup({

@@ -71,7 +71,14 @@
     # --- Other languages ---
     sbcl # Common Lisp
     racket
-    quarto # Quarto CLI (qmd preview/render; used by quarto-nvim)
+    # Quarto 1.10 emits pandoc's new `syntax-highlighting` key; nixpkgs pandoc is
+    # still 3.7 (`highlight-style`). Patch until pandoc >= 3.8 lands (nixpkgs#519484).
+    (quarto.overrideAttrs (old: {
+      postPatch = (old.postPatch or "") + ''
+        substituteInPlace bin/quarto.js \
+          --replace-fail "syntax-highlighting" "highlight-style"
+      '';
+    }))
     proselint # Markdown linter
     pandoc # Markdown syntax highlighting
     shellcheck

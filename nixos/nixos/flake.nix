@@ -14,7 +14,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nvim-config = {
-      url = "path:../../neovim";
+      url = "path:../../neovim/.config/nvim";
     };
     helium = {
       url = "github:oxcl/nix-flake-helium-browser";

@@ -105,7 +105,7 @@ require("dashboard").setup({
         footer = { "" },
         center = {
             {
-                icon = " ",
+                icon = " ",
                 icon_hl = "DashboardIcon",
                 desc = "Open project                           ",
                 desc_hl = "DashboardDesc",
@@ -115,7 +115,7 @@ require("dashboard").setup({
                 action = "Telescope projects",
             },
             {
-                icon = " ",
+                icon = " ",
                 icon_hl = "DashboardIcon",
                 desc = "Open file explorer                     ",
                 desc_hl = "DashboardDesc",
@@ -136,7 +136,7 @@ require("dashboard").setup({
             },
 
             {
-                icon = " ",
+                icon = " ",
                 icon_hl = "DashboardIcon",
                 desc = "Recently opened files                  ",
                 desc_hl = "DashboardDesc",
@@ -146,7 +146,7 @@ require("dashboard").setup({
                 action = "Telescope oldfiles",
             },
             {
-                icon = " ",
+                icon = " ",
                 icon_hl = "DashboardIcon",
                 desc = "New file                               ",
                 desc_hl = "DashboardDesc",

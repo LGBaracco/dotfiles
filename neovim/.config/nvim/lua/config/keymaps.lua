@@ -1,5 +1,5 @@
--- Eager keymaps only. Deferred-plugin maps live in plugins.lazy (lze keys).
--- Iron REPL maps: plugins.iron (registered after iron loads). Surround: plugins.editor.
+-- Eager / core keymaps. Maps for deferred plugins live next to their lze spec
+-- (plugins.files, plugins.git, plugins.lsp, plugins.dap, plugins.repl.*). Surround: plugins.editor.
 local map = vim.keymap.set
 
 --- which-key groups ---
@@ -17,7 +17,7 @@ do
             { "<leader>g", desc = "+Git" },
             { "<leader>l", desc = "+lsp" },
             { "<leader>lw", desc = "+Workspace" },
-            { "<leader>r", desc = "+run/repl" }, -- run-nvim rr; iron rc/rf/rl/rm/rx/rq/…
+            { "<leader>r", desc = "+run/repl" }, -- run-nvim rr; iron rc/rf/rl/rm/rx/rq/… (plugins.repl.*)
             { "<leader>w", desc = "+window" },
         })
     end
@@ -63,7 +63,7 @@ map("n", "<leader>wj", "<C-w>j", { desc = "Focus down" })
 map("n", "<leader>wk", "<C-w>k", { desc = "Focus up" })
 map("n", "<leader>w=", "<C-w>=", { desc = "Balance windows" })
 
---- Motion ---
+--- hop ---
 
 map({ "n", "x" }, "s", "<cmd>HopChar2<cr>", { desc = "Hop to a 2-character sequence" })
 map({ "n", "x" }, "S", "<cmd>HopWord<cr>", { desc = "Hop to a word" })
@@ -156,22 +156,22 @@ map(
 )
 
 --- smart-splits ---
--- Resize Alt+hjkl, focus Ctrl+hjkl. Do not bind <leader><leader>hjkl (races find_files).
+-- Resize Ctrl+Shift+hjkl, focus Ctrl+hjkl. Do not bind <leader><leader>hjkl (races find_files).
 
 do
     local function ss()
         return require("smart-splits")
     end
-    map("n", "<A-h>", function()
+    map("n", "<C-H>", function()
         ss().resize_left()
     end, { desc = "Resize Window/Pane Left" })
-    map("n", "<A-j>", function()
+    map("n", "<C-J>", function()
         ss().resize_down()
     end, { desc = "Resize Window/Pane Down" })
-    map("n", "<A-k>", function()
+    map("n", "<C-A>", function()
         ss().resize_up()
     end, { desc = "Resize Window/Pane Up" })
-    map("n", "<A-l>", function()
+    map("n", "<C-L>", function()
         ss().resize_right()
     end, { desc = "Resize Window/Pane Right" })
     map("n", "<C-h>", function()

@@ -1,100 +1,5 @@
+-- Eager UI chrome, then deferred light-UI plugins. Dashboard: plugins.dashboard.
 vim.cmd.colorscheme("oxocarbon")
-
-require("config.appearance").setup()
-
-require("dashboard").setup({
-    theme = "doom",
-    hide = {
-        statusline = true,
-        tabline = true,
-        winbar = true,
-    },
-    config = {
-        header = {
-            "",
-            "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⣶⣶⠿⠿⠿⣶⣦⣀⠀⠀⠀",
-            "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⡾⠛⠉⠀⠀⠀⠀⠀⠀⠉⠻⣧⡀⠀",
-            " ⢠⣄⣀⣀⣀⣀⣀⣀⣴⠋⠀⠀⠀⠀⠀⣴⣆⠀⠀⠀⠀⠘⣿⡀",
-            "⠀⠙⠻⣿⣟⠛⠛⠛⠋⠁⠀⠀⠀⠀⠀⠘⠿⠋⠀⠀⠀⠀⠀⣿⡇",
-            "⠀⠀⠀⠀⠙⢷⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⡇",
-            "⠀⠀⠀⠀⠀⠀⠘⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣽⠃",
-            "⠀⠀⠀⠀⠀⠀⢰⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⠀",
-            "⠀⠀⠀⠀⠀⠀⣾⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⡿⠀",
-            "⠀⠀⠀⠀⠀⢸⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⠃⠀",
-            "⠀⠀⠀⠀⢀⡿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⡟⠀⠀",
-            "⠀⠀⠀⠀⣾⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⠇⠀⠀",
-            "",
-            "",
-            "███▄▄▄▄      ▄████████  ▄██████▄   ▄█    █▄   ▄█    ▄▄▄▄███▄▄▄▄  ",
-            "███▀▀▀██▄   ███    ███ ███    ███ ███    ███ ███  ▄██▀▀▀███▀▀▀██▄ ",
-            "███   ███   ███    █▀  ███    ███ ███    ███ ███▌ ███   ███   ███ ",
-            "███   ███  ▄███▄▄▄     ███    ███ ███    ███ ███▌ ███   ███   ███ ",
-            "███   ███ ▀▀███▀▀▀     ███    ███ ███    ███ ███▌ ███   ███   ███ ",
-            "███   ███   ███    █▄  ███    ███ ███    ███ ███  ███   ███   ███ ",
-            "███   ███   ███    ███ ███    ███ ███    ███ ███  ███   ███   ███ ",
-            " ▀█   █▀    ██████████  ▀██████▀   ▀██████▀  █▀    ▀█   ███   █▀  ",
-            "",
-            "",
-            "",
-            "",
-        },
-        vertical_center = true,
-        footer = { "" },
-        center = {
-            {
-                icon = " ",
-                icon_hl = "DashboardIcon",
-                desc = "Open project                           ",
-                desc_hl = "DashboardDesc",
-                key = "p",
-                key_hl = "DashboardKey",
-                key_format = " %s",
-                action = "Telescope projects",
-            },
-            {
-                icon = " ",
-                icon_hl = "DashboardIcon",
-                desc = "Open file explorer                     ",
-                desc_hl = "DashboardDesc",
-                key = "o",
-                key_hl = "DashboardKey",
-                key_format = " %s",
-                action = "Oil",
-            },
-            {
-                icon = "󰈞 ",
-                icon_hl = "DashboardIcon",
-                desc = "Find file                              ",
-                desc_hl = "DashboardDesc",
-                key = "f",
-                key_hl = "DashboardKey",
-                key_format = " %s",
-                action = "Telescope find_files",
-            },
-
-            {
-                icon = " ",
-                icon_hl = "DashboardIcon",
-                desc = "Recently opened files                  ",
-                desc_hl = "DashboardDesc",
-                key = "r",
-                key_hl = "DashboardKey",
-                key_format = " %s",
-                action = "Telescope oldfiles",
-            },
-            {
-                icon = " ",
-                icon_hl = "DashboardIcon",
-                desc = "New file                               ",
-                desc_hl = "DashboardDesc",
-                key = "e",
-                key_hl = "DashboardKey",
-                key_format = " %s",
-                action = "enew",
-            },
-        },
-    },
-})
 
 require("nvim-web-devicons").setup()
 require("fidget").setup()
@@ -125,5 +30,130 @@ require("lualine").setup({
                 cond = require("nvim-navic").is_available,
             },
         },
+    },
+})
+
+--- Deferred (one tick after UIEnter, or on filetype) ---
+require("lze").load({
+    {
+        "nvim-scrollbar",
+        event = "DeferredUIEnter",
+        after = function()
+            require("scrollbar").setup({
+                excluded_filetypes = {
+                    "prompt",
+                    "TelescopePrompt",
+                    "noice",
+                    "NvimTree",
+                    "neo-tree",
+                    "dashboard",
+                    "alpha",
+                    "notify",
+                    "Navbuddy",
+                    "fastaction_popup",
+                },
+            })
+        end,
+    },
+    {
+        "cinnamon.nvim",
+        event = "DeferredUIEnter",
+        after = function()
+            require("cinnamon").setup()
+        end,
+    },
+    {
+        "highlight-undo.nvim",
+        event = "DeferredUIEnter",
+        after = function()
+            require("highlight-undo").setup({
+                ignored_filetypes = {
+                    "dashboard",
+                    "neo-tree",
+                    "fugitive",
+                    "TelescopePrompt",
+                    "mason",
+                    "lazy",
+                    "notify",
+                },
+            })
+        end,
+    },
+    {
+        "indent-blankline.nvim",
+        event = "DeferredUIEnter",
+        after = function()
+            require("ibl").setup({
+                exclude = {
+                    filetypes = {
+                        "dashboard",
+                        "lspinfo",
+                        "checkhealth",
+                        "help",
+                        "man",
+                        "gitcommit",
+                        "TelescopePrompt",
+                        "TelescopeResults",
+                        "neo-tree",
+                        "",
+                    },
+                    buftypes = { "terminal", "nofile", "quickfix", "prompt" },
+                },
+            })
+        end,
+    },
+    {
+        "nvim-colorizer.lua",
+        event = "DeferredUIEnter",
+        after = function()
+            require("colorizer").setup({
+                filetypes = { "*", "!dashboard" },
+            })
+            -- setup only registers FileType; buffers opened before DeferredUIEnter
+            -- (e.g. `nvim tmux.conf`) already have ft set, so attach them now.
+            for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+                if vim.api.nvim_buf_is_loaded(bufnr) then
+                    local ft = vim.bo[bufnr].filetype
+                    if ft ~= "" and ft ~= "dashboard" then
+                        pcall(require("colorizer").attach_to_buffer, bufnr)
+                    end
+                end
+            end
+        end,
+    },
+    {
+        "vim-illuminate",
+        event = "DeferredUIEnter",
+        after = function()
+            require("illuminate").configure({
+                filetypes_denylist = {
+                    "dirvish",
+                    "fugitive",
+                    "help",
+                    "dashboard",
+                    "neo-tree",
+                    "notify",
+                    "NvimTree",
+                    "TelescopePrompt",
+                    "DressingInput",
+                },
+            })
+        end,
+    },
+    {
+        -- In-buffer markdown / Quarto chrome. Molten plots use image.nvim's API separately.
+        "render-markdown.nvim",
+        ft = { "markdown", "quarto" },
+        after = function()
+            require("render-markdown").setup({
+                file_types = { "markdown", "quarto" },
+                code = {
+                    enabled = true,
+                    width = "block",
+                    border = "thin",
+                    conceal_delimiters = true,
+                },
+            })
+        end,
     },
 })

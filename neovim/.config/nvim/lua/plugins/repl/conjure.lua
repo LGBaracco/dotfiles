@@ -1,12 +1,13 @@
 -- Conjure (parked / disabled).
--- Formerly loaded via nixpkgs vimPlugins.conjure + lze in plugins/lazy.lua.
+-- Formerly loaded via nixpkgs vimPlugins.conjure + an lze spec.
 -- Kept here so everything Conjure-related lives in one place; do not require this file.
+-- To revive: add `conjure` to module.nix specs.deferred and require this file from plugins/init.lua.
 
 --[[
 -- Nix (module.nix specs.deferred):
 --   conjure
 
--- lze spec (plugins/lazy.lua):
+-- lze spec:
 {
   "conjure",
   ft = { "clojure", "fennel", "janet", "hy", "julia", "racket", "scheme", "lua", "lisp", "python", "sql", "r" },

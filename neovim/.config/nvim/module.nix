@@ -97,7 +97,7 @@
       img-clip-nvim
       image-nvim
       run-nvim
-      # conjure  # parked: see lua/plugins/conjure.lua
+      # conjure  # parked: see lua/plugins/repl/conjure.lua
 
       # Git
       gitsigns-nvim
@@ -113,8 +113,7 @@
       nvim-dap-ui
       nvim-nio
 
-      # AI / REPL
-      avante-nvim
+      # REPL (lua/plugins/repl)
       iron-nvim
       molten-nvim
       quarto-nvim
@@ -131,7 +130,6 @@
     fd
     tree-sitter
     imagemagick
-    cursor-cli
 
     # Formatters (conform)
     nixfmt

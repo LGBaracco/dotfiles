@@ -1,14 +1,9 @@
--- Eager editor plugins only. Deferred setups live in plugins.lazy after hooks.
+-- Eager editor plugins only. Deferred plugins live in their topic files.
 require("which-key").setup({
     preset = "helix",
     win = { border = "rounded" },
     notify = false, -- avoid spurious which-key "no mappings" noise after leader spam
     delay = 200,
-})
-
--- project.nvim (v6+) module is `project`, not `project_nvim`.
-require("project").setup({
-    manual_mode = false,
 })
 
 require("hop").setup({})

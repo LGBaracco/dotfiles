@@ -1,5 +1,5 @@
--- Molten literate REPL for Quarto (.qmd).
--- Python host: uv tool env `pynvim` (see options.lua). Restart Neovim after installing/refreshing it.
+-- Molten literate REPL for Quarto (.qmd). Loaded by lze (plugins.repl.quarto) on ft=quarto/python.
+-- Python host: uv tool env `pynvim` (see plugins/repl/quarto.lua). Restart Neovim after installing/refreshing it.
 -- Molten* commands are remote-plugin commands from the rplugin manifest (sourced at
 -- startup). ,i regenerates the manifest itself when it is missing/stale (e.g. after a
 -- nixpkgs bump changed molten's store path) and asks for a restart.

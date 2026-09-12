@@ -266,3 +266,51 @@ vim.lsp.enable({
   "vscode-css-language-server",
   "vscode-json-language-server",
 })
+
+-- Deferred LSP UI extras ------------------------------------------------------
+-- fastaction is required from the LspAttach <leader>la map (config.keymaps).
+
+require("lze").load({
+  {
+    "fastaction.nvim",
+    event = "DeferredUIEnter",
+    on_require = "fastaction",
+    after = function()
+      require("fastaction").setup({
+        popup = { border = "rounded" },
+      })
+    end,
+  },
+  {
+    "nvim-navbuddy",
+    event = "LspAttach",
+    cmd = { "Navbuddy" },
+    after = function()
+      require("nvim-navbuddy").setup({
+        lsp = { auto_attach = true },
+      })
+    end,
+  },
+  {
+    "nvim-docs-view",
+    cmd = { "DocsViewToggle", "DocsViewUpdate" },
+    after = function()
+      require("docs-view").setup({})
+    end,
+  },
+  {
+    "trouble.nvim",
+    cmd = { "Trouble" },
+    after = function()
+      require("trouble").setup({})
+    end,
+  },
+})
+
+local map = vim.keymap.set
+map("n", "<leader>lN", "<cmd>Navbuddy<CR>", { desc = "Navbuddy" })
+map("n", "<leader>lvt", "<cmd>DocsViewToggle<CR>", { desc = "Open or close the docs view panel" })
+map("n", "<leader>lvu", "<cmd>DocsViewUpdate<CR>", { desc = "Manually update the docs view panel" })
+map("n", "<leader>lwd", "<cmd>Trouble diagnostics toggle<CR>", { desc = "Workspace diagnostics [trouble]" })
+map("n", "<leader>ld", "<cmd>Trouble diagnostics toggle filter.buf=0<CR>", { desc = "Document diagnostics [trouble]" })
+map("n", "<leader>lr", "<cmd>Trouble lsp_references toggle<CR>", { desc = "LSP References [trouble]" })

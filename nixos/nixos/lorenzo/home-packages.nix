@@ -47,14 +47,12 @@
     nil # nix lsp
 
     # --- Python ---
+    # (python3.withPackages (   ps: with ps; [  ]))
+    # Will later decide whether ruff,ty should be moved to uv tools
     uv
     python3
-    # (python3.withPackages (
-    #   ps: with ps; [
-    #     torch-bin
-    #     ipython
-    #   ]
-    # ))
+    ruff
+    ty
 
     # --- Julia ---
     julia-bin

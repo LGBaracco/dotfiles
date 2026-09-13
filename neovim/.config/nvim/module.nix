@@ -66,6 +66,7 @@
       # LSP / completion / treesitter
       blink-cmp
       conform-nvim
+      lazydev-nvim
       nvim-lightbulb
       nvim-treesitter.withAllGrammars
       nvim-treesitter-context

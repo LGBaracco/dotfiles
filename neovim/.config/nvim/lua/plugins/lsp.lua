@@ -9,7 +9,14 @@ require("blink.cmp").setup({
     ["<C-space>"] = { "show", "fallback" },
   },
   sources = {
-    default = { "lsp", "path", "snippets", "buffer" },
+    default = { "lazydev", "lsp", "path", "snippets", "buffer" },
+    providers = {
+      lazydev = {
+        name = "LazyDev",
+        module = "lazydev.integrations.blink",
+        score_offset = 100,
+      },
+    },
   },
   snippets = { preset = "luasnip" },
 })
@@ -164,11 +171,19 @@ vim.lsp.config("lemminx", {
   filetypes = { "xml" },
 })
 
+-- Neovim API types for lua_ls (must run before the server attaches).
+require("lazydev").setup({
+  library = {
+    { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+  },
+})
+
 vim.lsp.config("lua-language-server", {
   cmd = { "lua-language-server" },
   filetypes = { "lua" },
   settings = {
     Lua = {
+      runtime = { version = "LuaJIT" },
       workspace = { checkThirdParty = false },
       telemetry = { enable = false },
     },

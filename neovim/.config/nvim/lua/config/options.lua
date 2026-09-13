@@ -21,5 +21,12 @@ opt.cursorlineopt = "line"
 
 opt.spell = false
 
+-- tmux 3.7 answers DECRQM 2026, so Neovim enables synchronized output under
+-- tmux; tmux's handling of it causes cursor flicker/jumps while scrolling
+-- (tmux#5470, tmux#5419). Bare terminals are fine.
+if vim.env.TMUX and vim.env.TMUX ~= "" then
+    opt.termsync = false
+end
+
 -- Read by conform's format-on-save guard (see plugins/lsp.lua).
 vim.g.formatsave = true

@@ -35,25 +35,10 @@ local SKIP_DIRS = {
 ---Fields: kernel, mode ("document"|"inject"), code? (inject only)
 local pending_wire = {}
 
+local find_project_root = require("config.python_project").find_project_root
+
 local function notify(msg, level)
   vim.notify(msg, level or vim.log.levels.INFO, { title = "Molten" })
-end
-
-local function find_project_root(start)
-  start = start or vim.fn.expand("%:p:h")
-  if start == "" then
-    start = vim.fn.getcwd()
-  end
-  local path = vim.fs.normalize(start)
-  local pyproject = vim.fs.find("pyproject.toml", { upward = true, path = path })[1]
-  if pyproject then
-    return vim.fs.dirname(pyproject), pyproject
-  end
-  local git = vim.fs.find(".git", { upward = true, path = path, type = "directory" })[1]
-  if git then
-    return vim.fs.dirname(git), nil
-  end
-  return vim.fn.getcwd(), nil
 end
 
 local function project_name_from_toml(pyproject)

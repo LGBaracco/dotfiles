@@ -1,6 +1,102 @@
 -- nvim-dap + dap-ui. Loaded on first require("dap") / require("dapui") from the maps below.
 local map = vim.keymap.set
 
+local function setup_python(dap)
+  local find_project_root = require("config.python_project").find_project_root
+
+  dap.adapters.python = function(cb, config)
+    if config.request == "attach" then
+      local port = (config.connect and config.connect.port) or config.port or 5678
+      local host = (config.connect and config.connect.host) or config.host or "127.0.0.1"
+      cb({
+        type = "server",
+        port = assert(port, "connect.port is required for python attach"),
+        host = host,
+        options = { source_filetype = "python" },
+      })
+      return
+    end
+
+    local root, pyproject = find_project_root()
+    local uv = vim.fn.exepath("uv")
+    if pyproject and uv ~= "" then
+      cb({
+        type = "executable",
+        command = uv,
+        args = {
+          "run",
+          "--project",
+          root,
+          "--with",
+          "debugpy",
+          "python",
+          "-m",
+          "debugpy.adapter",
+        },
+        options = { source_filetype = "python" },
+      })
+      return
+    end
+
+    local adapter = vim.fn.exepath("debugpy-adapter")
+    if adapter ~= "" then
+      cb({
+        type = "executable",
+        command = adapter,
+        options = { source_filetype = "python" },
+      })
+      return
+    end
+
+    vim.notify(
+      "No Python DAP adapter: need uv+pyproject or debugpy-adapter on PATH",
+      vim.log.levels.ERROR,
+      { title = "DAP" }
+    )
+  end
+
+  local function project_cwd()
+    return find_project_root()
+  end
+
+  local configs = {
+    {
+      type = "python",
+      request = "launch",
+      name = "Launch file",
+      program = "${file}",
+      cwd = project_cwd,
+      console = "integratedTerminal",
+    },
+    {
+      type = "python",
+      request = "launch",
+      name = "Launch module",
+      module = function()
+        return vim.fn.input("Module: ")
+      end,
+      cwd = project_cwd,
+      console = "integratedTerminal",
+    },
+    {
+      type = "python",
+      request = "attach",
+      name = "Attach remote",
+      connect = function()
+        local host = vim.fn.input("Host [127.0.0.1]: ")
+        if host == "" then
+          host = "127.0.0.1"
+        end
+        local port = tonumber(vim.fn.input("Port [5678]: ")) or 5678
+        return { host = host, port = port }
+      end,
+    },
+  }
+
+  dap.configurations.python = configs
+  dap.configurations.quarto = configs
+end
+
 require("lze").load({
   {
     "nvim-nio",
@@ -18,6 +114,7 @@ require("lze").load({
       local dapui = require("dapui")
 
       dapui.setup({})
+      setup_python(dap)
 
       dap.listeners.after.event_initialized["dapui_config"] = function()
         dapui.open()

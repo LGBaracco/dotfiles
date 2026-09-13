@@ -51,6 +51,7 @@
     # Will later decide whether ruff,ty should be moved to uv tools
     uv
     python3
+    python3Packages.debugpy
     ruff
     ty
 

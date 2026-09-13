@@ -11,6 +11,7 @@
     ./overlays.nix
     ./theming
     ./system-packages.nix
+    ./jetbrains.nix
     ./desktop-environment.nix
     ./gaming.nix
     ./nautilus.nix

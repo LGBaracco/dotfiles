@@ -41,14 +41,13 @@
       tree = "eza --tree --icons";
       cd = "z"; # zoxide
       gs = "git status";
-      lg = "lazygit";
       vi = "nvim";
       vim = "nvim";
       neovim = "nvim";
       # Rebuild shortcut
       nfu = "cd ~/nixos && nix flake update --commit-lock-file";
-      nrs = "sudo nixos-rebuild switch --flake $HOME/nixos#$hostname";
-      nrt = "sudo nixos-rebuild test --flake $HOME/nixos#$hostname";
+      nrs = "nh os switch $HOME/nixos#$hostname";
+      nrt = "nh os test $HOME/nixos#$hostname";
     };
   };
 

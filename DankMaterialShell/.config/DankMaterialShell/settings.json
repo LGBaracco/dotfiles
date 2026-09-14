@@ -15,7 +15,8 @@
         "flavor": "black",
         "accent": "blue"
       }
-    }
+    },
+    "gruvboxMaterial": "soft"
   },
   "matugenScheme": "scheme-fruit-salad",
   "runUserMatugenTemplates": false,

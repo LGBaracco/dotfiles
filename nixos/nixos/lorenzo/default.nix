@@ -31,6 +31,7 @@
       theme = "Oxocarbon";
       confirm-close-surface = false;
       font-size = 12;
+      window-padding-y = 0;
     };
   };
 

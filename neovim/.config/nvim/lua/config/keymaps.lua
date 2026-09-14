@@ -157,21 +157,22 @@ map(
 
 --- smart-splits ---
 -- Resize Ctrl+Shift+hjkl, focus Ctrl+hjkl. Do not bind <leader><leader>hjkl (races find_files).
+-- Use <C-S-*> (not <C-H>): in terminals <C-H> == <C-h>, so focus maps were overwriting resize.
 
 do
     local function ss()
         return require("smart-splits")
     end
-    map("n", "<C-H>", function()
+    map("n", "<C-S-h>", function()
         ss().resize_left()
     end, { desc = "Resize Window/Pane Left" })
-    map("n", "<C-J>", function()
+    map("n", "<C-S-j>", function()
         ss().resize_down()
     end, { desc = "Resize Window/Pane Down" })
-    map("n", "<C-A>", function()
+    map("n", "<C-S-k>", function()
         ss().resize_up()
     end, { desc = "Resize Window/Pane Up" })
-    map("n", "<C-L>", function()
+    map("n", "<C-S-l>", function()
         ss().resize_right()
     end, { desc = "Resize Window/Pane Right" })
     map("n", "<C-h>", function()

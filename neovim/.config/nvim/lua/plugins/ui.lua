@@ -147,6 +147,7 @@ require("lze").load({
         after = function()
             require("render-markdown").setup({
                 file_types = { "markdown", "quarto" },
+                sign = { enabled = false },
                 code = {
                     enabled = true,
                     width = "block",

@@ -59,6 +59,31 @@ require("toggleterm").setup({
 })
 
 require("nvim-autopairs").setup({})
-require("luasnip").setup({})
+local ls = require("luasnip")
+local s = ls.snippet
+local t = ls.text_node
+local i = ls.insert_node
+
+ls.setup({})
 -- friendly-snippets is on the runtimepath via module.nix (includes LaTeX).
 require("luasnip.loaders.from_vscode").lazy_load()
+
+ls.add_snippets("quarto", {
+  s("pycell", {
+    t({ "```{python}", "" }),
+    i(1),
+    t({ "", "```", "" }),
+  }),
+})
+
+-- Jump only in insert/select so normal-mode <C-hjkl> window focus stays free.
+vim.keymap.set({ "i", "s" }, "<C-j>", function()
+  if ls.expand_or_jumpable() then
+    ls.expand_or_jump()
+  end
+end, { silent = true, desc = "LuaSnip expand or jump forward" })
+vim.keymap.set({ "i", "s" }, "<C-k>", function()
+  if ls.jumpable(-1) then
+    ls.jump(-1)
+  end
+end, { silent = true, desc = "LuaSnip jump backward" })

@@ -241,6 +241,7 @@ local function bootstrap_cell_lines(root, pkg_name)
   for _, mod in ipairs(imports) do
     table.insert(lines, "try:")
     table.insert(lines, ("    import %s"):format(mod))
+    table.insert(lines, ("    from %s import *"):format(mod))
     table.insert(lines, ("except Exception as _e:"))
     table.insert(lines, ("    print('molten wire: skip import %s:', _e)"):format(mod))
   end

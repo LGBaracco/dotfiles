@@ -56,23 +56,110 @@
     settings = {
       add_newline = true;
 
-      format = "$directory$git_branch$line_break$character";
+      # Tmux bar is blue → cyan → green; prompt inverts that, then purple for lang.
+      # Edged powerline pills; input stays on the next line.
+      format = builtins.concatStringsSep "" [
+        "$username"
+        "[](fg:#42be65 bg:#3ddbd9)"
+        "$directory"
+        "[](fg:#3ddbd9 bg:#78a9ff)"
+        "$git_branch"
+        "$git_status"
+        "[](fg:#78a9ff bg:#be95ff)"
+        "$c"
+        "$cpp"
+        "$fennel"
+        "$golang"
+        "$java"
+        "$julia"
+        "$lua"
+        "$nodejs"
+        "$python"
+        "$rlang"
+        "$rust"
+        "$typst"
+        "$zig"
+        "[](fg:#be95ff)"
+        "$line_break"
+        "$character"
+      ];
+
+      username = {
+        show_always = true;
+        style_user = "fg:#161616 bg:#42be65";
+        style_root = "fg:#161616 bg:#ee5396";
+        format = "[ $user ]($style)";
+      };
 
       directory = {
-        style = "bold #42be65"; # oxocarbon green
+        style = "fg:#161616 bg:#3ddbd9";
+        format = "[ $path ]($style)";
         truncation_length = 3;
         truncate_to_repo = true;
       };
 
       git_branch = {
-        symbol = " ";
-        style = "italic #525252";
-        format = "[($symbol$branch)]($style) ";
+        symbol = " ";
+        style = "fg:#161616 bg:#78a9ff";
+        format = "[ $symbol$branch ]($style)";
       };
 
       git_status = {
-        style = "#ee5396";
-        format = "([$all_status$ahead_behind]($style)) ";
+        style = "fg:#161616 bg:#78a9ff";
+        format = "[$all_status$ahead_behind]($style)";
+      };
+
+      c = {
+        style = "fg:#161616 bg:#be95ff";
+        format = "[ $symbol ]($style)";
+      };
+      cpp = {
+        style = "fg:#161616 bg:#be95ff";
+        format = "[ $symbol ]($style)";
+      };
+      fennel = {
+        style = "fg:#161616 bg:#be95ff";
+        format = "[ $symbol ]($style)";
+      };
+      golang = {
+        style = "fg:#161616 bg:#be95ff";
+        format = "[ $symbol ]($style)";
+      };
+      java = {
+        style = "fg:#161616 bg:#be95ff";
+        format = "[ $symbol ]($style)";
+      };
+      julia = {
+        style = "fg:#161616 bg:#be95ff";
+        format = "[ $symbol ]($style)";
+      };
+      lua = {
+        style = "fg:#161616 bg:#be95ff";
+        format = "[ $symbol ]($style)";
+      };
+      nodejs = {
+        style = "fg:#161616 bg:#be95ff";
+        format = "[ $symbol ]($style)";
+      };
+      python = {
+        style = "fg:#161616 bg:#be95ff";
+        format = "[ $symbol ]($style)";
+      };
+      rlang = {
+        style = "fg:#161616 bg:#be95ff";
+        format = "[ $symbol ]($style)";
+      };
+      rust = {
+        style = "fg:#161616 bg:#be95ff";
+        format = "[ $symbol ]($style)";
+      };
+      typst = {
+        style = "fg:#161616 bg:#be95ff";
+        format = "[ $symbol ]($style)";
+      };
+      zig = {
+        style = "fg:#161616 bg:#be95ff";
+        format = "[ $symbol ]($style)";
       };
 
       character = {

@@ -56,8 +56,6 @@
     settings = {
       add_newline = true;
 
-      # Tmux bar is blue → cyan → green; prompt inverts that, then purple for lang.
-      # Edged powerline pills; input stays on the next line.
       format = builtins.concatStringsSep "" [
         "$username"
         "[](fg:#42be65 bg:#3ddbd9)"

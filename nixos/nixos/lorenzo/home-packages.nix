@@ -38,6 +38,7 @@
     fastfetch
     rclone
     cursor-cli
+    opencode
 
     # --- Nix tooling ---
     nix-output-monitor # prettier `nix build` output

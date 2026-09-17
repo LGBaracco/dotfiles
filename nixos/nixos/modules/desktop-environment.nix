@@ -26,6 +26,23 @@
   environment.plasma6.excludePackages = with pkgs; [
     kdePackages.discover
   ];
+  systemd.user.services.plasma-kwin_wayland = {
+    overrideStrategy = "asDropin";
+    # NixOS injects Environment=PATH=<coreutils,...> into every
+    # systemd.user.services unit, even as a drop-in. That replaces the PATH the
+    # upstream unit inherits from the user manager, and kwin_wayland_wrapper
+    # looks up `kwin_wayland` via PATH: it then silently never spawns kwin.
+    enableDefaultPath = false;
+    # A previous niri session imports the Home Manager session vars into the
+    # systemd user manager, and startplasma does not clear them. With
+    # QT_QPA_PLATFORMTHEME=gtk3, kwin_wayland loads the GTK platform theme; GTK
+    # then connects to $XDG_RUNTIME_DIR/wayland-0 (WAYLAND_DISPLAY is unset), which
+    # is kwin's own not-yet-served socket, so kwin deadlocks before drawing.
+    serviceConfig.UnsetEnvironment = [
+      "QT_QPA_PLATFORMTHEME"
+      "QT_QPA_PLATFORMTHEME_QT6"
+    ];
+  };
 
   # ── niri
   programs.niri = {

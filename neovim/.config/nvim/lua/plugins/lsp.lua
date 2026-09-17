@@ -178,7 +178,8 @@ require("lazydev").setup({
   },
 })
 
-vim.lsp.config("lua-language-server", {
+-- Client name must be "lua_ls" so lazydev can inject Neovim types.
+vim.lsp.config("lua_ls", {
   cmd = { "lua-language-server" },
   filetypes = { "lua" },
   settings = {
@@ -267,7 +268,7 @@ vim.lsp.enable({
   "jdt-language-server",
   "julials",
   "lemminx",
-  "lua-language-server",
+  "lua_ls",
   "marksman",
   "neocmakelsp",
   "nil",

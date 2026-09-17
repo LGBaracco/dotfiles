@@ -9,7 +9,7 @@
   services.displayManager.dms-greeter = {
     enable = true;
     configHome = "/home/lorenzo"; # copies that user's DMS settings (and wallpaper) into the greeter data directory before greetd starts
-    compositor.name = "niri"; # greeter UI compositor only; sessions come from wayland-sessions (niri, mango, plasma, …)
+    compositor.name = "niri"; # greeter UI compositor
   };
   environment.etc."greetd/niri_overrides.kdl".text = ''
     input {

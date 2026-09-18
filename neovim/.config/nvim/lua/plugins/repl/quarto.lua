@@ -25,6 +25,23 @@ do
   end
 end
 
+--- Jupyter notebooks (.ipynb) ---
+-- jupytext.nvim owns BufReadCmd/BufWriteCmd for *.ipynb: on read it converts the
+-- notebook to a sibling <name>.qmd (temporary unless it already existed) and loads
+-- that text with ft=quarto; :w converts back into the *same* .ipynb. Needs the
+-- `jupytext` CLI (module.nix) and `quarto` on PATH. Eager: the plugin is in the
+-- startup pack, and a lazily registered *Cmd autocmd would miss `nvim foo.ipynb`.
+do
+  local ok, jupytext = pcall(require, "jupytext")
+  if ok then
+    jupytext.setup({
+      style = "quarto",
+      output_extension = "qmd",
+      force_ft = "quarto",
+    })
+  end
+end
+
 --- Plugins ---
 require("lze").load({
   {
@@ -107,7 +124,7 @@ require("lze").load({
     ft = { "quarto", "python" },
     -- Do NOT list Molten* here: they are remote-plugin commands defined by the
     -- rplugin manifest at startup; lze's cmd handler would delete them on load.
-    cmd = { "MoltenLiterateInit" },
+    cmd = { "MoltenLiterateInit", "MoltenNotebookExport" },
     after = function()
       require("plugins.repl.molten")
     end,

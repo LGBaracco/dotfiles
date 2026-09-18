@@ -63,6 +63,9 @@
       # LaTeX (eager: inverse search breaks if vimtex is lazy-loaded)
       vimtex
 
+      # Notebooks (eager: owns BufReadCmd *.ipynb; lazy-loading a *Cmd event is fragile)
+      jupytext-nvim
+
       # LSP / completion / treesitter
       blink-cmp
       conform-nvim
@@ -131,6 +134,9 @@
     fd
     tree-sitter
     imagemagick
+    # .ipynb <-> .qmd conversion (jupytext.nvim). The quarto format shells out to the
+    # `quarto` CLI, which comes from the user profile (patched build in home-packages).
+    python3Packages.jupytext
 
     # Formatters (conform)
     nixfmt

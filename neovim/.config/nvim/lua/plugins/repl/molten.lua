@@ -4,6 +4,9 @@
 -- startup). ,i regenerates the manifest itself when it is missing/stale (e.g. after a
 -- nixpkgs bump changed molten's store path) and asks for a restart.
 -- From a .py buffer, ,i opens project-root repl.qmd (or an in-memory template) and owns the kernel.
+-- .ipynb buffers (jupytext.nvim, ft=quarto, see plugins/repl/quarto.lua) auto-attach a kernel on
+-- open (UV project kernel + wiring, else the notebook's kernelspec, else a picker), import saved
+-- outputs, and export outputs back into the notebook on :w. ,N converts a plain .qmd to .ipynb.
 
 vim.g.molten_image_provider = "image.nvim"
 vim.g.molten_virt_text_output = true
@@ -32,8 +35,11 @@ local SKIP_DIRS = {
 }
 
 ---Pending wire keyed by bufnr; consumed on MoltenKernelReady.
----Fields: kernel, mode ("document"|"inject"), code? (inject only)
+---Fields: kernel? (nil when Molten's picker chose), mode ("document"|"inject"|"none"),
+---code? (inject only), import_outputs? (run MoltenImportOutput once the kernel is up)
 local pending_wire = {}
+
+local augroup = vim.api.nvim_create_augroup("molten_literate", { clear = true })
 
 local find_project_root = require("config.python_project").find_project_root
 
@@ -76,6 +82,34 @@ end
 
 local function repl_path(root)
     return vim.fs.normalize(root .. "/" .. REPL_BASENAME)
+end
+
+---True for a jupytext-backed notebook buffer (buffer name keeps the .ipynb path).
+local function is_notebook_buf(bufnr)
+    return vim.api.nvim_buf_get_name(bufnr or 0):match("%.ipynb$") ~= nil
+end
+
+---metadata.kernelspec.name from an .ipynb on disk, or nil.
+local function notebook_kernelspec(path)
+    local ok, lines = pcall(vim.fn.readfile, path)
+    if not ok then
+        return nil
+    end
+    local decoded, nb = pcall(vim.json.decode, table.concat(lines, "\n"))
+    if not decoded or type(nb) ~= "table" then
+        return nil
+    end
+    local spec = type(nb.metadata) == "table" and nb.metadata.kernelspec or nil
+    return type(spec) == "table" and spec.name or nil
+end
+
+---True when at least one Molten kernel is attached to the current buffer.
+local function molten_attached()
+    if vim.fn.exists("*MoltenStatusLineKernels") ~= 1 then
+        return false
+    end
+    local ok, kernels = pcall(vim.fn.MoltenStatusLineKernels, true)
+    return ok and kernels ~= nil and kernels ~= ""
 end
 
 ---Jupyter data dir as jupyter_core resolves it (Molten writes connection files under
@@ -431,12 +465,13 @@ local function ensure_repl_buffer(root, pkg_name)
     return buf, true
 end
 
-local function start_kernel_on_current(root, pkg_name, name, wire_mode, inject_code)
+local function start_kernel_on_current(root, pkg_name, name, wire_mode, inject_code, import_outputs)
     local buf = vim.api.nvim_get_current_buf()
     pending_wire[buf] = {
         kernel = name,
         mode = wire_mode,
         code = inject_code,
+        import_outputs = import_outputs,
     }
     notify(("Initializing kernel %q (root %s)…"):format(name, root))
     vim.cmd("MoltenInit " .. name)
@@ -521,13 +556,83 @@ local function literate_init()
         -- Setup lives in the document; run cells after the kernel is ready.
         start_kernel_on_current(root, pkg_name, name, "document")
     else
-        -- Existing qmd: don't auto-run the whole notebook; inject wiring once.
+        -- Existing qmd (or .ipynb): don't auto-run the whole notebook; inject wiring once.
         local code = build_inject_bootstrap(root, pkg_name)
-        start_kernel_on_current(root, pkg_name, name, "inject", code)
+        start_kernel_on_current(root, pkg_name, name, "inject", code, is_notebook_buf(0))
     end
 end
 
+---Attach a kernel to a jupytext-backed .ipynb buffer and import its saved outputs.
+---UV project: project kernel + injected wiring (same as ,i). Otherwise the notebook's
+---kernelspec when installed, else Molten's picker. Runs once per buffer.
+local function notebook_auto_init(bufnr)
+    if vim.b[bufnr].molten_notebook_wired then
+        return
+    end
+    vim.b[bufnr].molten_notebook_wired = true
+
+    if not ensure_remote_plugin() then
+        return
+    end
+    if not ensure_jupyter_runtime_dir() then
+        notify("Could not create the Jupyter runtime dir under " .. jupyter_data_dir(), vim.log.levels.ERROR)
+        return
+    end
+
+    local path = vim.api.nvim_buf_get_name(bufnr)
+    local root, pyproject = find_project_root(vim.fs.dirname(path))
+    if pyproject then
+        local pkg_name = project_name_from_toml(pyproject)
+        warn_if_nix_venv(root)
+        local name = kernel_name_for(root, pkg_name)
+        if not ensure_kernel_spec(root, name) then
+            return
+        end
+        local code = build_inject_bootstrap(root, pkg_name)
+        start_kernel_on_current(root, pkg_name, name, "inject", code, true)
+        return
+    end
+
+    local spec = notebook_kernelspec(path)
+    local ok, available = pcall(vim.fn.MoltenAvailableKernels)
+    if spec and ok and vim.tbl_contains(available, spec) then
+        pending_wire[bufnr] = { kernel = spec, mode = "none", import_outputs = true }
+        notify(("Initializing notebook kernel %q…"):format(spec))
+        vim.cmd("MoltenInit " .. spec)
+    else
+        pending_wire[bufnr] = { mode = "none", import_outputs = true }
+        notify(
+            ("Notebook kernel %q is not installed and this is not a UV project; pick a kernel."):format(spec or "?"),
+            vim.log.levels.WARN
+        )
+        vim.cmd("MoltenInit")
+    end
+end
+
+---Run notebook_auto_init once the buffer is the current one (MoltenInit and
+---MoltenKernelReady both act on the current buffer).
+local function schedule_notebook_auto_init(bufnr)
+    vim.schedule(function()
+        if not vim.api.nvim_buf_is_valid(bufnr) or vim.b[bufnr].molten_notebook_wired then
+            return
+        end
+        if vim.api.nvim_get_current_buf() == bufnr then
+            notebook_auto_init(bufnr)
+            return
+        end
+        vim.api.nvim_create_autocmd("BufEnter", {
+            group = augroup,
+            buffer = bufnr,
+            once = true,
+            callback = function()
+                notebook_auto_init(bufnr)
+            end,
+        })
+    end)
+end
+
 vim.api.nvim_create_autocmd("User", {
+    group = augroup,
     pattern = "MoltenKernelReady",
     callback = function(ev)
         local buf = vim.api.nvim_get_current_buf()
@@ -549,17 +654,87 @@ vim.api.nvim_create_autocmd("User", {
                     notify("Running REPL cells failed: " .. tostring(err), vim.log.levels.ERROR)
                     return
                 end
-            else
+            elseif wire.mode == "inject" then
                 local ok, err = pcall(evaluate_inject, kernel_id, wire.code)
                 if not ok then
                     notify("Bootstrap failed: " .. tostring(err), vim.log.levels.ERROR)
                     return
                 end
             end
-            notify(("Literate REPL ready (%s)"):format(wire.kernel))
+            if wire.import_outputs then
+                local ok, err = pcall(vim.cmd, "MoltenImportOutput")
+                if not ok then
+                    notify("Importing notebook outputs failed: " .. tostring(err), vim.log.levels.WARN)
+                end
+            end
+            notify(("Literate REPL ready (%s)"):format(wire.kernel or kernel_id or "kernel"))
         end)
     end,
 })
+
+-- jupytext.nvim re-emits BufWritePost after it has rewritten the .ipynb; push live
+-- outputs into that same file so they survive the round trip.
+vim.api.nvim_create_autocmd("BufWritePost", {
+    group = augroup,
+    pattern = "*.ipynb",
+    callback = function()
+        if not molten_attached() then
+            return
+        end
+        local ok, err = pcall(vim.cmd, "MoltenExportOutput!")
+        if not ok then
+            notify("Exporting outputs to the notebook failed: " .. tostring(err), vim.log.levels.WARN)
+        end
+    end,
+})
+
+---One-shot: convert the current .qmd into a sibling .ipynb (jupytext; --update keeps
+---outputs of unchanged cells when the target exists), then export live Molten outputs.
+local function notebook_export()
+    local buf = vim.api.nvim_get_current_buf()
+    local path = vim.api.nvim_buf_get_name(buf)
+    if path == "" then
+        notify("Buffer has no file name; save it as .qmd first.", vim.log.levels.ERROR)
+        return
+    end
+    if is_notebook_buf(buf) then
+        notify("Already a notebook buffer: :w writes the .ipynb.", vim.log.levels.WARN)
+        return
+    end
+    if not path:match("%.qmd$") then
+        notify("Not a .qmd buffer.", vim.log.levels.ERROR)
+        return
+    end
+    if vim.fn.executable("jupytext") == 0 then
+        notify("`jupytext` CLI not found on PATH (see module.nix runtimePkgs).", vim.log.levels.ERROR)
+        return
+    end
+
+    -- jupytext reads from disk; this also persists an in-memory repl.qmd.
+    vim.cmd("silent update")
+
+    local target = vim.fn.fnamemodify(path, ":r") .. ".ipynb"
+    local cmd = { "jupytext", "--to", "ipynb", "--output", target, path }
+    if vim.uv.fs_stat(target) then
+        table.insert(cmd, 2, "--update")
+    end
+    local res = vim.system(cmd, { text = true }):wait()
+    if res.code ~= 0 then
+        notify("jupytext failed:\n" .. (res.stderr or res.stdout or ""), vim.log.levels.ERROR)
+        return
+    end
+
+    local with_outputs = false
+    if molten_attached() then
+        local ok, err = pcall(vim.api.nvim_cmd, { cmd = "MoltenExportOutput", bang = true, args = { target } }, {})
+        if ok then
+            with_outputs = true
+        else
+            notify("Exporting outputs failed: " .. tostring(err), vim.log.levels.WARN)
+        end
+    end
+    notify(("Wrote %s%s"):format(vim.fn.fnamemodify(target, ":~:."), with_outputs and " (with outputs)" or ""))
+end
 
 local function with_runner(fn_name)
     return function()
@@ -593,6 +768,7 @@ map_quarto_buf = function(bufnr)
     map("n", "<localleader>A", with_runner("run_all"), "Molten run all")
     map("n", "<localleader>d", ":MoltenDelete<CR>", "Molten delete cell")
     map("n", "<localleader>p", literate_preview, "Quarto preview")
+    map("n", "<localleader>N", notebook_export, "Export .qmd to .ipynb")
 end
 
 local function map_python_buf(bufnr)
@@ -607,19 +783,33 @@ vim.api.nvim_create_user_command("MoltenLiterateInit", literate_init, {
     desc = "Init Molten on project repl.qmd (create in-memory if missing)",
 })
 
+vim.api.nvim_create_user_command("MoltenNotebookExport", notebook_export, {
+    desc = "Convert the current .qmd to a sibling .ipynb (with Molten outputs when attached)",
+})
+
+---Quarto buffer setup: keymaps, which-key group, notebook auto-init for .ipynb buffers.
+local function setup_quarto_buf(bufnr)
+    map_quarto_buf(bufnr)
+    pcall(function()
+        require("which-key").add({
+            { "<localleader>", group = "molten", buffer = bufnr },
+        })
+    end)
+    if is_notebook_buf(bufnr) then
+        schedule_notebook_auto_init(bufnr)
+    end
+end
+
 vim.api.nvim_create_autocmd("FileType", {
+    group = augroup,
     pattern = "quarto",
     callback = function(ev)
-        map_quarto_buf(ev.buf)
-        pcall(function()
-            require("which-key").add({
-                { "<localleader>", group = "molten", buffer = ev.buf },
-            })
-        end)
+        setup_quarto_buf(ev.buf)
     end,
 })
 
 vim.api.nvim_create_autocmd("FileType", {
+    group = augroup,
     pattern = "python",
     callback = function(ev)
         map_python_buf(ev.buf)
@@ -635,7 +825,8 @@ for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
     if vim.api.nvim_buf_is_loaded(bufnr) then
         local ft = vim.bo[bufnr].filetype
         if ft == "quarto" then
-            map_quarto_buf(bufnr)
+            -- Covers the buffer whose FileType event loaded this module.
+            setup_quarto_buf(bufnr)
         elseif ft == "python" then
             map_python_buf(bufnr)
         end

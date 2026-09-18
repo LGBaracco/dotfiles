@@ -1,4 +1,9 @@
-{ ... }: {
+{ config, ... }:
+let
+  # First pill doubles as the old $character indicator (success / error / vim).
+  userPill = bg: "[  ${config.home.username} ](fg:#161616 bg:${bg})[](fg:${bg} bg:#3ddbd9)";
+in
+{
   # ── Fish shell ────────────────────────────────────────────────────────────
   programs.fish = {
     enable = true;
@@ -57,8 +62,7 @@
       add_newline = true;
 
       format = builtins.concatStringsSep "" [
-        "$username"
-        "[](fg:#42be65 bg:#3ddbd9)"
+        "$character"
         "$directory"
         "[](fg:#3ddbd9 bg:#78a9ff)"
         "$git_branch"
@@ -78,15 +82,18 @@
         "$typst"
         "$zig"
         "[](fg:#be95ff)"
-        "$line_break"
-        "$character"
+        " "
       ];
 
-      username = {
-        show_always = true;
-        style_user = "fg:#161616 bg:#42be65";
-        style_root = "fg:#161616 bg:#ee5396";
-        format = "[ $user ]($style)";
+      # First section: green normally, pink on error, purple in vim normal mode
+      character = {
+        format = "$symbol";
+        success_symbol = userPill "#42be65";
+        error_symbol = userPill "#ee5396";
+        vimcmd_symbol = userPill "#be95ff";
+        vimcmd_replace_one_symbol = userPill "#be95ff";
+        vimcmd_replace_symbol = userPill "#be95ff";
+        vimcmd_visual_symbol = userPill "#be95ff";
       };
 
       directory = {
@@ -158,12 +165,6 @@
       zig = {
         style = "fg:#161616 bg:#be95ff";
         format = "[ $symbol ]($style)";
-      };
-
-      character = {
-        success_symbol = "[➜](bold #33b1ff)";
-        error_symbol = "[➜](bold #ee5396)";
-        vimcmd_symbol = "[➜](bold #be95ff)";
       };
     };
   };

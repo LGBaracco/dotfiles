@@ -3,7 +3,7 @@
   "currentThemeCategory": "registry",
   "customThemeFile": "/home/lorenzo/.config/DankMaterialShell/themes/myoxocarbon/theme.json",
   "registryThemeVariants": {
-    "oxocarbon": "Purple",
+    "oxocarbon": "blue",
     "deepdark": {
       "dark": {
         "flavor": "voltage",

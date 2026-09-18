@@ -35,7 +35,6 @@
     yq
     jq
     gnumake
-    fastfetch
     rclone
     cursor-cli
     opencode

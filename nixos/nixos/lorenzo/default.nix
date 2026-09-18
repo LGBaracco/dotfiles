@@ -3,6 +3,7 @@
     ./git.nix
     ./home-packages.nix
     ./starfish.nix
+    ./fastfetch.nix
     ./chromium.nix
     ./theming
     ./dcal.nix
@@ -32,6 +33,8 @@
       confirm-close-surface = false;
       font-size = 12;
       window-padding-y = 0;
+      # Run fastfetch once per Ghostty surface; nested terminals never see this.
+      command = "fish -C fastfetch";
     };
   };
 

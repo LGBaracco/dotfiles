@@ -47,13 +47,10 @@
     nil # nix lsp
 
     # --- Python ---
-    # (python3.withPackages (   ps: with ps; [  ]))
-    # Will later decide whether ruff,ty should be moved to uv tools
+    # Bare interpreter for casual one-offs only. Project envs + tools (ruff, ty,
+    # debugpy, ipython, jupyter, pynvim) are uv-managed (`uv tool` / `uv run`).
     uv
     python3
-    python3Packages.debugpy
-    ruff
-    ty
 
     # --- Julia ---
     julia-bin

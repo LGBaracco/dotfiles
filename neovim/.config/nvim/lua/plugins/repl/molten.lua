@@ -9,11 +9,14 @@
 -- outputs, and export outputs back into the notebook on :w. ,N converts a plain .qmd to .ipynb.
 
 vim.g.molten_image_provider = "image.nvim"
+vim.g.molten_image_location = "virt" -- inline plots (not the output float)
 vim.g.molten_virt_text_output = true
 vim.g.molten_virt_lines_off_by_1 = true
 vim.g.molten_wrap_output = true
 vim.g.molten_auto_open_output = false
 vim.g.molten_output_win_max_height = 20
+-- Room for cell text above a plot before truncation (default 12 clips early).
+vim.g.molten_virt_text_max_lines = 64
 
 local REPL_BASENAME = "repl.qmd"
 
@@ -157,24 +160,14 @@ end
 ---Kernel command: uv layers ipykernel over the project env at launch time, so the
 ---project venv stays untouched and `uv sync` cannot remove the kernel.
 local function kernel_argv(root)
-    local uv = vim.fn.exepath("uv")
-    if uv == "" then
-        return nil
-    end
-    return {
-        uv,
-        "run",
-        "--project",
-        root,
-        "--with",
-        "ipykernel",
+    return require("config.python_project").uv_run_argv(root, { "ipykernel" }, {
         "python",
         "-Xfrozen_modules=off",
         "-m",
         "ipykernel_launcher",
         "-f",
         "{connection_file}",
-    }
+    })
 end
 
 ---Write ~/.local/share/jupyter/kernels/<name>/kernel.json (idempotent).

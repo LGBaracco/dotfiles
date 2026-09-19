@@ -98,6 +98,10 @@ require("lze").load({
         max_width_window_percentage = math.huge,
         window_overlap_clear_enabled = true,
         window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },
+        -- Kitty graphics stick to the TTY; clear when Neovim / tmux window loses focus
+        -- so plots don't paint over other panes/windows/sessions.
+        editor_only_render_when_focused = true,
+        tmux_show_only_in_active_window = true,
         -- Document ![](…) images: cursor-gated so they don't fight Molten plots.
         integrations = {
           markdown = {

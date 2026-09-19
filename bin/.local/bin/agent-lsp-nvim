@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Run agent-lsp with the same LSP binaries Neovim gets via its nix wrapper.
+# Run agent-lsp with the same LSP binaries Neovim gets via its nix wrapper,
+# plus uv tools (~/.local/bin: ty, ruff, …) which are not in the wrapper.
 set -euo pipefail
 
 AGENT_LSP="${AGENT_LSP_BIN:-$HOME/.local/share/agent-lsp/agent-lsp}"
@@ -29,7 +30,8 @@ if [[ -z "${NVIM_LSP_PATH}" ]]; then
   exit 1
 fi
 
-export PATH="${NVIM_LSP_PATH}:${PATH}"
+# uv tools first (ty/ruff/debugpy), then nvim wrapper LSPs, then the rest.
+export PATH="${HOME}/.local/bin:${NVIM_LSP_PATH}:${PATH}"
 
 case "${1:-}" in
   doctor | init | update | uninstall | --version | -v | --help | -h)

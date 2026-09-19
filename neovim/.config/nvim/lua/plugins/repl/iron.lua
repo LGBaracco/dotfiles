@@ -1,15 +1,9 @@
 -- iron.nvim REPL. Loaded on first require("iron.core") from the maps below.
+-- Python: uv project → `uv run --with ipython`; else uv-tool `ipython` on PATH.
 -- <leader>r namespace split:
 --   run-nvim:  rr  (plugins.repl.run)
 --   iron:      rc / rf / rl / rm / rx / rq / r<cr> / r<space>
 local map = vim.keymap.set
-
-local function python_repl_command()
-  if vim.fn.executable("ipython") == 1 then
-    return { "ipython", "--no-autoindent" }
-  end
-  return { vim.fn.executable("python3") == 1 and "python3" or "python" }
-end
 
 require("lze").load({
   {
@@ -20,7 +14,8 @@ require("lze").load({
         config = {
           repl_definition = {
             python = {
-              command = python_repl_command(),
+              -- Function so the project root is resolved when the REPL opens.
+              command = require("config.python_project").ipython_repl_command,
               format = require("iron.fts.common").bracketed_paste_python,
               block_dividers = { "# %%", "#%%" },
             },

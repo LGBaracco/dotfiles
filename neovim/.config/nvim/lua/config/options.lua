@@ -1,6 +1,15 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = ","
 
+-- uv tools (ruff, ty, debugpy, ipython, …) install shims here; keep them ahead of
+-- the nix wrapper PATH suffix so Neovide / non-login launches still resolve them.
+do
+  local local_bin = vim.fn.expand("~/.local/bin")
+  if not (":" .. (vim.env.PATH or "") .. ":"):find(":" .. local_bin .. ":", 1, true) then
+    vim.env.PATH = local_bin .. ":" .. (vim.env.PATH or "")
+  end
+end
+
 local opt = vim.opt
 
 opt.expandtab = true

@@ -140,7 +140,7 @@
 
     # Formatters (conform)
     nixfmt
-    ruff
+    # ruff: uv tool (~/.local/bin), not nix — see home-packages Python note
     stylua
     shfmt
     clang-tools # clangd + clang-format
@@ -176,7 +176,7 @@
     sqls
     superhtml
     texlab
-    ty
+    # ty: uv tool (~/.local/bin), not nix
     vscode-langservers-extracted
   ];
 }

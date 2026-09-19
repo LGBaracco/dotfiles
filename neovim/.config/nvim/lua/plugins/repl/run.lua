@@ -1,4 +1,5 @@
 -- run.nvim: pick and run project actions (telescope UI). <leader>rr.
+-- Python uses `uv run` inside a pyproject; bare python3 only outside projects.
 require("lze").load({
   {
     "run.nvim",
@@ -9,6 +10,7 @@ require("lze").load({
       -- Prepend "Run current file" for common filetypes (plugin only ships cargo/godot).
       local actions_mod = require("run.actions")
       local orig_get = actions_mod.get_actions
+      local run_file_shell_cmd = require("config.python_project").run_file_shell_cmd
       actions_mod.get_actions = function()
         local list = orig_get()
         local out = vim.list_extend({}, list)
@@ -19,7 +21,7 @@ require("lze").load({
         local ft = vim.bo.filetype
         local shellescape = vim.fn.shellescape
         local cmd_by_ft = {
-          python = "python3 " .. shellescape(file),
+          python = run_file_shell_cmd(file),
           lua = "lua " .. shellescape(file),
           sh = "bash " .. shellescape(file),
           bash = "bash " .. shellescape(file),

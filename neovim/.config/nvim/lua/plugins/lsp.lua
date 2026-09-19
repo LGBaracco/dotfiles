@@ -91,8 +91,9 @@ require("treesitter-context").setup({})
 require("nvim-ts-autotag").setup({})
 
 -- LSP servers -----------------------------------------------------------------
--- cmd entries are bare PATH binary names (no /nix/store paths); Nix puts the
--- right packages on PATH via the wrapper module.
+-- cmd entries are bare PATH binary names (no /nix/store paths). Most come from
+-- the nix wrapper (module.nix runtimePkgs). Python is the exception: `ty` (LSP)
+-- and `ruff` (conform) are uv tools on ~/.local/bin — not in the wrapper.
 -- LspAttach keymaps live in config.keymaps; this only wires up
 -- navic breadcrumbs and completion capabilities on attach.
 

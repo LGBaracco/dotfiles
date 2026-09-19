@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# Run agent-lsp with the same LSP binaries Neovim gets via its nix wrapper.
+set -euo pipefail
+
+AGENT_LSP="${AGENT_LSP_BIN:-$HOME/.local/share/agent-lsp/agent-lsp}"
+CONFIG="${AGENT_LSP_CONFIG:-$HOME/.config/agent-lsp/servers.json}"
+NVIM_BIN="$(command -v nvim)"
+
+if [[ -z "${NVIM_BIN}" ]]; then
+  echo "agent-lsp-nvim: nvim not found on PATH" >&2
+  exit 1
+fi
+
+NVIM_REAL="$(readlink -f "${NVIM_BIN}")"
+NVIM_LSP_PATH="$(
+  python3 - "${NVIM_REAL}" <<'PY'
+import re, sys
+from pathlib import Path
+text = Path(sys.argv[1]).read_text(errors="replace")
+parts = []
+for m in re.finditer(r"wrapperSuffixEnv PATH : ([^\n]+)", text):
+    parts.append(m.group(1).strip().strip("'"))
+print(":".join(parts))
+PY
+)"
+
+if [[ -z "${NVIM_LSP_PATH}" ]]; then
+  echo "agent-lsp-nvim: could not extract LSP PATH from ${NVIM_REAL}" >&2
+  exit 1
+fi
+
+export PATH="${NVIM_LSP_PATH}:${PATH}"
+
+case "${1:-}" in
+  doctor | init | update | uninstall | --version | -v | --help | -h)
+    # Subcommands / flags that must come before --config.
+    exec "${AGENT_LSP}" "$@"
+    ;;
+  *)
+    # Explicit config: Neovim runtimePkgs LSPs (auto-detect misses most of these).
+    exec "${AGENT_LSP}" --config "${CONFIG}" "$@"
+    ;;
+esac

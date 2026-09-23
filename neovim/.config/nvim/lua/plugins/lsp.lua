@@ -68,6 +68,83 @@ require("conform").setup({
 -- diagnostics already; add `require("lint")` setup here if a linter is
 -- needed that isn't provided by its LSP server.
 
+-- Diagnostics display -------------------------------------------------------
+-- Default Neovim keeps virtual_text / virtual_lines off; modes below make the
+-- gutter + in-buffer cues louder without stacking CursorHold floats on top.
+
+local DiagSev = vim.diagnostic.severity
+
+local diagnostic_signs = {
+  text = {
+    [DiagSev.ERROR] = "󰅚",
+    [DiagSev.WARN] = "󰀪",
+    [DiagSev.INFO] = "󰋽",
+    [DiagSev.HINT] = "󰌶",
+  },
+}
+
+local diagnostic_base = {
+  update_in_insert = false,
+  severity_sort = true,
+  float = {
+    border = "rounded",
+    source = true,
+    header = "",
+    prefix = "",
+  },
+  -- Signs stay at HINT so harper/prose still mark the gutter; underline and
+  -- virtual cues start at WARN so code errors read louder than hints.
+  signs = vim.tbl_extend("force", { severity = { min = DiagSev.HINT } }, diagnostic_signs),
+  underline = { severity = { min = DiagSev.WARN } },
+}
+
+local diagnostic_modes = {
+  quiet = {
+    virtual_text = false,
+    virtual_lines = false,
+  },
+  focus = {
+    virtual_text = false,
+    virtual_lines = { current_line = true },
+  },
+  loud = {
+    virtual_text = {
+      spacing = 2,
+      source = "if_many",
+      prefix = "●",
+      severity = { min = DiagSev.WARN },
+    },
+    virtual_lines = false,
+  },
+}
+
+local diagnostic_mode_order = { "quiet", "focus", "loud" }
+vim.g.diagnostic_display_mode = "focus"
+
+local function apply_diagnostic_mode(mode)
+  local opts = diagnostic_modes[mode]
+  if not opts then
+    return
+  end
+  vim.g.diagnostic_display_mode = mode
+  vim.diagnostic.config(vim.tbl_deep_extend("force", diagnostic_base, opts))
+end
+
+apply_diagnostic_mode(vim.g.diagnostic_display_mode)
+
+local function cycle_diagnostic_mode()
+  local current = vim.g.diagnostic_display_mode or "focus"
+  local next_mode = diagnostic_mode_order[1]
+  for i, name in ipairs(diagnostic_mode_order) do
+    if name == current then
+      next_mode = diagnostic_mode_order[(i % #diagnostic_mode_order) + 1]
+      break
+    end
+  end
+  apply_diagnostic_mode(next_mode)
+  vim.notify("Diagnostics: " .. next_mode, vim.log.levels.INFO, { title = "diagnostic" })
+end
+
 -- Misc LSP UI ---------------------------------------------------------------
 
 require("nvim-lightbulb").setup({ autocmd = { enabled = true } })
@@ -342,3 +419,4 @@ map("n", "<leader>lvu", "<cmd>DocsViewUpdate<CR>", { desc = "Manually update the
 map("n", "<leader>lwd", "<cmd>Trouble diagnostics toggle<CR>", { desc = "Workspace diagnostics [trouble]" })
 map("n", "<leader>ld", "<cmd>Trouble diagnostics toggle filter.buf=0<CR>", { desc = "Document diagnostics [trouble]" })
 map("n", "<leader>lr", "<cmd>Trouble lsp_references toggle<CR>", { desc = "LSP References [trouble]" })
+map("n", "<leader>ltd", cycle_diagnostic_mode, { desc = "Cycle diagnostic display (quiet/focus/loud)" })

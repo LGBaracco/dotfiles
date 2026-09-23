@@ -20,7 +20,9 @@ vim.g.molten_wrap_output = true
 vim.g.molten_auto_open_output = false
 -- One ,o opens the float and focuses it so yank/inspect works.
 vim.g.molten_enter_output_behavior = "open_and_enter"
-vim.g.molten_output_win_border = "rounded"
+-- Table form required for use_border_highlights (string styles like "rounded"
+-- only paint a static border; Molten injects Success/Fail hl into table entries).
+vim.g.molten_output_win_border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" }
 vim.g.molten_output_win_max_height = 20
 -- Room for cell text above a plot before truncation (default 12 clips early).
 vim.g.molten_virt_text_max_lines = 64

@@ -32,6 +32,12 @@ require("lualine").setup({
         },
         lualine_x = {
             {
+                "diagnostics",
+                sources = { "nvim_diagnostic" },
+                sections = { "error", "warn", "info", "hint" },
+                symbols = { error = "󰅚 ", warn = "󰀪 ", info = "󰋽 ", hint = "󰌶 " },
+            },
+            {
                 -- Attached Molten kernel; vim.b.molten_kernel is maintained by
                 -- plugins.repl.molten from MoltenKernelReady/MoltenDeinitPost (no RPC here).
                 function()
@@ -56,6 +62,11 @@ require("lze").load({
         event = "DeferredUIEnter",
         after = function()
             require("scrollbar").setup({
+                handlers = {
+                    cursor = true,
+                    diagnostic = true,
+                    handle = true,
+                },
                 excluded_filetypes = {
                     "prompt",
                     "TelescopePrompt",

@@ -8,7 +8,10 @@
 -- open (UV project kernel + wiring, else the notebook's kernelspec, else a picker), import saved
 -- outputs, and export outputs back into the notebook on :w. ,N converts a plain .qmd to .ipynb.
 
-vim.g.molten_image_provider = "image.nvim"
+-- snacks.image (unicode placeholders): the plot is its own virt_lines extmark created
+-- after Molten's text extmark, so it always sits below stdout. image.nvim was dropped
+-- because its pixel-positioned image raced Molten's extmark re-creation (see AGENTS.md).
+vim.g.molten_image_provider = "snacks.nvim"
 vim.g.molten_image_location = "virt" -- inline plots (not the output float)
 vim.g.molten_virt_text_output = true
 vim.g.molten_virt_lines_off_by_1 = true

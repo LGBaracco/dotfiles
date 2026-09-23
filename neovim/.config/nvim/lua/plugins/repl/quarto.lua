@@ -1,5 +1,5 @@
 -- Quarto (.qmd) literate buffers: filetype, python host, quarto-nvim + otter,
--- image.nvim, img-clip, and the molten-nvim loader (body: plugins.repl.molten).
+-- snacks.image, img-clip, and the molten-nvim loader (body: plugins.repl.molten).
 -- This file is required eagerly; the plugins themselves load on ft=quarto.
 
 --- Filetype (must run before the first buffer is detected, i.e. during init) ---
@@ -85,31 +85,28 @@ require("lze").load({
     end,
   },
   {
-    "image.nvim",
-    ft = { "markdown", "norg", "vimwiki", "quarto" },
+    -- snacks.nvim, image module only. Kitty graphics via unicode placeholders: the
+    -- terminal positions the image from placeholder cells, so Molten plots sit in
+    -- their own virt_lines below the cell text and never bleed into other tmux panes.
+    -- Needs tmux `allow-passthrough on`; `magick` only for non-PNG documents images.
+    "snacks.nvim", -- packdir name (nixpkgs attr is snacks-nvim)
+    ft = { "markdown", "quarto" },
     dep_of = { "molten-nvim" },
     after = function()
-      require("image").setup({
-        backend = "kitty",
-        processor = "magick_cli",
-        max_width = 100,
-        max_height = 12,
-        max_height_window_percentage = math.huge,
-        max_width_window_percentage = math.huge,
-        window_overlap_clear_enabled = true,
-        window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },
-        -- Kitty graphics stick to the TTY; clear when Neovim / tmux window loses focus
-        -- so plots don't paint over other panes/windows/sessions.
-        editor_only_render_when_focused = true,
-        tmux_show_only_in_active_window = true,
-        -- Document ![](…) images: cursor-gated so they don't fight Molten plots.
-        integrations = {
-          markdown = {
+      require("snacks").setup({
+        image = {
+          enabled = true,
+          doc = {
             enabled = true,
-            filetypes = { "markdown", "vimwiki", "quarto" },
-            only_render_image_at_cursor = true,
-            only_render_image_at_cursor_mode = "popup",
+            -- Document ![](…) images: float at cursor, not inline (Molten passes
+            -- inline=true itself, so plots are unaffected by this).
+            inline = false,
+            float = true,
+            -- load_snacks_nvim reads doc.max_* for plot sizing as well.
+            max_width = 100,
+            max_height = 14,
           },
+          math = { enabled = false }, -- no pdflatex/typst dependency
         },
       })
     end,

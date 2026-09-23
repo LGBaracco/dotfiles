@@ -99,7 +99,7 @@
       undotree
       diffview-nvim
       img-clip-nvim
-      image-nvim
+      snacks-nvim # image module only (Molten plots + markdown/quarto images)
       run-nvim
       # conjure  # parked: see lua/plugins/repl/conjure.lua
 

@@ -141,7 +141,7 @@ require("lze").load({
         end,
     },
     {
-        -- In-buffer markdown / Quarto chrome. Molten plots use image.nvim's API separately.
+        -- In-buffer markdown / Quarto chrome. Molten plots use snacks.image separately.
         "render-markdown.nvim",
         ft = { "markdown", "quarto" },
         after = function()

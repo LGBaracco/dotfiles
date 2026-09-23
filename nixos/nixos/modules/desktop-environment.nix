@@ -68,7 +68,6 @@
         src = lib.mkForce inputs.dms-sessionizer.packages.${pkgs.stdenv.hostPlatform.system}.default;
       };
     };
-    enableCalendarEvents = true;
   };
 
   # ── mango (mangowc) — selectable alongside niri in the DMS greeter

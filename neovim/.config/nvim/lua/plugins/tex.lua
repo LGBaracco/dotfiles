@@ -26,6 +26,13 @@ vim.api.nvim_create_autocmd("User", {
   end,
 })
 
-require("which-key").add({
-  { "<localleader>l", group = "vimtex", ft = { "tex", "plaintex", "bib" } },
+-- Buffer-local so the group can't surface in other filetypes that map
+-- <localleader>l themselves (e.g. Molten's ,l in quarto buffers).
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "tex", "plaintex", "bib" },
+  callback = function(ev)
+    require("which-key").add({
+      { "<localleader>l", group = "vimtex", buffer = ev.buf },
+    })
+  end,
 })

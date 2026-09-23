@@ -72,6 +72,7 @@
       lazydev-nvim
       nvim-lightbulb
       nvim-treesitter.withAllGrammars
+      nvim-treesitter-textobjects # @code_cell text objects (after/queries/markdown)
       nvim-treesitter-context
       nvim-ts-autotag
     ];

@@ -89,6 +89,17 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 require("treesitter-context").setup({})
 require("nvim-ts-autotag").setup({})
+-- Text objects (main branch: no keymaps in setup; maps live where they are used,
+-- e.g. @code_cell in plugins.repl.molten).
+require("nvim-treesitter-textobjects").setup({
+  select = {
+    lookahead = true,
+    selection_modes = {
+      ["@code_cell.outer"] = "V",
+      ["@code_cell.inner"] = "V",
+    },
+  },
+})
 
 -- LSP servers -----------------------------------------------------------------
 -- cmd entries are bare PATH binary names (no /nix/store paths). Most come from

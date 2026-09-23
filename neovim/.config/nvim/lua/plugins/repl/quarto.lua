@@ -125,7 +125,7 @@ require("lze").load({
     ft = { "quarto", "python" },
     -- Do NOT list Molten* here: they are remote-plugin commands defined by the
     -- rplugin manifest at startup; lze's cmd handler would delete them on load.
-    cmd = { "MoltenLiterateInit", "MoltenNotebookExport" },
+    cmd = { "MoltenLiterateInit", "MoltenNotebookExport", "NewNotebook" },
     after = function()
       require("plugins.repl.molten")
     end,

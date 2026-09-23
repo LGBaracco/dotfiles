@@ -30,6 +30,22 @@ require("lualine").setup({
                 cond = require("nvim-navic").is_available,
             },
         },
+        lualine_x = {
+            {
+                -- Attached Molten kernel; vim.b.molten_kernel is maintained by
+                -- plugins.repl.molten from MoltenKernelReady/MoltenDeinitPost (no RPC here).
+                function()
+                    return "󱄅 " .. vim.b.molten_kernel
+                end,
+                cond = function()
+                    local k = vim.b.molten_kernel
+                    return k ~= nil and k ~= ""
+                end,
+            },
+            "encoding",
+            "fileformat",
+            "filetype",
+        },
     },
 })
 

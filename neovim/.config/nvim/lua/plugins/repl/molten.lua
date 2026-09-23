@@ -12,14 +12,43 @@
 -- after Molten's text extmark, so it always sits below stdout. image.nvim was dropped
 -- because its pixel-positioned image raced Molten's extmark re-creation (see AGENTS.md).
 vim.g.molten_image_provider = "snacks.nvim"
-vim.g.molten_image_location = "virt" -- inline plots (not the output float)
+-- virt under cell + float on ,o (plots included in both).
+vim.g.molten_image_location = "both"
 vim.g.molten_virt_text_output = true
 vim.g.molten_virt_lines_off_by_1 = true
 vim.g.molten_wrap_output = true
 vim.g.molten_auto_open_output = false
+-- One ,o opens the float and focuses it so yank/inspect works.
+vim.g.molten_enter_output_behavior = "open_and_enter"
+vim.g.molten_output_win_border = "rounded"
 vim.g.molten_output_win_max_height = 20
 -- Room for cell text above a plot before truncation (default 12 clips early).
 vim.g.molten_virt_text_max_lines = 64
+-- Float border colour tracks cell state (MoltenOutputBorderSuccess/Fail below).
+vim.g.molten_use_border_highlights = true
+-- "N more lines" footer when the float is capped at output_win_max_height.
+vim.g.molten_output_show_more = true
+-- Pad the buffer with virt lines while the float is open so it covers no code.
+vim.g.molten_output_virt_lines = true
+-- Poll the kernel faster than the 500 ms default for snappier output.
+vim.g.molten_tick_rate = 200
+
+-- Molten only links its groups when they don't exist yet (hl_utils), so define
+-- them before init. oxocarbon's FloatBorder is fg == bg (invisible), hence the
+-- explicit border colours. Re-applied on :colorscheme.
+local function set_molten_highlights()
+    local hl = vim.api.nvim_set_hl
+    hl(0, "MoltenOutputBorder", { fg = "#525252", bg = "NONE" })
+    hl(0, "MoltenOutputBorderSuccess", { fg = "#42be65", bg = "NONE" })
+    hl(0, "MoltenOutputBorderFail", { fg = "#ee5396", bg = "NONE" })
+    hl(0, "MoltenOutputWin", { link = "NormalFloat" })
+    hl(0, "MoltenOutputWinNC", { link = "NormalFloat" })
+    hl(0, "MoltenOutputFooter", { fg = "#78a9ff", bg = "NONE", italic = true })
+    hl(0, "MoltenCell", { link = "CursorLine" })
+    -- Comment is too dim for stdout; base04 without italics.
+    hl(0, "MoltenVirtualText", { fg = "#dde1e6", bg = "NONE" })
+end
+set_molten_highlights()
 
 local REPL_BASENAME = "repl.qmd"
 
@@ -46,6 +75,32 @@ local SKIP_DIRS = {
 local pending_wire = {}
 
 local augroup = vim.api.nvim_create_augroup("molten_literate", { clear = true })
+
+vim.api.nvim_create_autocmd("ColorScheme", {
+    group = augroup,
+    callback = set_molten_highlights,
+})
+
+-- Kernel state for the statusline (plugins.ui lualine reads vim.b.molten_kernel).
+-- Cached from Molten's User events: calling MoltenStatusLineKernels on every
+-- redraw would spawn the Python host in buffers that never used Molten.
+vim.api.nvim_create_autocmd("User", {
+    group = augroup,
+    pattern = "MoltenKernelReady",
+    callback = function(ev)
+        local id = ev.data and ev.data.kernel_id
+        if id and id ~= "" then
+            vim.b.molten_kernel = id
+        end
+    end,
+})
+vim.api.nvim_create_autocmd("User", {
+    group = augroup,
+    pattern = "MoltenDeinitPost",
+    callback = function()
+        vim.b.molten_kernel = nil
+    end,
+})
 
 local find_project_root = require("config.python_project").find_project_root
 
@@ -645,7 +700,9 @@ vim.api.nvim_create_autocmd("User", {
                     notify("quarto.runner unavailable after init", vim.log.levels.ERROR)
                     return
                 end
-                local ran, err = pcall(runner.run_all)
+                -- multi_lang=true so never_run (yaml frontmatter / title) is
+                -- respected; without it, cursor-in-yaml runs title: as code.
+                local ran, err = pcall(runner.run_all, true)
                 if not ran then
                     notify("Running REPL cells failed: " .. tostring(err), vim.log.levels.ERROR)
                     return
@@ -739,6 +796,23 @@ local function with_runner(fn_name)
             notify("quarto.runner unavailable; is quarto-nvim loaded?", vim.log.levels.ERROR)
             return
         end
+        -- quarto.runner only applies codeRunner.never_run when lang is unset.
+        -- run_all/run_above without multi_lang use the cursor language, so a
+        -- cursor on YAML `title:` sends frontmatter to the kernel (SyntaxError).
+        if fn_name == "run_all" or fn_name == "run_above" then
+            runner[fn_name](true)
+            return
+        end
+        -- Same trap for run_cell / run_line while the cursor sits in frontmatter.
+        local never = (QuartoConfig and QuartoConfig.codeRunner and QuartoConfig.codeRunner.never_run) or { "yaml" }
+        local otter_ok, otter = pcall(require, "otter.keeper")
+        if otter_ok then
+            local lang = otter.get_current_language_context()
+            if lang and vim.tbl_contains(never, lang) then
+                notify(("Not running %s chunk (never_run)"):format(lang), vim.log.levels.WARN)
+                return
+            end
+        end
         runner[fn_name]()
     end
 end
@@ -756,15 +830,122 @@ map_quarto_buf = function(bufnr)
     map("n", "<localleader>;", ":MoltenEvaluateOperator<CR>", "Molten evaluate operator")
     map("v", "<localleader>;", ":<C-u>MoltenEvaluateVisual<CR>gv", "Molten evaluate visual")
     map("n", "<localleader>o", ":noautocmd MoltenEnterOutput<CR>", "Molten enter output")
-    map("n", "<localleader>O", ":MoltenHideOutput<CR>", "Molten hide output")
     map("n", "<localleader>r", ":MoltenReevaluateCell<CR>", "Molten re-evaluate cell")
     map("n", "<localleader>x", ":MoltenInterrupt<CR>", "Molten interrupt")
     map("n", "<localleader>q", ":MoltenDeinit<CR>", "Molten quit")
     map("n", "<localleader>a", with_runner("run_above"), "Molten run above")
     map("n", "<localleader>A", with_runner("run_all"), "Molten run all")
     map("n", "<localleader>d", ":MoltenDelete<CR>", "Molten delete cell")
+    map("n", "<localleader>D", ":MoltenDelete!<CR>", "Molten delete all cells")
     map("n", "<localleader>p", literate_preview, "Quarto preview")
     map("n", "<localleader>N", notebook_export, "Export .qmd to .ipynb")
+
+    -- Outputs
+    map("n", "<localleader>y", ":MoltenYankOutput<CR>", "Molten yank output")
+    map("n", "<localleader>Y", ":MoltenYankOutput!<CR>", "Molten yank output to clipboard")
+    map("n", "<localleader>I", ":MoltenImagePopup<CR>", "Molten image popup (system viewer)")
+    map("n", "<localleader>b", ":MoltenOpenInBrowser<CR>", "Molten open HTML output in browser")
+    map("n", "<localleader>v", ":MoltenToggleVirtual<CR>", "Molten toggle virtual output")
+
+    -- Kernel
+    map("n", "<localleader>R", ":MoltenRestart<CR>", "Molten restart kernel")
+    -- After Restart!, force-close any orphaned snacks placements (Molten only
+    -- stores one img_identifier when image_location=both; see load_snacks_nvim).
+    map("n", "<localleader>Z", function()
+        vim.cmd("MoltenRestart!")
+        pcall(function()
+            require("load_snacks_nvim").snacks_api.clear_all()
+        end)
+    end, "Molten restart kernel + clear outputs")
+    map("n", "<localleader>E", ":MoltenReevaluateAll<CR>", "Molten re-evaluate all cells")
+
+    -- Cell navigation (Molten cells = evaluated spans; counts supported)
+    map("n", "]c", function()
+        vim.cmd("MoltenNext " .. vim.v.count1)
+    end, "Molten next cell")
+    map("n", "[c", function()
+        vim.cmd("MoltenPrev " .. vim.v.count1)
+    end, "Molten previous cell")
+    map("n", "<localleader>g", function()
+        vim.cmd("MoltenGoto " .. vim.v.count1)
+    end, "Molten goto nth cell (count)")
+
+    -- Treesitter code-block text objects (@code_cell, after/queries/markdown).
+    -- Work on any fenced block, evaluated or not.
+    local has_tso = pcall(require, "nvim-treesitter-textobjects")
+    if has_tso then
+        local function select_cell(capture)
+            return function()
+                require("nvim-treesitter-textobjects.select").select_textobject(capture, "textobjects")
+            end
+        end
+        local function move_cell(fn)
+            return function()
+                require("nvim-treesitter-textobjects.move")[fn]("@code_cell.inner", "textobjects")
+            end
+        end
+        vim.keymap.set({ "x", "o" }, "ib", select_cell("@code_cell.inner"), vim.tbl_extend("force", opts, { desc = "inner code cell" }))
+        vim.keymap.set({ "x", "o" }, "ab", select_cell("@code_cell.outer"), vim.tbl_extend("force", opts, { desc = "a code cell" }))
+        map("n", "]b", move_cell("goto_next_start"), "Next code block")
+        map("n", "[b", move_cell("goto_previous_start"), "Previous code block")
+    end
+end
+
+-- Minimal valid notebook so jupytext.nvim can convert it on :edit. Kernel name is
+-- advisory: UV projects auto-attach their own kernel (notebook_auto_init).
+local NEW_NOTEBOOK_TEMPLATE = [[{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# %s"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "name": "python"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
+]]
+
+local function new_notebook(name)
+    if not name or name == "" then
+        notify("Usage: :NewNotebook <path/name>[.ipynb]", vim.log.levels.ERROR)
+        return
+    end
+    local path = vim.fn.fnamemodify(name, ":p")
+    if not path:match("%.ipynb$") then
+        path = path .. ".ipynb"
+    end
+    if vim.uv.fs_stat(path) then
+        notify(("%s already exists; opening it."):format(vim.fn.fnamemodify(path, ":~:.")), vim.log.levels.WARN)
+    else
+        vim.fn.mkdir(vim.fs.dirname(path), "p")
+        local title = vim.fn.fnamemodify(path, ":t:r")
+        local ok = pcall(vim.fn.writefile, vim.split(NEW_NOTEBOOK_TEMPLATE:format(title), "\n"), path)
+        if not ok then
+            notify("Could not write " .. path, vim.log.levels.ERROR)
+            return
+        end
+    end
+    vim.cmd.edit(vim.fn.fnameescape(path))
 end
 
 local function map_python_buf(bufnr)
@@ -781,6 +962,14 @@ vim.api.nvim_create_user_command("MoltenLiterateInit", literate_init, {
 
 vim.api.nvim_create_user_command("MoltenNotebookExport", notebook_export, {
     desc = "Convert the current .qmd to a sibling .ipynb (with Molten outputs when attached)",
+})
+
+vim.api.nvim_create_user_command("NewNotebook", function(o)
+    new_notebook(o.args)
+end, {
+    nargs = 1,
+    complete = "file",
+    desc = "Create a blank .ipynb and open it (jupytext -> quarto buffer)",
 })
 
 ---Quarto buffer setup: keymaps, which-key group, notebook auto-init for .ipynb buffers.

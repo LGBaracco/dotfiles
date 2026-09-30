@@ -7,6 +7,7 @@
     proton-pass
     heroic
     firefox-bin
+    spotify
     nautilus
 
     # --- terminals ---

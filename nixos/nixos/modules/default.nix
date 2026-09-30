@@ -14,6 +14,7 @@
     ./jetbrains.nix
     ./desktop-environment.nix
     ./gaming.nix
+    ./firewall.nix
     ./nautilus.nix
     ./home-manager.nix
     inputs.dms-plugin-registry.nixosModules.default

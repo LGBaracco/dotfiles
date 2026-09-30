@@ -95,7 +95,7 @@ in
         (item "magenta" "wm" "Compositor" "{pretty-name} {version}" { })
         # Icons: native field always appends [GTK…]; read theme name instead.
         (item "magenta" "command" "Icons" "{result}" {
-          text = ''(gsettings get org.gnome.desktop.interface icon-theme 2>/dev/null || echo "'breeze-dark'") | tr -d "'"''
+          text = ''(gsettings get org.gnome.desktop.interface icon-theme 2>/dev/null || echo "'yet-another-monochrome-icon-set'") | tr -d "'"''
           ;
         })
         (item "magenta" "font" "Font" "{font2}" { })

@@ -17,7 +17,7 @@ let
     [Appearance]
     color_scheme_path=${kdeColorSchemePath}
     custom_palette=true
-    icon_theme=breeze
+    icon_theme=yet-another-monochrome-icon-set
   '';
 
   gtkCssImports = ''
@@ -44,8 +44,8 @@ in
       package = pkgs.adw-gtk3;
     };
     iconTheme = {
-      name = "breeze-dark";
-      package = pkgs.kdePackages.breeze-icons;
+      name = "yet-another-monochrome-icon-set";
+      package = pkgs.yamis-icon-theme;
     };
     cursorTheme = {
       name = "breeze_cursors";
@@ -63,7 +63,7 @@ in
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-dark";
       gtk-theme = "adw-gtk3-dark";
-      icon-theme = "breeze-dark";
+      icon-theme = "yet-another-monochrome-icon-set";
       cursor-theme = "breeze_cursors";
     };
   };
@@ -109,7 +109,7 @@ in
       ColorScheme=DankMatugenDark
 
       [Icons]
-      Theme=breeze-dark
+      Theme=yet-another-monochrome-icon-set
 
       [KDE]
       widgetStyle=Breeze

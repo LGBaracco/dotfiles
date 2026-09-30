@@ -11,6 +11,7 @@
       # in SystemPrompt.environment (Bun 1.4 code-splitting bug).
       # Drop once nixos-unstable carries this bump.
       opencode = final.callPackage ../pkgs/opencode/package.nix { };
+      yamis-icon-theme = final.callPackage ../pkgs/yamis-icon-theme.nix { };
     })
 
     # Stable packages through pkgs.stable.<pkg>

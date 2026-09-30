@@ -112,6 +112,7 @@ in
       git_status = {
         style = "fg:#161616 bg:#78a9ff";
         format = "[$all_status$ahead_behind]($style)";
+        stashed = "";
       };
 
       c = {

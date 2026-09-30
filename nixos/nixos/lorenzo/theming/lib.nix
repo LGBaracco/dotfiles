@@ -33,18 +33,112 @@ let
     in
     if stringLength contents > 0 then fromJSON contents else throw "Empty theme.json at ${path}";
 
+  loadSettingsJson =
+    path:
+    let contents = readFile path;
+    in
+    if stringLength contents > 0 then fromJSON contents else throw "Empty settings.json at ${path}";
+
+  # Map DMS customThemeFile (/home/.../themes/<dir>/theme.json) onto the flake tree.
+  resolveThemeJsonPath =
+    dmsConfigDir: settings:
+    let
+      customThemeFile = settings.customThemeFile or null;
+      matched =
+        if customThemeFile == null || customThemeFile == "" then
+          null
+        else
+          builtins.match ".*/(themes/[^/]+/theme\\.json)$" customThemeFile;
+    in
+    if matched == null then
+      throw ''
+        lorenzo/theming: DMS settings must set customThemeFile to a path under
+        ~/.config/DankMaterialShell/themes/<name>/theme.json (got: ${
+          if customThemeFile == null then "null" else customThemeFile
+        }).
+        Wallpaper/dynamic matugen themes are not supported for HM rebuild.
+      ''
+    else
+      dmsConfigDir + "/${builtins.head matched}";
+
+  # registryThemeVariants entry for this theme id, or multi/options defaults.
+  resolveVariantSpec =
+    themeJson: settings:
+    let
+      themeId = themeJson.id or null;
+      fromSettings =
+        if themeId == null then null else (settings.registryThemeVariants or { }).${themeId} or null;
+      variants = themeJson.variants or { };
+    in
+    if fromSettings != null then
+      fromSettings
+    else if (variants.type or null) == "multi" then
+      (variants.defaults or { })
+    else if variants ? default then
+      variants.default
+    else
+      null;
+
+  findById =
+    list: id:
+    lib.findFirst (v: v.id == id) null list;
+
   findVariant =
     themeJson: variantId:
-    lib.findFirst (v: v.id == variantId) null (themeJson.variants.options or [ ]);
+    findById (themeJson.variants.options or [ ]) variantId;
 
-  mergeTheme =
+  mergeOptionsVariant =
     themeJson: variantId: mode:
     let
       variant = findVariant themeJson variantId;
-      variantColors = variant.${mode} or { };
+      variantColors = if variant == null then { } else (variant.${mode} or { });
       base = themeJson.${mode} or { };
     in
     base // variantColors;
+
+  mergeMultiVariant =
+    themeJson: variantSpec: mode:
+    let
+      variants = themeJson.variants or { };
+      modeSel =
+        if builtins.isAttrs variantSpec then
+          (variantSpec.${mode} or variantSpec.dark or { })
+        else
+          { };
+      defaults = (variants.defaults or { }).${mode} or { };
+      flavorId = modeSel.flavor or defaults.flavor or null;
+      accentId = modeSel.accent or defaults.accent or null;
+      flavor = if flavorId == null then null else findById (variants.flavors or [ ]) flavorId;
+      accent = if accentId == null then null else findById (variants.accents or [ ]) accentId;
+      flavorColors =
+        if flavor == null then
+          { }
+        else
+          # Flavor entries store mode colors under dark/light; some also put
+          # all colors under the flavor id itself when light is empty.
+          flavor.${mode} or { };
+      accentColors =
+        if accent == null || flavorId == null then
+          { }
+        else
+          accent.${flavorId} or { };
+      base = themeJson.${mode} or { };
+    in
+    base // flavorColors // accentColors;
+
+  # variantSpec: null | string (options id) | attrs (multi { dark/light = { flavor, accent } })
+  mergeTheme =
+    themeJson: variantSpec: mode:
+    let
+      variants = themeJson.variants or { };
+      isMulti = (variants.type or null) == "multi";
+    in
+    if variantSpec == null then
+      themeJson.${mode} or { }
+    else if isMulti || builtins.isAttrs variantSpec then
+      mergeMultiVariant themeJson variantSpec mode
+    else
+      mergeOptionsVariant themeJson variantSpec mode;
 
   get =
     theme: key: fallback:
@@ -230,7 +324,7 @@ let
   generateFromTheme =
     {
       themeJsonPath,
-      variant ? "Purple",
+      variant ? null,
       mode ? "dark",
       templates,
     }:
@@ -251,6 +345,22 @@ let
       qtCtConf = render templates.qtCt;
     };
 
+  generateFromDmsSettings =
+    {
+      dmsConfigDir,
+      mode ? "dark",
+      templates,
+    }:
+    let
+      settings = loadSettingsJson (dmsConfigDir + "/settings.json");
+      themeJsonPath = resolveThemeJsonPath dmsConfigDir settings;
+      themeJson = loadThemeJson themeJsonPath;
+      variant = resolveVariantSpec themeJson settings;
+    in
+    generateFromTheme {
+      inherit themeJsonPath variant mode templates;
+    };
+
   kdeglobalsHeader =
     colorsContent: ''
       ${colorsContent}
@@ -268,10 +378,14 @@ in
 {
   inherit
     loadThemeJson
+    loadSettingsJson
+    resolveThemeJsonPath
+    resolveVariantSpec
     mergeTheme
     buildMatugenColors
     renderTemplate
     generateFromTheme
+    generateFromDmsSettings
     kdeglobalsHeader
     hexToRgb
     ;

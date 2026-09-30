@@ -3,7 +3,7 @@
 let
   themeLib = import ./lib.nix { inherit lib; };
 
-  themeJsonPath = ../../../../DankMaterialShell/.config/DankMaterialShell/themes/myoxocarbon/theme.json;
+  dmsConfigDir = ../../../../DankMaterialShell/.config/DankMaterialShell;
 
   templates = {
     gtk = ./templates/gtk-colors.css;
@@ -12,9 +12,8 @@ let
     qtCt = ./templates/qtct-colors.conf;
   };
 
-  generated = themeLib.generateFromTheme {
-    inherit themeJsonPath templates;
-    variant = "Purple";
+  generated = themeLib.generateFromDmsSettings {
+    inherit dmsConfigDir templates;
     mode = "dark";
   };
 

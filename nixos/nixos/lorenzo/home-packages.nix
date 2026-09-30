@@ -21,7 +21,6 @@
     spotify-player
     lazygit
     alsa-utils
-    nvtopPackages.full
     htop
     btop
     dgop

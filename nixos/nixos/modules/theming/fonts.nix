@@ -11,6 +11,8 @@
       noto-fonts-color-emoji
       nerd-fonts.symbols-only
       symbola
+      helvetica-neue-lt-std
+
     ];
     fontconfig.defaultFonts = {
       monospace = [ "JetBrainsMono Nerd Font" ];

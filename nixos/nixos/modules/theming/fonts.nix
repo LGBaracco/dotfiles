@@ -4,6 +4,7 @@
   fonts = {
     enableDefaultPackages = true;
     packages = with pkgs; [
+      nerd-fonts.hasklug
       nerd-fonts.jetbrains-mono
       nerd-fonts.fira-code
       noto-fonts
@@ -15,7 +16,7 @@
 
     ];
     fontconfig.defaultFonts = {
-      monospace = [ "JetBrainsMono Nerd Font" ];
+      monospace = [ "Hasklug Nerd Font" "JetBrainsMono Nerd Font" ];
       sansSerif = [ "Noto Sans" ];
       serif = [ "Noto Serif" ];
     };

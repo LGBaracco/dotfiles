@@ -31,6 +31,7 @@
       # DMS writes ~/.config/ghostty/themes/dankcolors; keep Ghostty in sync.
       theme = "Oxocarbon";
       confirm-close-surface = false;
+      font-family = "Hasklug Nerd Font";
       font-size = 12;
       window-padding-y = 0;
       command = "fish -C fastfetch";

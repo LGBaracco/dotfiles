@@ -31,16 +31,14 @@
       # recommended binary caches
       substituters = [
         "https://cache.nixos.org"
-        "https://niri.cachix.org"
         "https://nix-community.cachix.org"
-        "https://cache.flox.dev"
+        "https://cache.nixos-cuda.org"
         "https://attic.xuyh0120.win/lantian"
       ];
       trusted-public-keys = [
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-        "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-        "flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs="
+        "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="
         "lantian:EeAUQ+W+6r7EtwnmYjeVwx5kOGEBpjlBfPlzGlTNvHc="
       ];
     };
@@ -125,7 +123,11 @@
 
   # ── networking ────────────────────────────────────────────────────────────
   networking = {
-    networkmanager.enable = true;
+    networkmanager = {
+      enable = true;
+      # FZJ L2TP-over-IPsec (TKI-0387); profiles show up in DMS → VPN
+      plugins = with pkgs; [ networkmanager-l2tp ];
+    };
   };
 
   # ── audio ─────────────────────────────────────────────────────────────────

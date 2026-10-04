@@ -4,6 +4,8 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-26.05";
+    # strongSwan 5.9.14 (IKEv1) for FZJ L2TP; current nixpkgs is 6.x without IKEv1
+    nixpkgs-strongswan5.url = "github:NixOS/nixpkgs/nixos-24.11";
 
     home-manager = {
       url = "github:nix-community/home-manager";

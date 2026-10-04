@@ -13,10 +13,13 @@
       opencode = final.callPackage ../pkgs/opencode/package.nix { };
       yamis-icon-theme = final.callPackage ../pkgs/yamis-icon-theme.nix { };
 
-      # strongSwan 6 dropped IKEv1; L2TP/IPsec (FZJ) needs it. Point nm-l2tp at
-      # libreswan (same @strongswan@/bin/ipsec substitution in fix-paths.patch).
+      # FZJ L2TP/IPsec (TKI-0387) needs IKEv1. strongSwan 6 dropped it; take
+      # 5.9.14 from nixpkgs 24.11 (matches the guide's Ubuntu/strongSwan stack).
+      strongswan =
+        inputs.nixpkgs-strongswan5.legacyPackages.${final.stdenv.hostPlatform.system}.strongswan;
+      # nm-l2tp closes over prev.strongswan; force rebuild against 5.9.14.
       networkmanager-l2tp = prev.networkmanager-l2tp.override {
-        strongswan = prev.libreswan;
+        strongswan = final.strongswan;
       };
     })
 

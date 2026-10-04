@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs,
   inputs,
   ...
@@ -128,46 +129,29 @@
     networkmanager = {
       enable = true;
       # FZJ L2TP-over-IPsec (TKI-0387); profiles show up in DMS → VPN
-      # Overlay swaps strongswan→libreswan (IKEv1); see overlays.nix
+      # Overlay pins strongswan 5.9.14 (IKEv1); see overlays.nix
       plugins = with pkgs; [ networkmanager-l2tp ];
     };
   };
 
-  # Libreswan for nm-l2tp (strongSwan 6 has no IKEv1).
-  # `ipsec start` is a systemctl wrapper → needs ipsec.service from this module.
-  # ikev1-policy=accept is required: Libreswan ≥5 defaults to drop (RFC 9395).
-  services.libreswan = {
+  # strongSwan for nm-l2tp (TKI-0387 guide). 5.9.14 via overlay — 6.x has no IKEv1.
+  services.strongswan = {
     enable = true;
-    configSetup = ''
-      ikev1-policy=accept
-      protostack=netkey
-      uniqueids=no
-    '';
+    secrets = [ "ipsec.d/ipsec.nm-l2tp.secrets" ];
   };
+  # NM and strongswan modules both set this; force the nm-l2tp include.
+  environment.etc."ipsec.secrets".text = lib.mkForce ''
+    include ipsec.d/ipsec.nm-l2tp.secrets
+  '';
+  # unity plugin breaks L2TP transport-mode (nm-l2tp known issue)
+  environment.etc."strongswan.d/charon/unity.conf".text = ''
+    unity {
+      load = no
+    }
+  '';
   systemd.tmpfiles.rules = [
     "d /etc/ipsec.d 0755 root root -"
   ];
-  # NSS DB for libreswan PSK (StateDirectory alone does not initnss)
-  systemd.services.libreswan-nss-init = {
-    description = "Initialize Libreswan NSS database for NetworkManager-l2tp";
-    wantedBy = [ "multi-user.target" ];
-    before = [
-      "NetworkManager.service"
-      "ipsec.service"
-    ];
-    path = [ pkgs.libreswan pkgs.nssTools ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      StateDirectory = "ipsec/nss";
-      StateDirectoryMode = "0700";
-    };
-    script = ''
-      if [ ! -f /var/lib/ipsec/nss/cert9.db ] && [ ! -f /var/lib/ipsec/nss/cert8.db ]; then
-        ipsec initnss
-      fi
-    '';
-  };
 
   # ── audio ─────────────────────────────────────────────────────────────────
   security.rtkit.enable = true;

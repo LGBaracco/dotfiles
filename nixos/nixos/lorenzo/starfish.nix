@@ -53,6 +53,7 @@ in
       nfu = "cd ~/nixos && nix flake update --commit-lock-file";
       nrs = "nh os switch $HOME/nixos#$hostname";
       nrt = "nh os test $HOME/nixos#$hostname";
+      nrb = "nh os boot $HOME/nixos#$hostname";
     };
   };
 

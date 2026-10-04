@@ -12,6 +12,12 @@
       # Drop once nixos-unstable carries this bump.
       opencode = final.callPackage ../pkgs/opencode/package.nix { };
       yamis-icon-theme = final.callPackage ../pkgs/yamis-icon-theme.nix { };
+
+      # strongSwan 6 dropped IKEv1; L2TP/IPsec (FZJ) needs it. Point nm-l2tp at
+      # libreswan (same @strongswan@/bin/ipsec substitution in fix-paths.patch).
+      networkmanager-l2tp = prev.networkmanager-l2tp.override {
+        strongswan = prev.libreswan;
+      };
     })
 
     # Stable packages through pkgs.stable.<pkg>

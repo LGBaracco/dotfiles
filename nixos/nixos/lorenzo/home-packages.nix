@@ -37,7 +37,7 @@
     gnumake
     rclone
     cursor-cli
-    opencode
+    claude-code
 
     # --- Nix tooling ---
     nix-output-monitor # prettier `nix build` output

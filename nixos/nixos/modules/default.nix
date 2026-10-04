@@ -123,11 +123,50 @@
 
   # ── networking ────────────────────────────────────────────────────────────
   networking = {
+    # L2TP/IPsec VPNs break with strict reverse-path filtering
+    firewall.checkReversePath = "loose";
     networkmanager = {
       enable = true;
       # FZJ L2TP-over-IPsec (TKI-0387); profiles show up in DMS → VPN
+      # Overlay swaps strongswan→libreswan (IKEv1); see overlays.nix
       plugins = with pkgs; [ networkmanager-l2tp ];
     };
+  };
+
+  # Libreswan for nm-l2tp (strongSwan 6 has no IKEv1).
+  # `ipsec start` is a systemctl wrapper → needs ipsec.service from this module.
+  # ikev1-policy=accept is required: Libreswan ≥5 defaults to drop (RFC 9395).
+  services.libreswan = {
+    enable = true;
+    configSetup = ''
+      ikev1-policy=accept
+      protostack=netkey
+      uniqueids=no
+    '';
+  };
+  systemd.tmpfiles.rules = [
+    "d /etc/ipsec.d 0755 root root -"
+  ];
+  # NSS DB for libreswan PSK (StateDirectory alone does not initnss)
+  systemd.services.libreswan-nss-init = {
+    description = "Initialize Libreswan NSS database for NetworkManager-l2tp";
+    wantedBy = [ "multi-user.target" ];
+    before = [
+      "NetworkManager.service"
+      "ipsec.service"
+    ];
+    path = [ pkgs.libreswan pkgs.nssTools ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      StateDirectory = "ipsec/nss";
+      StateDirectoryMode = "0700";
+    };
+    script = ''
+      if [ ! -f /var/lib/ipsec/nss/cert9.db ] && [ ! -f /var/lib/ipsec/nss/cert8.db ]; then
+        ipsec initnss
+      fi
+    '';
   };
 
   # ── audio ─────────────────────────────────────────────────────────────────

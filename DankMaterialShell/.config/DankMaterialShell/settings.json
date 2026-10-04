@@ -62,7 +62,7 @@
       "width": 50
     },
     {
-      "id": "bluetooth",
+      "id": "builtin_vpn",
       "enabled": true,
       "width": 50
     },
@@ -77,12 +77,12 @@
       "width": 50
     },
     {
-      "id": "battery",
+      "id": "bluetooth",
       "enabled": true,
       "width": 50
     },
     {
-      "id": "plugin_dmsLenovoBatterySettings",
+      "id": "battery",
       "enabled": true,
       "width": 50
     },
@@ -97,12 +97,12 @@
       "width": 25
     },
     {
-      "id": "nightMode",
+      "id": "colorPicker",
       "enabled": true,
       "width": 25
     },
     {
-      "id": "colorPicker",
+      "id": "nightMode",
       "enabled": true,
       "width": 25
     }

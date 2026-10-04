@@ -9,6 +9,7 @@
     firefox-bin
     spotify
     nautilus
+    nextcloud-client
 
     # --- terminals ---
     ghostty

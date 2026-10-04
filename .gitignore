@@ -3,3 +3,16 @@ niri/.config/niri/cfg/display.kdl
 DankMaterialShell/.config/DankMaterialShell/monitors.json
 onedrive-sync/.config/rclone/rclone.conf
 neovim/AGENTS.md
+
+# claude: ~/.claude lives here via stow, but only config is tracked
+# (credentials, transcripts, caches and other runtime state stay local)
+claude/.claude/*
+!claude/.claude/settings.json
+!claude/.claude/keybindings.json
+!claude/.claude/CLAUDE.md
+!claude/.claude/agents/
+!claude/.claude/hooks/
+!claude/.claude/themes/
+!claude/.claude/skills/
+claude/.claude/skills/*
+!claude/.claude/skills/ask/

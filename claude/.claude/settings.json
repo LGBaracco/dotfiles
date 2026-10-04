@@ -1,0 +1,16 @@
+{
+  "theme": "custom:oxocarbon",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/ask-readonly-bash.py"
+          }
+        ]
+      }
+    ]
+  }
+}

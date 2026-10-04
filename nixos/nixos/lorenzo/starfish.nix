@@ -49,6 +49,8 @@ in
       vi = "nvim";
       vim = "nvim";
       neovim = "nvim";
+      # Claude Code read-only Ask mode (agent + Bash hook in ~/.claude)
+      ask = "CLAUDE_ASK_MODE=1 claude --agent ask";
       # Rebuild shortcut
       nfu = "cd ~/nixos && nix flake update --commit-lock-file";
       nrs = "nh os switch $HOME/nixos#$hostname";

@@ -55,5 +55,21 @@
     {
       nixosConfigurations.nixdesktop = mkHost ./hosts/nixdesktop;
       nixosConfigurations.nixlaptop = mkHost ./hosts/nixlaptop;
+
+      # Non-NixOS (Ubuntu) machine: standalone Home Manager, Neovim only.
+      homeConfigurations."lbaracco@medpc057" = inputs.home-manager.lib.homeManagerConfiguration {
+        pkgs = import nixpkgs {
+          system = "x86_64-linux";
+          config.allowUnfree = true; # jupytext.nvim
+        };
+        extraSpecialArgs = { inherit inputs; };
+        modules = [
+          ./hosts/medpc057/home.nix
+          (inputs.wrappers.lib.getInstallModule {
+            name = "neovim";
+            value = inputs.nvim-config.homeModules.neovim;
+          })
+        ];
+      };
     };
 }

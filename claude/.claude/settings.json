@@ -1,5 +1,4 @@
 {
-  "theme": "custom:oxocarbon",
   "hooks": {
     "PreToolUse": [
       {
@@ -12,5 +11,6 @@
         ]
       }
     ]
-  }
+  },
+  "theme": "custom:oxocarbon"
 }

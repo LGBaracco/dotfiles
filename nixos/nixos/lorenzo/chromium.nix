@@ -58,7 +58,6 @@ in
     (withGnomeKeyring pkgs.vscode)
     (withGnomeKeyring pkgs.helium)
     (withGnomeKeyring pkgs.discord)
-    (withGnomeKeyring pkgs.code-cursor)
     (withGnomeKeyring pkgs.whatsapp-electron)
     (withGnomeKeyring pkgs.p3x-onenote)
   ];

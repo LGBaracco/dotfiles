@@ -246,6 +246,10 @@
           "showSwap": true
         },
         {
+          "id": "network_speed_monitor",
+          "enabled": true
+        },
+        {
           "id": "idleInhibitor",
           "enabled": true
         }
@@ -254,7 +258,8 @@
         {
           "id": "focusedWindow",
           "enabled": true,
-          "focusedWindowSize": 0
+          "focusedWindowSize": 0,
+          "focusedWindowCompactMode": true
         },
         {
           "id": "music",
@@ -303,7 +308,7 @@
           "id": "battery",
           "enabled": true,
           "batteryPillPercentSign": false,
-          "batteryStyle": "solid"
+          "batteryStyle": "icon"
         },
         {
           "id": "controlCenterButton",
@@ -362,8 +367,7 @@
       "shadowCustomColor": "#000000",
       "clickThrough": true,
       "barInsetPadding": 5,
-      "attachToScreenEdge": false,
-      "island": false
+      "attachToScreenEdge": false
     }
   ],
   "desktopClockCustomColor": {
@@ -434,6 +438,12 @@
     },
     "dms_clipboard_search": {
       "trigger": "cb"
+    },
+    "dms_power": {
+      "trigger": "pw"
+    },
+    "dms_qr_generator": {
+      "trigger": "qrg"
     }
   },
   "launcherPluginVisibility": {

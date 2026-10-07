@@ -1,0 +1,98 @@
+add_newline = true
+format = "$os$username[](fg:#42be65 bg:#08bdba)$hostname[](fg:#08bdba bg:#3ddbd9)$directory[](fg:#3ddbd9 bg:#78a9ff)$git_branch$git_status[](fg:#78a9ff bg:#be95ff)$c$cpp$fennel$golang$java$julia$lua$nodejs$python$rlang$rust$typst$zig[](fg:#be95ff) "
+
+# Leading pill: OS icon + user (green), host (teal). No exit-status coloring.
+[os]
+disabled = false
+format = "[ $symbol]($style)"
+style = "fg:#161616 bg:#42be65"
+
+[os.symbols]
+NixOS = " "
+Ubuntu = " "
+Debian = " "
+Fedora = " "
+Arch = " "
+Linux = " "
+Macos = " "
+Windows = " "
+Unknown = " "
+
+[username]
+show_always = true
+format = "[$user ]($style)"
+style_user = "fg:#161616 bg:#42be65"
+style_root = "fg:#161616 bg:#42be65"
+
+[hostname]
+ssh_only = false
+format = "[ $hostname ]($style)"
+style = "fg:#161616 bg:#08bdba"
+
+[c]
+format = "[ $symbol ]($style)"
+style = "fg:#161616 bg:#be95ff"
+
+[cpp]
+format = "[ $symbol ]($style)"
+style = "fg:#161616 bg:#be95ff"
+
+[directory]
+format = "[ $path ]($style)"
+style = "fg:#161616 bg:#3ddbd9"
+truncate_to_repo = true
+truncation_length = 3
+
+[fennel]
+format = "[ $symbol ]($style)"
+style = "fg:#161616 bg:#be95ff"
+
+[git_branch]
+format = "[ $symbol$branch ]($style)"
+style = "fg:#161616 bg:#78a9ff"
+symbol = " "
+
+[git_status]
+format = "[$all_status$ahead_behind]($style)"
+stashed = ""
+style = "fg:#161616 bg:#78a9ff"
+
+[golang]
+format = "[ $symbol ]($style)"
+style = "fg:#161616 bg:#be95ff"
+
+[java]
+format = "[ $symbol ]($style)"
+style = "fg:#161616 bg:#be95ff"
+
+[julia]
+format = "[ $symbol ]($style)"
+style = "fg:#161616 bg:#be95ff"
+
+[lua]
+format = "[ $symbol ]($style)"
+style = "fg:#161616 bg:#be95ff"
+
+[nodejs]
+format = "[ $symbol ]($style)"
+style = "fg:#161616 bg:#be95ff"
+
+[python]
+format = "[ $symbol ]($style)"
+style = "fg:#161616 bg:#be95ff"
+
+[rlang]
+format = "[ $symbol ]($style)"
+style = "fg:#161616 bg:#be95ff"
+
+[rust]
+format = "[ $symbol ]($style)"
+style = "fg:#161616 bg:#be95ff"
+
+[typst]
+format = "[ $symbol ]($style)"
+style = "fg:#161616 bg:#be95ff"
+
+[zig]
+format = "[ $symbol ]($style)"
+style = "fg:#161616 bg:#be95ff"

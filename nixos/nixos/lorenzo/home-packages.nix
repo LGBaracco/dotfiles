@@ -10,6 +10,7 @@
     spotify
     nautilus
     nextcloud-client
+    thunderbird-bin
 
     # --- terminals ---
     ghostty

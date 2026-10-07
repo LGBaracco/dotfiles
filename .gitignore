@@ -33,3 +33,7 @@ claude/.claude/shell-snapshots/
 claude/.claude/statsig/
 claude/.claude/todos/
 claude/.claude/transcripts/
+
+# fish/ghostty: runtime state written next to stowed configs
+fish/.config/fish/fish_variables
+ghostty/.config/ghostty/themes/

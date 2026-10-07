@@ -134,7 +134,6 @@
     };
   };
 
-  # strongSwan for nm-l2tp (TKI-0387 guide). 5.9.14 via overlay — 6.x has no IKEv1.
   services.strongswan = {
     enable = true;
     secrets = [ "ipsec.d/ipsec.nm-l2tp.secrets" ];
@@ -175,4 +174,5 @@
   # ── misc ──────────────────────────────────────────────────────────────────
   programs.dconf.enable = true; # needed by some gtk apps under kde
   services.gvfs.enable = true; # needed for trash bin and partition mounts with nautilus outside of kde
+  programs.fuse.userAllowOther = true;
 }

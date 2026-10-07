@@ -15,6 +15,7 @@
     gcc
     gparted
     kdePackages.partitionmanager
+    sshfs
     #networkmanagerapplet
   ];
 

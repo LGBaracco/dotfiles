@@ -2,7 +2,6 @@
   imports = [
     ./git.nix
     ./home-packages.nix
-    ./starfish.nix
     ./fastfetch.nix
     ./chromium.nix
     ./theming
@@ -23,19 +22,6 @@
     enable = true;
     package = pkgs.emacs-pgtk; # emacs30-pgtk
     #extraPackages = epkgs: [ epkgs.vterm ]; # currently using ghostel
-  };
-
-  programs.ghostty = {
-    enable = true;
-    settings = {
-      # DMS writes ~/.config/ghostty/themes/dankcolors; keep Ghostty in sync.
-      theme = "Oxocarbon";
-      confirm-close-surface = false;
-      font-family = "Hasklug Nerd Font";
-      font-size = 12;
-      window-padding-y = 0;
-      command = "fish -C fastfetch";
-    };
   };
 
   home.sessionPath = [

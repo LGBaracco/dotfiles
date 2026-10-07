@@ -32,6 +32,8 @@
     imv
     eza # ls
     zoxide # smarter cd
+    starship # prompt (config: ~/.config/starship.toml via stow)
+    babelfish # translates hm-session-vars.sh for fish
     bat
     yq
     jq

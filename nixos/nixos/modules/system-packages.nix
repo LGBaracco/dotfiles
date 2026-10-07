@@ -15,7 +15,7 @@
     gcc
     gparted
     kdePackages.partitionmanager
-    networkmanagerapplet
+    #networkmanagerapplet
   ];
 
 }

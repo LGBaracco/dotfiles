@@ -1,7 +1,7 @@
     window-rule {
         geometry-corner-radius 15 // Set every window radius to 15
         clip-to-geometry true
-        opacity 0.86
+        opacity 0.96
         draw-border-with-background false
         background-effect {
             blur true

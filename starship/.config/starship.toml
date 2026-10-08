@@ -1,7 +1,8 @@
 add_newline = true
-format = "$os$username[](fg:#42be65 bg:#08bdba)$hostname[](fg:#08bdba bg:#3ddbd9)$directory[](fg:#3ddbd9 bg:#78a9ff)$git_branch$git_status[](fg:#78a9ff bg:#be95ff)$c$fennel$golang$java$julia$lua$nodejs$python$rlang$rust$typst$zig[](fg:#be95ff) "
+format = "$os$hostname[](fg:#393939 bg:#42be65)$username$git_branch$git_status$directory[](fg:#393939) "
 
-# Leading pill: OS icon + user (green), host (teal). No exit-status coloring.
+# Green pill: OS icon + host | user (thin gray divider). Purple: git. Gray: cwd.
+# Each pill draws its own leading arrow so missing segments leave no gaps.
 [os]
 disabled = false
 format = "[ $symbol]($style)"
@@ -18,77 +19,33 @@ Macos = " "
 Windows = " "
 Unknown = " "
 
+[hostname]
+ssh_only = false
+format = "[$hostname ]($style)"
+style = "fg:#161616 bg:#42be65"
+
 [username]
 show_always = true
-format = "[$user ]($style)"
+format = "[ $user ]($style)"
 style_user = "fg:#161616 bg:#42be65"
 style_root = "fg:#161616 bg:#42be65"
 
-[hostname]
-ssh_only = false
-format = "[ $hostname ]($style)"
-style = "fg:#161616 bg:#08bdba"
-
-[c]
-format = "[ $symbol ]($style)"
-style = "fg:#161616 bg:#be95ff"
-
+# Neutral pill, matching tmux's inactive windows (gray bg, white fg).
+# Arrow comes from purple inside a repo (git pill precedes), green otherwise.
 [directory]
-format = "[ $path ]($style)"
-style = "fg:#161616 bg:#3ddbd9"
+format = "[](fg:#42be65 bg:#393939)[ $path ]($style)"
+repo_root_format = "[](fg:#be95ff bg:#393939)[ $repo_root$path ]($style)"
+style = "fg:#f2f4f8 bg:#393939"
+repo_root_style = "fg:#f2f4f8 bg:#393939"
 truncate_to_repo = true
 truncation_length = 3
 
-[fennel]
-format = "[ $symbol ]($style)"
-style = "fg:#161616 bg:#be95ff"
-
 [git_branch]
-format = "[ $symbol$branch ]($style)"
-style = "fg:#161616 bg:#78a9ff"
+format = "[](fg:#42be65 bg:#be95ff)[ $symbol$branch ]($style)"
+style = "fg:#161616 bg:#be95ff"
 symbol = " "
 
 [git_status]
 format = "[$all_status$ahead_behind]($style)"
 stashed = ""
-style = "fg:#161616 bg:#78a9ff"
-
-[golang]
-format = "[ $symbol ]($style)"
-style = "fg:#161616 bg:#be95ff"
-
-[java]
-format = "[ $symbol ]($style)"
-style = "fg:#161616 bg:#be95ff"
-
-[julia]
-format = "[ $symbol ]($style)"
-style = "fg:#161616 bg:#be95ff"
-
-[lua]
-format = "[ $symbol ]($style)"
-style = "fg:#161616 bg:#be95ff"
-
-[nodejs]
-format = "[ $symbol ]($style)"
-style = "fg:#161616 bg:#be95ff"
-
-[python]
-format = "[ $symbol ]($style)"
-style = "fg:#161616 bg:#be95ff"
-
-[rlang]
-format = "[ $symbol ]($style)"
-style = "fg:#161616 bg:#be95ff"
-
-[rust]
-format = "[ $symbol ]($style)"
-style = "fg:#161616 bg:#be95ff"
-
-[typst]
-format = "[ $symbol ]($style)"
-style = "fg:#161616 bg:#be95ff"
-
-[zig]
-format = "[ $symbol ]($style)"
 style = "fg:#161616 bg:#be95ff"

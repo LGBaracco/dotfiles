@@ -16,7 +16,7 @@
 
     ];
     fontconfig.defaultFonts = {
-      monospace = [ "Hasklug Nerd Font" "JetBrainsMono Nerd Font" ];
+      monospace = [ "JetBrainsMono Nerd Font" ];
       sansSerif = [ "Noto Sans" ];
       serif = [ "Noto Serif" ];
     };

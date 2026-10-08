@@ -1,5 +1,5 @@
 add_newline = true
-format = "$os$username[](fg:#42be65 bg:#08bdba)$hostname[](fg:#08bdba bg:#3ddbd9)$directory[](fg:#3ddbd9 bg:#78a9ff)$git_branch$git_status[](fg:#78a9ff bg:#be95ff)$c$cpp$fennel$golang$java$julia$lua$nodejs$python$rlang$rust$typst$zig[](fg:#be95ff) "
+format = "$os$username[](fg:#42be65 bg:#08bdba)$hostname[](fg:#08bdba bg:#3ddbd9)$directory[](fg:#3ddbd9 bg:#78a9ff)$git_branch$git_status[](fg:#78a9ff bg:#be95ff)$c$fennel$golang$java$julia$lua$nodejs$python$rlang$rust$typst$zig[](fg:#be95ff) "
 
 # Leading pill: OS icon + user (green), host (teal). No exit-status coloring.
 [os]
@@ -30,10 +30,6 @@ format = "[ $hostname ]($style)"
 style = "fg:#161616 bg:#08bdba"
 
 [c]
-format = "[ $symbol ]($style)"
-style = "fg:#161616 bg:#be95ff"
-
-[cpp]
 format = "[ $symbol ]($style)"
 style = "fg:#161616 bg:#be95ff"
 

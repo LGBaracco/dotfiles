@@ -11,6 +11,7 @@ if type -q babelfish
 end
 
 fish_add_path -g $HOME/.local/bin $HOME/.config/emacs/bin # Doom emacs
+fish_add_path -g $HOME/.nix-profile/bin # Nix on non-nixos machines
 
 status is-interactive; or exit
 

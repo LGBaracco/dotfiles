@@ -40,6 +40,7 @@ alias nfu 'cd ~/nixos && nix flake update --commit-lock-file'
 alias nrs 'nh os switch $HOME/nixos#$hostname'
 alias nrt 'nh os test $HOME/nixos#$hostname'
 alias nrb 'nh os boot $HOME/nixos#$hostname'
+alias hms 'home-manager switch --flake $HOME/nixos#$USER@(hostname -s)' # standalone HM (Ubuntu)
 
 # ── Oxocarbon (base16-oxocarbon-dark) ────────────────────────────────────────
 set -g fish_color_normal f2f4f8

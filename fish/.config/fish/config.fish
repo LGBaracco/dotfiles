@@ -24,6 +24,8 @@ alias ls 'eza -lah --icons auto'
 alias tree 'eza --tree --icons'
 alias cd z # zoxide
 alias gs 'git status'
+alias ga 'git add'
+alias gc 'git commit'
 alias vi nvim
 alias vim nvim
 alias neovim nvim

@@ -71,14 +71,7 @@
     # --- Other languages ---
     sbcl # Common Lisp
     racket
-    # Quarto 1.10 emits pandoc's new `syntax-highlighting` key; nixpkgs pandoc is
-    # still 3.7 (`highlight-style`). Patch until pandoc >= 3.8 lands (nixpkgs#519484).
-    (quarto.overrideAttrs (old: {
-      postPatch = (old.postPatch or "") + ''
-        substituteInPlace bin/quarto.js \
-          --replace-fail "syntax-highlighting" "highlight-style"
-      '';
-    }))
+    # quarto (patched) lives in the Neovim wrapper: neovim/.config/nvim/module.nix
     proselint # Markdown linter
     pandoc # Markdown syntax highlighting
     shellcheck

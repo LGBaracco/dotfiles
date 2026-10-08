@@ -136,8 +136,24 @@
     tree-sitter
     imagemagick
     # .ipynb <-> .qmd conversion (jupytext.nvim). The quarto format shells out to the
-    # `quarto` CLI, which comes from the user profile (patched build in home-packages).
+    # `quarto` CLI below.
     python3Packages.jupytext
+    # Quarto 1.10 emits pandoc's new `syntax-highlighting` key; nixpkgs pandoc is
+    # still 3.7 (`highlight-style`). Patch until pandoc >= 3.8 lands (nixpkgs#519484).
+    (quarto.overrideAttrs (old: {
+      postPatch = (old.postPatch or "") + ''
+        substituteInPlace bin/quarto.js \
+          --replace-fail "syntax-highlighting" "highlight-style"
+      '';
+    }))
+
+    # LaTeX (VimTeX) + clipboard: only used from Neovim. Same expressions as
+    # home-packages so NixOS shares store paths; Ubuntu gets them only here.
+    texliveFull # includes latexmk
+    (zathura.override {
+      plugins = with zathuraPkgs; [ zathura_pdf_mupdf ];
+    })
+    wl-clipboard
 
     # Formatters (conform)
     nixfmt
@@ -159,7 +175,6 @@
 
     # Language runtimes used by LSPs / REPLs
     julia-bin
-    # R + languageserver come from the system/user env when needed
 
     # LSPs
     bash-language-server

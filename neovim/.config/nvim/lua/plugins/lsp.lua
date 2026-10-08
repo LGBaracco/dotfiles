@@ -300,11 +300,6 @@ vim.lsp.config("qmlls", {
   filetypes = { "qml" },
 })
 
-vim.lsp.config("r-languageserver", {
-  cmd = { "r-languageserver" },
-  filetypes = { "r", "rmd" },
-})
-
 vim.lsp.config("sqls", {
   cmd = { "sqls" },
   filetypes = { "sql" },
@@ -362,7 +357,6 @@ vim.lsp.enable({
   "neocmakelsp",
   "nil",
   "qmlls",
-  "r-languageserver",
   "sqls",
   "superhtml",
   "taplo",

@@ -142,7 +142,7 @@
   "networkPreference": "wifi",
   "cursorSettings": {
     "theme": "System Default",
-    "size": 24,
+    "size": 26,
     "niri": {
       "hideWhenTyping": true,
       "hideAfterInactiveMs": 5000

@@ -1,7 +1,7 @@
 {
   "currentThemeName": "custom",
   "currentThemeCategory": "registry",
-  "customThemeFile": "/home/lorenzo/.config/DankMaterialShell/themes/myoxocarbon/theme.json",
+  "customThemeFile": "/home/lbaracco/.config/DankMaterialShell/themes/myoxocarbon/theme.json",
   "registryThemeVariants": {
     "oxocarbon": "Purple",
     "deepdark": {
@@ -141,8 +141,8 @@
   ],
   "networkPreference": "wifi",
   "cursorSettings": {
-    "theme": "breeze_cursors",
-    "size": 26,
+    "theme": "System Default",
+    "size": 24,
     "niri": {
       "hideWhenTyping": true,
       "hideAfterInactiveMs": 5000
@@ -205,6 +205,7 @@
   "powerMenuGridLayout": true,
   "updaterIntervalSeconds": 86400,
   "updaterIncludeFlatpak": false,
+  "displayNameMode": "model",
   "screenPreferences": {
     "notifications": [
       "all"

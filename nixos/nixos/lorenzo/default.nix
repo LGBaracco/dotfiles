@@ -6,6 +6,7 @@
     ./chromium.nix
     ./theming
     ./dcal.nix
+    ./davmail.nix
     ./desktop-entries.nix
   ];
 

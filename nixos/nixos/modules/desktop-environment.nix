@@ -23,9 +23,11 @@
 
   # ── KDE Plasma
   services.desktopManager.plasma6.enable = true;
+
   environment.plasma6.excludePackages = with pkgs; [
     kdePackages.discover
   ];
+  programs.kde-pim.enable = false;
   systemd.user.services.plasma-kwin_wayland = {
     overrideStrategy = "asDropin";
     # NixOS injects Environment=PATH=<coreutils,...> into every

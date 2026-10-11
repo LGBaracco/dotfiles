@@ -141,7 +141,7 @@
   ],
   "networkPreference": "wifi",
   "cursorSettings": {
-    "theme": "System Default",
+    "theme": "breeze_cursors",
     "size": 26,
     "niri": {
       "hideWhenTyping": true,

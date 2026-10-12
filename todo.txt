@@ -1,2 +1,2 @@
 figure out venv and such (and jupyter kernels)
-neovim and tmux and starship in jureca
+neovim and tmux in jureca

@@ -12,10 +12,12 @@
       }
     ]
   },
-  "theme": "custom:oxocarbon",
   "modelSettings": {
     "claude-opus-5-5": {
       "effortLevel": "high"
     }
-  }
+  },
+  "awaySummaryEnabled": false,
+  "theme": "custom:oxocarbon",
+  "editorMode": "vim"
 }

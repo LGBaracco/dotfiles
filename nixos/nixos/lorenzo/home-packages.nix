@@ -11,6 +11,7 @@
     nautilus
     nextcloud-client
     thunderbird-bin
+    zotero
 
     # --- terminals ---
     ghostty

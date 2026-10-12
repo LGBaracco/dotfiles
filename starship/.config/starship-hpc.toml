@@ -1,0 +1,36 @@
+# HPC variant of starship.toml: same pills and colors, no Nerd icons
+# (powerline arrows stay). Selected via STARSHIP_CONFIG in bash/.bashrc.
+add_newline = true
+command_timeout = 1000
+scan_timeout = 50
+format = "$hostname[](fg:#393939 bg:#42be65)$username$git_branch$git_status$directory[](fg:#393939) "
+
+# Green pill: host | user (thin gray divider). Purple: git. Gray: cwd.
+[hostname]
+ssh_only = false
+format = "[ $hostname ]($style)"
+style = "fg:#161616 bg:#42be65"
+
+[username]
+show_always = true
+format = "[ $user ]($style)"
+style_user = "fg:#161616 bg:#42be65"
+style_root = "fg:#161616 bg:#42be65"
+
+[directory]
+format = "[](fg:#42be65 bg:#393939)[ $path ]($style)"
+repo_root_format = "[](fg:#be95ff bg:#393939)[ $repo_root$path ]($style)"
+style = "fg:#f2f4f8 bg:#393939"
+repo_root_style = "fg:#f2f4f8 bg:#393939"
+truncate_to_repo = true
+truncation_length = 3
+read_only = " ro"
+
+[git_branch]
+format = "[](fg:#42be65 bg:#be95ff)[ $branch ]($style)"
+style = "fg:#161616 bg:#be95ff"
+
+[git_status]
+format = "[$all_status$ahead_behind]($style)"
+stashed = ""
+style = "fg:#161616 bg:#be95ff"

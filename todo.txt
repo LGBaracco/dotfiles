@@ -1,3 +1,2 @@
-bash dotfile (submodule? maybe just hard copied) for spc
 figure out venv and such (and jupyter kernels)
 neovim and tmux and starship in jureca

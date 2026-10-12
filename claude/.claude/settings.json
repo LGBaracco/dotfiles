@@ -12,5 +12,10 @@
       }
     ]
   },
-  "theme": "custom:oxocarbon"
+  "theme": "custom:oxocarbon",
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "high"
+    }
+  }
 }

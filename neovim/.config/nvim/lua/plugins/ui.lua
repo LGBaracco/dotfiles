@@ -1,22 +1,28 @@
 -- Eager UI chrome, then deferred light-UI plugins. Dashboard: plugins.dashboard.
+local has = require("config.has")
+
 vim.cmd.colorscheme("oxocarbon")
 
 require("nvim-web-devicons").setup()
 require("fidget").setup()
-require("noice").setup({
-    views = {
-        cmdline_popup = {
-            position = {
-                row = 2,
-                col = "50%",
+if has("noice.nvim") then
+    require("noice").setup({
+        views = {
+            cmdline_popup = {
+                position = {
+                    row = 2,
+                    col = "50%",
+                },
             },
         },
-    },
-})
-require("notify").setup({
-    background_colour = "#161616",
-})
-vim.notify = require("notify")
+    })
+end
+if has("nvim-notify") then
+    require("notify").setup({
+        background_colour = "#161616",
+    })
+    vim.notify = require("notify")
+end
 
 require("nvim-navic").setup()
 require("lualine").setup({
@@ -84,6 +90,7 @@ require("lze").load({
     },
     {
         "cinnamon.nvim",
+        enabled = has("cinnamon.nvim"),
         event = "DeferredUIEnter",
         after = function()
             require("cinnamon").setup()

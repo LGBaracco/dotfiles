@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# nvim-hpc-sync — push the Nix-built Neovim plugin pack (module-hpc.nix) to a
+# JSC cluster and install matching nvim/quarto release binaries there.
+#
+# Cluster layout (no Nix needed there):
+#   ~/.local/share/nvim/site/pack/nix/{start,opt}   plugins + treesitter parsers
+#   ~/.local/opt/{nvim,quarto}-<ver>/                official release tarballs
+#   ~/.local/bin/{nvim,quarto}                       symlinks into ~/.local/opt
+#   ~/.config/nvim -> ~/dotfiles/neovim/.config/nvim (one-time, by hand)
+#
+# After editing module-hpc.nix, refresh the pinned path input first:
+#   nix flake update nvim-config --flake ~/dotfiles/nixos/nixos
+#
+# Env: HPC_HOST (default baracco1@jureca.fz-juelich.de), FLAKE (nixos flake dir)
+set -euo pipefail
+
+HPC_HOST="${HPC_HOST:-baracco1@jureca.fz-juelich.de}"
+FLAKE="${FLAKE:-$HOME/dotfiles/nixos/nixos}"
+CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/nvim-hpc-sync"
+
+# One SSH connection for all steps.
+ssh_opts=(-o ControlMaster=auto -o "ControlPath=${XDG_RUNTIME_DIR:-/tmp}/nvim-hpc-sync-%C" -o ControlPersist=60)
+# shellcheck disable=SC2029 # local expansion into remote commands is intended
+remote() { ssh "${ssh_opts[@]}" "$HPC_HOST" "$@"; }
+rsync_to() { rsync -e "ssh ${ssh_opts[*]}" "$@"; }
+
+echo "Building $FLAKE#nvim-hpc"
+out=$(nix build --no-link --print-out-paths "$FLAKE#nvim-hpc")
+nvim_ver=$("$out/bin/nvim" --version | awk 'NR == 1 { print $2 }') # e.g. v0.12.5
+quarto_ver=$(nix eval --raw "$FLAKE#quarto.version")                 # e.g. 1.10.18
+
+remote 'mkdir -p .local/share/nvim/site/pack/nix .local/opt .local/bin'
+
+echo "Syncing plugin pack → $HPC_HOST"
+rsync_to -rL --delete --chmod=Du+w,Fu+w --info=stats1 --exclude nix-info \
+  "$out/nvim-packdir/pack/myNeovimPackages/" \
+  "$HPC_HOST:.local/share/nvim/site/pack/nix/"
+
+# install_release NAME VERSION URL TOPDIR: unpack URL (tar.gz whose root is
+# TOPDIR) into ~/.local/opt/NAME-VERSION and link bin/NAME into ~/.local/bin.
+# Downloads on the cluster; falls back to downloading here and copying over.
+install_release() {
+  local name=$1 ver=$2 url=$3 top=$4
+  local dest=".local/opt/$name-$ver"
+  local unpack="set -eo pipefail; d=\$(mktemp -d .local/opt/.tmp.XXXXXX); trap 'rm -rf \"\$d\"' EXIT"
+
+  if remote "test -x '$dest/bin/$name'"; then
+    echo "$name $ver already installed"
+  else
+    echo "Installing $name $ver on $HPC_HOST"
+    if ! remote "$unpack; curl -fsSL '$url' | tar -xz -C \"\$d\"; mv \"\$d/$top\" '$dest'"; then
+      echo "Download on $HPC_HOST failed; fetching locally and copying"
+      local tarball="$CACHE/${url##*/}"
+      mkdir -p "$CACHE"
+      [[ -s "$tarball" ]] || curl -fL "$url" -o "$tarball"
+      rsync_to "$tarball" "$HPC_HOST:.local/opt/"
+      remote "$unpack; tar -xzf '.local/opt/${url##*/}' -C \"\$d\"; mv \"\$d/$top\" '$dest'; rm -f '.local/opt/${url##*/}'"
+    fi
+  fi
+  remote "ln -sfn \"\$HOME/$dest/bin/$name\" .local/bin/$name"
+}
+
+install_release nvim "$nvim_ver" \
+  "https://github.com/neovim/neovim/releases/download/$nvim_ver/nvim-linux-x86_64.tar.gz" \
+  nvim-linux-x86_64
+install_release quarto "$quarto_ver" \
+  "https://github.com/quarto-dev/quarto-cli/releases/download/v$quarto_ver/quarto-$quarto_ver-linux-amd64.tar.gz" \
+  "quarto-$quarto_ver"
+
+remote 'du -sh .local/share/nvim/site/pack/nix .local/opt/*; .local/bin/nvim --version | head -1; .local/bin/quarto --version' || true

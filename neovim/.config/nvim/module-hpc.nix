@@ -5,9 +5,12 @@
   pkgs,
   ...
 }:
-# HPC / Apptainer profile: same plugin surface as module.nix (Quarto/Molten kept),
-# but curated treesitter + trimmed LSPs/formatters. Lua stays live via stdpath
-# (bind-mount $PROJECT/hpc-env/config). See hpc/README.md.
+# HPC (JSC) profile: module.nix minus desktop-only plugins (LaTeX, noice/notify,
+# cinnamon, neo-tree, precognition) and with curated treesitter grammars.
+# Built on the desktop as the `nvim-hpc` flake output; `nvim-hpc-sync` copies
+# nvim-packdir to the cluster, where a release nvim loads it from site/pack.
+# runtimePkgs stay for local testing only: /nix/store binaries can't run there.
+# Lua guards absent plugins via config.has.
 {
   imports = [ wlib.wrapperModules.neovim ];
 
@@ -41,14 +44,11 @@
       nvim-navic
       nvim-web-devicons
       fidget-nvim
-      noice-nvim
-      nvim-notify
       nui-nvim
       plenary-nvim
 
       which-key-nvim
       hop-nvim
-      precognition-nvim
       comment-nvim
       nvim-surround
       smart-splits-nvim
@@ -59,7 +59,6 @@
       luasnip
       friendly-snippets
 
-      vimtex
       jupytext-nvim
 
       blink-cmp
@@ -69,44 +68,31 @@
       (nvim-treesitter.withPlugins (
         grammars: with grammars; [
           bash
-          bibtex
           c
           cmake
           comment
           cpp
-          css
           cuda
           diff
-          dockerfile
-          fish
           fortran
           git_config
           git_rebase
           gitattributes
           gitcommit
           gitignore
-          html
-          javascript
           json
-          json5
           julia
-          latex
           lua
           luadoc
           luap
           make
           markdown
           markdown_inline
-          nix
           python
           query
-          r
           regex
           rst
-          rust
           toml
-          tsx
-          typescript
           vim
           vimdoc
           yaml
@@ -122,7 +108,6 @@
     lazy = true;
     data = with pkgs.vimPlugins; [
       nvim-scrollbar
-      cinnamon-nvim
       highlight-undo-nvim
       indent-blankline-nvim
       nvim-colorizer-lua
@@ -131,7 +116,6 @@
       nvim-navbuddy
 
       telescope-nvim
-      neo-tree-nvim
       oil-nvim
       grug-far-nvim
       undotree
@@ -155,6 +139,8 @@
       molten-nvim
       quarto-nvim
       render-markdown-nvim
+
+      vim-be-good
     ];
   };
 
@@ -165,14 +151,13 @@
     imagemagick
     python3Packages.jupytext
 
-    # Formatters (conform) — no nixfmt; ruff/ty stay uv tools on $PROJECT
+    # Formatters (conform) — no nixfmt; ruff/ty stay uv tools
     stylua
     shfmt
     clang-tools
     prettier
     astyle
     taplo
-    tex-fmt
     deno
     gersemi
     sqlfluff
@@ -180,7 +165,7 @@
 
     julia-bin
 
-    # LSPs — desktop/Nix/Java/QML/Docker/fennel/fish dropped
+    # LSPs — desktop/Nix/Java/QML/Docker/fennel/fish/TeX dropped
     bash-language-server
     harper
     lemminx
@@ -189,7 +174,6 @@
     neocmakelsp
     sqls
     superhtml
-    texlab
     vscode-langservers-extracted
   ];
 }

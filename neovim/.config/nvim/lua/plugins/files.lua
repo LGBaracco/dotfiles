@@ -1,6 +1,7 @@
 -- File navigation / search: telescope, neo-tree, oil, grug-far, undotree.
 -- All deferred; commands are stubbed by lze so the maps below trigger loading.
 local map = vim.keymap.set
+local has = require("config.has")
 
 require("lze").load({
     {
@@ -43,6 +44,7 @@ require("lze").load({
     },
     {
         "neo-tree.nvim",
+        enabled = has("neo-tree.nvim"),
         cmd = { "Neotree" },
         after = function()
             require("neo-tree").setup({})
@@ -117,5 +119,7 @@ map("n", "<leader>flt", "<cmd>Telescope lsp_type_definitions<CR>", { desc = "LSP
 map("n", "<leader>fld", "<cmd>Telescope diagnostics<CR>", { desc = "Diagnostics [Telescope]" })
 
 --- Explorers ---
-map("n", "<leader>fn", "<cmd>Neotree toggle reveal<cr>", { desc = "Toggle Neo-tree" })
+if has("neo-tree.nvim") then
+    map("n", "<leader>fn", "<cmd>Neotree toggle reveal<cr>", { desc = "Toggle Neo-tree" })
+end
 map("n", "<leader>fo", "<cmd>Oil<cr>", { desc = "Open oil.nvim" })

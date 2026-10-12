@@ -41,6 +41,10 @@
   outputs =
     { nixpkgs, ... }@inputs:
     let
+      pkgsUnfree = import nixpkgs {
+        system = "x86_64-linux";
+        config.allowUnfree = true; # jupytext.nvim
+      };
       mkHost =
         hostPath:
         nixpkgs.lib.nixosSystem {
@@ -58,10 +62,7 @@
 
       # Non-NixOS (Ubuntu) machine: standalone Home Manager, Neovim only.
       homeConfigurations."lbaracco@medpc057" = inputs.home-manager.lib.homeManagerConfiguration {
-        pkgs = import nixpkgs {
-          system = "x86_64-linux";
-          config.allowUnfree = true; # jupytext.nvim
-        };
+        pkgs = pkgsUnfree;
         extraSpecialArgs = { inherit inputs; };
         modules = [
           ./hosts/medpc057/home.nix
@@ -70,6 +71,16 @@
             value = inputs.nvim-config.homeModules.neovim;
           })
         ];
+      };
+
+      # HPC (JSC): plugin pack for a release nvim on the cluster, no Nix there.
+      # Synced by `nvim-hpc-sync` (bin/); quarto only pins the tarball version.
+      packages.x86_64-linux = {
+        nvim-hpc = inputs.wrappers.lib.evalPackage {
+          pkgs = pkgsUnfree;
+          imports = [ "${inputs.nvim-config}/module-hpc.nix" ];
+        };
+        inherit (pkgsUnfree) quarto;
       };
     };
 }

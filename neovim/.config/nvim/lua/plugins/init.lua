@@ -10,7 +10,9 @@ require("plugins.files")
 require("plugins.lsp")
 require("plugins.git")
 require("plugins.dap")
-require("plugins.tex")
+if require("config.has")("vimtex") then
+  require("plugins.tex")
+end
 require("plugins.repl.quarto")
 require("plugins.repl.iron")
 require("plugins.repl.run")

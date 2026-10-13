@@ -71,3 +71,6 @@ type -q zoxide; and zoxide init fish | source
 if type -q starship; and test "$TERM" != dumb
     starship init fish | source
 end
+
+# opencode
+fish_add_path /home/lbaracco/.opencode/bin

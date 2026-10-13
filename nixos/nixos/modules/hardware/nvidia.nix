@@ -13,5 +13,7 @@
     nvidiaSettings = true;
   };
   nixpkgs.config.nvidia.acceptLicense = true;
-  nixpkgs.config.cudaSupport = true;
+  # No global cudaSupport: it forces source builds (e.g. zotero -> firefox-esr ->
+  # onnxruntime). Opt in per package instead (btop-cuda, ollama-cuda, ...).
+  # uv/PyPI CUDA wheels only need the driver libs, provided via nix-ld.
 }

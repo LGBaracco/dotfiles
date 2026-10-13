@@ -11,7 +11,7 @@
     nautilus
     nextcloud-client
     thunderbird-bin
-    zotero
+    stable.zotero # unstable 10.0.4 fails to build vs firefox-esr 153.4 (AboutTranslations patch); revert once fixed
 
     # --- terminals ---
     ghostty
@@ -26,7 +26,7 @@
     lazygit
     alsa-utils
     htop
-    btop
+    btop-cuda # NVIDIA GPU stats (driver runpath); no global cudaSupport
     dgop
 
     # --- Cli tools ---

@@ -12,6 +12,7 @@
     nextcloud-client
     thunderbird-bin
     stable.zotero # unstable 10.0.4 fails to build vs firefox-esr 153.4 (AboutTranslations patch); revert once fixed
+    zoom-us
 
     # --- terminals ---
     ghostty

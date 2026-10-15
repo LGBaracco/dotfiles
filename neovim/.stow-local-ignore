@@ -1,0 +1,9 @@
+# Package-local file replaces stow defaults, so they are restated here.
+^/scripts
+^/README.*
+^/LICENSE.*
+^/COPYING
+\.git
+\.gitignore
+.+~
+\#.*\#

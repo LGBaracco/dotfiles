@@ -19,7 +19,7 @@ let
       nativeBuildInputs = [ pkgs.makeWrapper ];
       postBuild = ''
         wrapProgram $out/bin/pycharm \
-          --set-default PYCHARM_VM_OPTIONS ${vmopts}
+          --set PYCHARM_VM_OPTIONS ${vmopts}
       '';
     };
 in

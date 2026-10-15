@@ -74,7 +74,7 @@
       };
 
       # HPC (JSC): plugin pack for a release nvim on the cluster, no Nix there.
-      # Synced by `nvim-hpc-sync` (bin/); quarto only pins the tarball version.
+      # Synced by `nvim-hpc-sync` (neovim/scripts/); quarto only pins the tarball version.
       packages.x86_64-linux = {
         nvim-hpc = inputs.wrappers.lib.evalPackage {
           pkgs = pkgsUnfree;

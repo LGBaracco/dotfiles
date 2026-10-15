@@ -1,2 +1,1 @@
 figure out venv and such (and jupyter kernels)
-bin layout needs to be nuked

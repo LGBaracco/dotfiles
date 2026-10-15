@@ -58,7 +58,6 @@ fi
 [ -r "$HOME/galaxy/init.sh" ] && . "$HOME/galaxy/init.sh"
 
 # Loading modules
-module try-load Neovim
 module try-load atlas
 module try-load uv
 

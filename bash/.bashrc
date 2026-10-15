@@ -54,6 +54,9 @@ if command -v nvim >/dev/null 2>&1; then
     alias vi=nvim vim=nvim neovim=nvim
 fi
 
+# Galaxy
+source $HOME/galaxy/init.sh
+
 # ── Prompt ───────────────────────────────────────────────────────────────────
 # Oxocarbon: green host, blue cwd, purple branch
 __git_branch() {

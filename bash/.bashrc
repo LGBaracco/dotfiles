@@ -55,7 +55,12 @@ if command -v nvim >/dev/null 2>&1; then
 fi
 
 # Galaxy
-source $HOME/galaxy/init.sh
+[ -r "$HOME/galaxy/init.sh" ] && . "$HOME/galaxy/init.sh"
+
+# Loading modules
+module try-load Neovim
+module try-load atlas
+module try-load uv
 
 # ── Prompt ───────────────────────────────────────────────────────────────────
 # Oxocarbon: green host, blue cwd, purple branch

@@ -6,6 +6,9 @@ Inactive (exits silently, normal permission flow applies) unless one of:
   environment (set by the `ask` fish alias, inherited by subagents), or
   agent_type == "ask" in the hook input.
 
+Skill hooks stay registered for the rest of the session, so --force only
+applies while the latest user prompt in the transcript is an /ask invocation.
+
 When active, every Bash command is either auto-allowed (no prompt) or denied
 with a reason Claude can act on. Edit the tables below to extend it.
 """
@@ -334,10 +337,32 @@ def respond(decision, reason):
     }}))
 
 
+def ask_turn_active(transcript_path):
+    """True if the latest human prompt is /ask (or the transcript can't tell)."""
+    try:
+        with open(transcript_path) as f:
+            lines = f.readlines()
+    except (OSError, TypeError):
+        return True
+    for line in reversed(lines):
+        try:
+            entry = json.loads(line)
+        except ValueError:
+            continue
+        if (entry.get("type") != "user" or entry.get("isSidechain")
+                or (entry.get("origin") or {}).get("kind") != "human"):
+            continue
+        content = entry.get("message", {}).get("content", "")
+        if isinstance(content, list):
+            content = " ".join(b.get("text", "") for b in content if isinstance(b, dict))
+        return "<command-name>/ask</command-name>" in content
+    return True
+
+
 def main():
     data = json.load(sys.stdin)
-    active = ("--force" in sys.argv[1:] or os.environ.get("CLAUDE_ASK_MODE") == "1"
-              or data.get("agent_type") == "ask")
+    active = (os.environ.get("CLAUDE_ASK_MODE") == "1" or data.get("agent_type") == "ask"
+              or ("--force" in sys.argv[1:] and ask_turn_active(data.get("transcript_path"))))
     if not active or data.get("tool_name") != "Bash":
         return
     cmd = data.get("tool_input", {}).get("command", "")

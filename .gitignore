@@ -35,9 +35,6 @@ claude/.claude/statsig/
 claude/.claude/todos/
 claude/.claude/transcripts/
 
-# HPC Neovim stow package, generated on the cluster by nvim-hpc-sync
-/hpc-nvim/
-
 # fish/ghostty: runtime state written next to stowed configs
 fish/.config/fish/fish_variables
 ghostty/.config/ghostty/themes/

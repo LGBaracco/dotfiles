@@ -73,14 +73,18 @@
         ];
       };
 
-      # HPC (JSC): plugin pack for a release nvim on the cluster, no Nix there.
-      # Synced by `nvim-hpc-sync` (neovim/scripts/); quarto only pins the tarball version.
-      packages.x86_64-linux = {
+      # HPC (JSC), no Nix there: nvim-hpc-bundle is a self-contained nvim-hpc.tar.gz
+      # (release nvim + Quarto, plugin pack from nvim-hpc, Lua config, static tools).
+      # Built and pushed by `nvim-hpc-sync` (neovim/scripts/).
+      packages.x86_64-linux = rec {
         nvim-hpc = inputs.wrappers.lib.evalPackage {
           pkgs = pkgsUnfree;
           imports = [ "${inputs.nvim-config}/module-hpc.nix" ];
         };
-        inherit (pkgsUnfree) quarto;
+        nvim-hpc-bundle = pkgsUnfree.callPackage "${inputs.nvim-config}/hpc/bundle.nix" {
+          inherit nvim-hpc;
+          configSrc = inputs.nvim-config;
+        };
       };
     };
 }

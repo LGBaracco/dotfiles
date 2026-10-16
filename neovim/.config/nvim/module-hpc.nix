@@ -7,9 +7,10 @@
 }:
 # HPC (JSC) profile: module.nix minus desktop-only plugins (LaTeX, noice/notify,
 # cinnamon, neo-tree, precognition) and with curated treesitter grammars.
-# Built on the desktop as the `nvim-hpc` flake output; `nvim-hpc-sync` copies
-# nvim-packdir to the cluster, where a release nvim loads it from site/pack.
-# runtimePkgs stay for local testing only: /nix/store binaries can't run there.
+# Built on the desktop as the `nvim-hpc` flake output; hpc/bundle.nix packs its
+# nvim-packdir with a release nvim into the self-contained nvim-hpc.tar.gz that
+# `nvim-hpc-sync` installs on the cluster. runtimePkgs stay for local testing
+# only (/nix/store binaries can't run there); the bundle ships static tools.
 # Lua guards absent plugins via config.has.
 {
   imports = [ wlib.wrapperModules.neovim ];

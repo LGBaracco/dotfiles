@@ -39,6 +39,9 @@ style = "fg:#f2f4f8 bg:#393939"
 repo_root_style = "fg:#f2f4f8 bg:#393939"
 truncate_to_repo = true
 truncation_length = 3
+# repo_root_format breaks (renders nothing) when the logical path is a symlink
+# outside the repo, e.g. ~/nixos -> ~/dotfiles/nixos/nixos. Use the real path.
+use_logical_path = false
 
 [git_branch]
 format = "[](fg:#42be65 bg:#be95ff)[ $symbol$branch ]($style)"

@@ -1,7 +1,7 @@
 {
   "currentThemeName": "custom",
   "currentThemeCategory": "registry",
-  "customThemeFile": "/home/lbaracco/.config/DankMaterialShell/themes/myoxocarbon/theme.json",
+  "customThemeFile": "/home/lorenzo/.config/DankMaterialShell/themes/myoxocarbon/theme.json",
   "registryThemeVariants": {
     "oxocarbon": "Purple",
     "deepdark": {
@@ -38,6 +38,9 @@
   "mangoLayoutGapsOutOverride": 4,
   "mangoLayoutRadiusOverride": 3,
   "mangoLayoutBorderSize": 1,
+  "touchpadAccelSpeed": 0.2,
+  "calendarBackend": "dankcal",
+  "customAnimationDuration": 200,
   "syncComponentAnimationSpeeds": false,
   "enableRippleEffects": false,
   "motionEffect": 1,
@@ -197,9 +200,13 @@
   "dockShowOverflowBadge": false,
   "dockShowTrash": true,
   "dockTrashFileManager": "nautilus",
+  "notificationOverlayEnabled": true,
   "lockScreenPowerOffMonitorsOnLock": true,
   "lockScreenNotificationMode": 1,
-  "notificationTimeoutCritical": 120000,
+  "notificationTimeoutNormal": 8000,
+  "notificationTimeoutCritical": 60000,
+  "notificationIgnoreAppTimeout": true,
+  "notificationPopupPosition": -1,
   "osdPowerProfileEnabled": true,
   "powerActionConfirm": false,
   "powerMenuGridLayout": true,

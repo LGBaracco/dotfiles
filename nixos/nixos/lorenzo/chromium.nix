@@ -59,6 +59,6 @@ in
     (withGnomeKeyring pkgs.helium)
     (withGnomeKeyring pkgs.discord)
     (withGnomeKeyring pkgs.whatsapp-electron)
-    (withGnomeKeyring pkgs.p3x-onenote)
+    (withGnomeKeyring pkgs.obsidian)
   ];
 }

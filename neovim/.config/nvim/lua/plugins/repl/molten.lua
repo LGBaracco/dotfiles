@@ -7,6 +7,9 @@
 -- .ipynb buffers (jupytext.nvim, ft=quarto, see plugins/repl/quarto.lua) auto-attach a kernel on
 -- open (UV project kernel + wiring, else the notebook's kernelspec, else a picker), import saved
 -- outputs, and export outputs back into the notebook on :w. ,N converts a plain .qmd to .ipynb.
+-- ,I prompts for a Jupyter server (laptop → `tunnel <node>` → `start-server` on a compute node)
+-- and attaches its default kernel; ,k swaps the buffer's kernel (project / remote / kernelspec).
+-- Files on sshfs mounts (mju/mws) never get a local uv kernel: it would rebuild the cluster .venv.
 
 -- snacks.image (unicode placeholders): the plot is its own virt_lines extmark created
 -- after Molten's text extmark, so it always sits below stdout. image.nvim was dropped
@@ -83,6 +86,22 @@ vim.api.nvim_create_autocmd("ColorScheme", {
     callback = set_molten_highlights,
 })
 
+---Remote kernel labels keyed by server base URL ("http://host:port"), e.g. "atlas@localhost:8888".
+local remote_labels = {}
+
+---Statusline/notify name for a kernel id. Remote ids are the full server URL (token
+---included), so they map to a token-free label.
+local function kernel_label(id)
+    local base = id:match("^(https?://[^/?#]+)")
+    if base then
+        return remote_labels[base] or ("remote " .. (base:gsub("^https?://", "")))
+    end
+    if id:match("%.json$") then
+        return vim.fs.basename(id)
+    end
+    return id
+end
+
 -- Kernel state for the statusline (plugins.ui lualine reads vim.b.molten_kernel).
 -- Cached from Molten's User events: calling MoltenStatusLineKernels on every
 -- redraw would spawn the Python host in buffers that never used Molten.
@@ -92,7 +111,7 @@ vim.api.nvim_create_autocmd("User", {
     callback = function(ev)
         local id = ev.data and ev.data.kernel_id
         if id and id ~= "" then
-            vim.b.molten_kernel = id
+            vim.b.molten_kernel = kernel_label(id)
         end
     end,
 })
@@ -167,8 +186,10 @@ local function notebook_kernelspec(path)
 end
 
 ---True when at least one Molten kernel is attached to the current buffer.
+---rplugin functions are defined lazily (FuncUndefined), so exists("*Molten…") stays 0 even
+---while the host runs; the manifest's :MoltenInit is the reliable "Molten is loaded" signal.
 local function molten_attached()
-    if vim.fn.exists("*MoltenStatusLineKernels") ~= 1 then
+    if vim.fn.exists(":MoltenInit") ~= 2 then
         return false
     end
     local ok, kernels = pcall(vim.fn.MoltenStatusLineKernels, true)
@@ -217,6 +238,15 @@ local function warn_if_nix_venv(root)
     end
 end
 
+local FUSE_SUPER_MAGIC = 0x65735546
+
+---True when `path` lives on a FUSE mount (sshfs `mju`/`mws`). A local `uv run --project`
+---there finds the cluster's .venv linked to a Python the laptop lacks, deletes and rebuilds it.
+local function on_fuse_mount(path)
+    local st = vim.uv.fs_statfs(path)
+    return st ~= nil and st.type == FUSE_SUPER_MAGIC
+end
+
 ---Kernel command: uv layers ipykernel over the project env at launch time, so the
 ---project venv stays untouched and `uv sync` cannot remove the kernel.
 local function kernel_argv(root)
@@ -228,6 +258,26 @@ local function kernel_argv(root)
         "-f",
         "{connection_file}",
     })
+end
+
+---True for a kernel spec written by ensure_kernel_spec whose project dir no longer exists.
+local function is_stale_project_spec(name)
+    local file = jupyter_data_dir() .. "/kernels/" .. name .. "/kernel.json"
+    local ok, spec = pcall(function()
+        return vim.json.decode(table.concat(vim.fn.readfile(file), "\n"))
+    end)
+    if not ok or type(spec) ~= "table" or type(spec.metadata) ~= "table" then
+        return false
+    end
+    if spec.metadata.managed_by ~= "nvim-molten-literate" or type(spec.argv) ~= "table" then
+        return false
+    end
+    for i, arg in ipairs(spec.argv) do
+        if arg == "--project" and spec.argv[i + 1] then
+            return vim.fn.isdirectory(spec.argv[i + 1]) == 0
+        end
+    end
+    return false
 end
 
 ---Write ~/.local/share/jupyter/kernels/<name>/kernel.json (idempotent).
@@ -434,7 +484,9 @@ local function literate_preview()
 end
 
 local function evaluate_inject(kernel_id, code)
-    local payload = ("exec(%q)"):format(code)
+    -- JSON string literal == Python str literal (\n, \", \uXXXX). Lua's %q writes newlines
+    -- as backslash-newline, which Python reads as line continuation (one-line SyntaxError).
+    local payload = ("exec(%s)"):format(vim.json.encode(code))
     local args = { payload }
     if kernel_id and kernel_id ~= "" then
         args = { kernel_id, payload }
@@ -571,6 +623,255 @@ local function ensure_remote_plugin()
     return false
 end
 
+--- Remote kernels ---
+-- `MoltenInit http(s)://…` goes through Molten's JupyterAPIManager: it keeps only
+-- scheme://host:port and ?token=, POSTs /api/kernels without a body (the server's default
+-- kernel starts: `start-server` sets --MappingKernelManager.default_kernel_name), talks plain
+-- ws:// without a base_url and has no stdin (input() hangs). The full URL is the kernel id;
+-- MoltenDeinit DELETEs the remote kernel.
+
+local REMOTE_DEFAULT_URL = "http://localhost:8888/?token="
+local REMOTE_STATE_FILE = vim.fn.stdpath("state") .. "/molten_remote_url"
+
+-- Project paths are the laptop's, so no sys.path/import wiring: autoreload + where it runs.
+local REMOTE_BOOTSTRAP = table.concat({
+    "get_ipython().run_line_magic('load_ext', 'autoreload')",
+    "get_ipython().run_line_magic('autoreload', '2')",
+    "import os as _os, socket as _socket",
+    "print(f'molten wire: remote host={_socket.gethostname()} cwd={_os.getcwd()}')",
+}, "\n")
+
+---Last server URL that passed the preflight (survives restarts within one Slurm job).
+local function last_remote_url()
+    local ok, lines = pcall(vim.fn.readfile, REMOTE_STATE_FILE)
+    return ok and lines[1] ~= nil and lines[1] ~= "" and lines[1] or nil
+end
+
+local function save_remote_url(url)
+    vim.fn.mkdir(vim.fs.dirname(REMOTE_STATE_FILE), "p")
+    local mode = tonumber("600", 8) -- the URL carries the token
+    local fd = vim.uv.fs_open(REMOTE_STATE_FILE, "w", mode)
+    if fd then
+        vim.uv.fs_write(fd, url .. "\n")
+        vim.uv.fs_close(fd)
+        vim.uv.fs_chmod(REMOTE_STATE_FILE, mode)
+    end
+end
+
+---Accepts a server URL with any path (start-server's http://127.0.0.1:8888/tree?token=…),
+---host:port[/?token=…], a bare token (→ localhost:8888, the `tunnel` port) or a kernel
+---connection .json.
+---@return string|nil
+local function normalize_remote(input)
+    input = vim.trim(input or "")
+    if input == "" then
+        return nil
+    end
+    if input:match("%.json$") then
+        return vim.fs.normalize(input)
+    end
+    if input:match("^https?://") then
+        return input
+    end
+    if input:find("[:/]") then
+        return "http://" .. input
+    end
+    return REMOTE_DEFAULT_URL .. input
+end
+
+---@return string base "http://host:port"
+---@return string|nil token
+local function remote_parts(url)
+    local base = url:match("^(https?://[^/?#]+)")
+    local token = url:match("[?&]token=([^&#]*)")
+    return base, token ~= "" and token or nil
+end
+
+---Query /api/kernelspecs before MoltenInit, which is sync and has no timeout (an unreachable
+---host would freeze nvim). cb(err, default_kernel) runs on the main loop.
+local function remote_preflight(url, cb)
+    if vim.fn.executable("curl") == 0 then
+        cb(nil, nil)
+        return
+    end
+    local base, token = remote_parts(url)
+    local hostport = (base:gsub("^https?://", ""))
+    local cmd = { "curl", "-sS", "-m", "5", "-w", "\n%{http_code}", base .. "/api/kernelspecs" }
+    local stdin = nil
+    if token then
+        -- Header read from stdin keeps the token out of `ps`.
+        vim.list_extend(cmd, { "-H", "@-" })
+        stdin = "Authorization: token " .. token .. "\n"
+    end
+    vim.system(cmd, { text = true, stdin = stdin }, vim.schedule_wrap(function(res)
+        if res.code == 7 then
+            return cb(("Nothing listening on %s. Is `tunnel <node>` up and `start-server` running?"):format(hostport))
+        elseif res.code == 28 then
+            return cb(("%s timed out."):format(hostport))
+        elseif res.code ~= 0 then
+            return cb(("curl failed (%d): %s"):format(res.code, vim.trim(res.stderr or "")))
+        end
+        local body, status = (res.stdout or ""):match("^(.*)\n(%d+)$")
+        status = tonumber(status)
+        if status == 401 or status == 403 then
+            return cb(("%s rejected the token."):format(hostport))
+        elseif status ~= 200 then
+            return cb(("%s answered HTTP %s; not a Jupyter server?"):format(hostport, status or "?"))
+        end
+        local ok, specs = pcall(vim.json.decode, body)
+        cb(nil, ok and type(specs) == "table" and type(specs.default) == "string" and specs.default or nil)
+    end))
+end
+
+---MoltenDeinit (every kernel on the current buffer, outputs cleared). False when none.
+local function deinit_if_attached()
+    if not molten_attached() then
+        return false
+    end
+    vim.cmd("MoltenDeinit")
+    return true
+end
+
+---Prompt for a Jupyter server, check it, then replace the buffer's kernel with the server's
+---default kernel. The current kernel survives typos, a dead tunnel and a stale token.
+local function remote_connect(bufnr)
+    vim.ui.input({
+        prompt = "Jupyter server (URL, host:port, token or kernel .json): ",
+        default = last_remote_url() or REMOTE_DEFAULT_URL,
+    }, function(input)
+        local target = normalize_remote(input)
+        if not target then
+            return
+        end
+
+        local function attach(label)
+            if vim.api.nvim_get_current_buf() ~= bufnr then
+                notify("Buffer changed before the kernel started; try again.", vim.log.levels.WARN)
+                return
+            end
+            local had = deinit_if_attached()
+            pending_wire[bufnr] = {
+                kernel = label,
+                mode = "inject",
+                code = REMOTE_BOOTSTRAP,
+                import_outputs = is_notebook_buf(bufnr) and not had,
+            }
+            notify(("Connecting to %s…"):format(label))
+            -- MoltenInit is -complete=file: without magic.file=false `?`, `#`, `%` would expand.
+            vim.api.nvim_cmd({ cmd = "MoltenInit", args = { target }, magic = { file = false, bar = false } }, {})
+        end
+
+        if not target:match("^https?://") then
+            attach(vim.fs.basename(target))
+            return
+        end
+        remote_preflight(target, function(err, default_kernel)
+            if err then
+                notify(err, vim.log.levels.ERROR)
+                return
+            end
+            save_remote_url(target)
+            local base = remote_parts(target)
+            remote_labels[base] = ("%s@%s"):format(default_kernel or "remote", (base:gsub("^https?://", "")))
+            attach(remote_labels[base])
+        end)
+    end)
+end
+
+---,I: like ,i, but the kernel comes from a (prompted) Jupyter server. From .py, opens repl.qmd.
+local function literate_remote_init()
+    if not ensure_remote_plugin() then
+        return
+    end
+    if vim.bo.filetype ~= "quarto" then
+        local root, pyproject = find_project_root()
+        ensure_repl_buffer(root, project_name_from_toml(pyproject))
+    end
+    remote_connect(vim.api.nvim_get_current_buf())
+end
+
+---,k: replace the buffer's kernel, wired like the init paths: project kernel (uv + injected
+---setup, as ,i), a remote server (as ,I) or any installed kernelspec (no wiring). With no
+---kernel attached it is just an init with a picker. Notebook outputs are imported only on a
+---first attach; a switch starts clean.
+local function switch_kernel()
+    if not ensure_remote_plugin() then
+        return
+    end
+    local buf = vim.api.nvim_get_current_buf()
+    local path = vim.api.nvim_buf_get_name(buf)
+    local root, pyproject = find_project_root(path ~= "" and vim.fs.dirname(path) or nil)
+    local current = vim.b[buf].molten_kernel
+    local remote_current = current ~= nil and (current:find("@", 1, true) ~= nil or current:match("^remote ") ~= nil)
+
+    local items = {}
+    local project = nil
+    if pyproject and not on_fuse_mount(root) then
+        local pkg_name = project_name_from_toml(pyproject)
+        project = kernel_name_for(root, pkg_name)
+        table.insert(items, { kind = "project", name = project, pkg_name = pkg_name, label = project .. " (uv project)" })
+    end
+    table.insert(items, {
+        kind = "remote",
+        label = "Remote Jupyter server…" .. (remote_current and (" (current: %s)"):format(current) or ""),
+    })
+    local ok, specs = pcall(vim.fn.MoltenAvailableKernels)
+    for _, spec in ipairs(ok and specs or {}) do
+        if spec ~= project and not is_stale_project_spec(spec) then
+            table.insert(items, { kind = "spec", name = spec, label = spec })
+        end
+    end
+    for _, item in ipairs(items) do
+        if item.name and item.name == current then
+            item.label = item.label .. " (current)"
+        end
+    end
+
+    vim.ui.select(items, {
+        prompt = "Molten kernel",
+        format_item = function(item)
+            return item.label
+        end,
+    }, function(choice)
+        if not choice then
+            return
+        end
+        if vim.api.nvim_get_current_buf() ~= buf then
+            notify("Buffer changed before the kernel switch; try again.", vim.log.levels.WARN)
+            return
+        end
+        if choice.kind == "remote" then
+            remote_connect(buf)
+            return
+        end
+        if choice.name == current then
+            notify(("%s is already attached (,R restarts it)."):format(current))
+            return
+        end
+        if not ensure_jupyter_runtime_dir() then
+            notify("Could not create the Jupyter runtime dir under " .. jupyter_data_dir(), vim.log.levels.ERROR)
+            return
+        end
+        if choice.kind == "project" then
+            warn_if_nix_venv(root)
+            if not ensure_kernel_spec(root, choice.name) then
+                return
+            end
+        end
+
+        local had = deinit_if_attached()
+        local import_outputs = is_notebook_buf(buf) and not had
+        if choice.kind == "project" then
+            local code = build_inject_bootstrap(root, choice.pkg_name)
+            start_kernel_on_current(root, choice.pkg_name, choice.name, "inject", code, import_outputs)
+        else
+            pending_wire[buf] = { kernel = choice.name, mode = "none", import_outputs = import_outputs }
+            notify(("Initializing kernel %q…"):format(choice.name))
+            vim.cmd("MoltenInit " .. choice.name)
+        end
+    end)
+end
+
 local function literate_init()
     if not ensure_remote_plugin() then
         return
@@ -580,6 +881,13 @@ local function literate_init()
     if not pyproject then
         notify(
             ("Not a UV project (no pyproject.toml above %s). Run `uv init` there first."):format(root),
+            vim.log.levels.ERROR
+        )
+        return
+    end
+    if on_fuse_mount(root) then
+        notify(
+            ("%s is on an sshfs/FUSE mount: a local uv kernel would rebuild its .venv. Use ,I (cluster Jupyter server) or ,k (kernelspec)."):format(root),
             vim.log.levels.ERROR
         )
         return
@@ -624,6 +932,11 @@ local function notebook_auto_init(bufnr)
     end
     vim.b[bufnr].molten_notebook_wired = true
 
+    local path = vim.api.nvim_buf_get_name(bufnr)
+    if on_fuse_mount(vim.fs.dirname(path)) then
+        notify("Notebook on an sshfs/FUSE mount: no local kernel started. ,I attaches a Jupyter server, ,k picks a kernel.")
+        return
+    end
     if not ensure_remote_plugin() then
         return
     end
@@ -632,7 +945,6 @@ local function notebook_auto_init(bufnr)
         return
     end
 
-    local path = vim.api.nvim_buf_get_name(bufnr)
     local root, pyproject = find_project_root(vim.fs.dirname(path))
     if pyproject then
         local pkg_name = project_name_from_toml(pyproject)
@@ -761,7 +1073,10 @@ local function notebook_export()
         return
     end
     if vim.fn.executable("jupytext") == 0 then
-        notify("`jupytext` CLI not found on PATH (see module.nix runtimePkgs).", vim.log.levels.ERROR)
+        notify(
+            "`jupytext` CLI not found on PATH (desktop: module.nix runtimePkgs; HPC: `uv tool install jupytext`).",
+            vim.log.levels.ERROR
+        )
         return
     end
 
@@ -826,6 +1141,8 @@ map_quarto_buf = function(bufnr)
     end
 
     map("n", "<localleader>i", literate_init, "Molten literate init")
+    map("n", "<localleader>I", literate_remote_init, "Molten remote init (Jupyter server prompt)")
+    map("n", "<localleader>k", switch_kernel, "Molten switch kernel")
     map("n", "<localleader>e", with_runner("run_cell"), "Molten run cell")
     map("n", "<CR>", with_runner("run_cell"), "Molten run cell")
     map("n", "<localleader>l", with_runner("run_line"), "Molten run line")
@@ -845,7 +1162,7 @@ map_quarto_buf = function(bufnr)
     -- Outputs
     map("n", "<localleader>y", ":MoltenYankOutput<CR>", "Molten yank output")
     map("n", "<localleader>Y", ":MoltenYankOutput!<CR>", "Molten yank output to clipboard")
-    map("n", "<localleader>I", ":MoltenImagePopup<CR>", "Molten image popup (system viewer)")
+    map("n", "<localleader>P", ":MoltenImagePopup<CR>", "Molten image popup (system viewer)")
     map("n", "<localleader>b", ":MoltenOpenInBrowser<CR>", "Molten open HTML output in browser")
     map("n", "<localleader>v", ":MoltenToggleVirtual<CR>", "Molten toggle virtual output")
 
@@ -956,10 +1273,23 @@ local function map_python_buf(bufnr)
         silent = true,
         desc = "Molten literate init (open repl.qmd)",
     })
+    vim.keymap.set("n", "<localleader>I", literate_remote_init, {
+        buffer = bufnr,
+        silent = true,
+        desc = "Molten remote init (open repl.qmd, Jupyter server prompt)",
+    })
 end
 
 vim.api.nvim_create_user_command("MoltenLiterateInit", literate_init, {
     desc = "Init Molten on project repl.qmd (create in-memory if missing)",
+})
+
+vim.api.nvim_create_user_command("MoltenRemoteInit", literate_remote_init, {
+    desc = "Attach the default kernel of a Jupyter server (prompted URL / token)",
+})
+
+vim.api.nvim_create_user_command("MoltenSwitchKernel", switch_kernel, {
+    desc = "Replace the buffer's kernel: project (uv), remote server or kernelspec",
 })
 
 vim.api.nvim_create_user_command("MoltenNotebookExport", notebook_export, {
@@ -1003,6 +1333,7 @@ vim.api.nvim_create_autocmd("FileType", {
         pcall(function()
             require("which-key").add({
                 { "<localleader>i", desc = "Molten literate init", buffer = ev.buf },
+                { "<localleader>I", desc = "Molten remote init", buffer = ev.buf },
             })
         end)
     end,

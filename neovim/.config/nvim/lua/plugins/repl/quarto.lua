@@ -29,15 +29,30 @@ end
 -- jupytext.nvim owns BufReadCmd/BufWriteCmd for *.ipynb: on read it converts the
 -- notebook to a sibling <name>.qmd (temporary unless it already existed) and loads
 -- that text with ft=quarto; :w converts back into the *same* .ipynb. Needs the
--- `jupytext` CLI (module.nix) and `quarto` on PATH. Eager: the plugin is in the
--- startup pack, and a lazily registered *Cmd autocmd would miss `nvim foo.ipynb`.
+-- `jupytext` CLI and `quarto` on PATH: desktop gets both from module.nix; the HPC
+-- bundle ships quarto only, so run `uv tool install jupytext` on the cluster once.
+-- Without the CLI the plugin errors mid-read, so it is skipped and .ipynb opens as JSON.
+-- Eager: the plugin is in the startup pack, and a lazily registered *Cmd autocmd
+-- would miss `nvim foo.ipynb`.
 do
   local ok, jupytext = pcall(require, "jupytext")
-  if ok then
+  if ok and vim.fn.executable("jupytext") == 1 then
     jupytext.setup({
       style = "quarto",
       output_extension = "qmd",
       force_ft = "quarto",
+    })
+  elseif ok then
+    vim.api.nvim_create_autocmd("BufReadPost", {
+      pattern = "*.ipynb",
+      once = true,
+      callback = function()
+        vim.notify(
+          "`jupytext` not on PATH: .ipynb opened as raw JSON. Install it (`uv tool install jupytext`) and restart Neovim.",
+          vim.log.levels.WARN,
+          { title = "jupytext" }
+        )
+      end,
     })
   end
 end
@@ -125,7 +140,7 @@ require("lze").load({
     ft = { "quarto", "python" },
     -- Do NOT list Molten* here: they are remote-plugin commands defined by the
     -- rplugin manifest at startup; lze's cmd handler would delete them on load.
-    cmd = { "MoltenLiterateInit", "MoltenNotebookExport", "NewNotebook" },
+    cmd = { "MoltenLiterateInit", "MoltenRemoteInit", "MoltenSwitchKernel", "MoltenNotebookExport", "NewNotebook" },
     after = function()
       require("plugins.repl.molten")
     end,

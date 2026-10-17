@@ -138,6 +138,16 @@ require("dashboard").setup({
                 action = "Telescope projects",
             },
             {
+                icon = "󰊢  ",
+                icon_hl = "DashboardIcon",
+                desc = "Git status (Neogit)                       ",
+                desc_hl = "DashboardDesc",
+                key = "g",
+                key_hl = "DashboardKey",
+                key_format = " %s",
+                action = "Neogit",
+            },
+            {
                 icon = "  ",
                 icon_hl = "DashboardIcon",
                 desc = "Open file explorer                        ",

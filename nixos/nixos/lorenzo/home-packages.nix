@@ -11,7 +11,7 @@
     nautilus
     nextcloud-client
     thunderbird-bin
-    stable.zotero # unstable 10.0.4 fails to build vs firefox-esr 153.4 (AboutTranslations patch); revert once fixed
+    stable.zotero
     zoom-us
 
     # --- terminals ---
@@ -34,7 +34,7 @@
     stow
     imv
     eza # ls
-    zoxide # smarter cd
+    zoxide # cd
     starship
     babelfish # translates hm-session-vars.sh for fish
     bat

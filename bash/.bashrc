@@ -58,6 +58,9 @@ fi
 # Galaxy
 #[ -r "$HOME/galaxy/init.sh" ] && . "$HOME/galaxy/init.sh"
 
+# Sets $project
+jutil env activate -p cjinm16
+
 # Loading modules
 #module try-load atlas
 module try-load uv

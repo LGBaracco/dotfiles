@@ -39,6 +39,7 @@
   "mangoLayoutRadiusOverride": 3,
   "mangoLayoutBorderSize": 1,
   "touchpadAccelSpeed": 0.2,
+  "firstDayOfWeek": 1,
   "calendarBackend": "dankcal",
   "customAnimationDuration": 200,
   "syncComponentAnimationSpeeds": false,

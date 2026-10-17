@@ -48,7 +48,8 @@ vim.api.nvim_create_autocmd("FileType", {
     pattern = "dashboard",
     callback = function(ev)
         local b = ev.buf
-        -- Keep j/k for doom menu navigation (CursorMoved snaps between items).
+        -- Keep j/k for doom menu navigation (CursorMoved snaps between items);
+        -- s and g are menu keys (Neogit, live grep).
         local block = {
             "w",
             "b",
@@ -64,7 +65,6 @@ vim.api.nvim_create_autocmd("FileType", {
             "v",
             "V",
             "<C-v>",
-            "s",
             "S",
         }
         for _, lhs in ipairs(block) do
@@ -138,16 +138,6 @@ require("dashboard").setup({
                 action = "Telescope projects",
             },
             {
-                icon = "󰊢  ",
-                icon_hl = "DashboardIcon",
-                desc = "Git status (Neogit)                       ",
-                desc_hl = "DashboardDesc",
-                key = "g",
-                key_hl = "DashboardKey",
-                key_format = " %s",
-                action = "Neogit",
-            },
-            {
                 icon = "  ",
                 icon_hl = "DashboardIcon",
                 desc = "Open file explorer                        ",
@@ -156,6 +146,26 @@ require("dashboard").setup({
                 key_hl = "DashboardKey",
                 key_format = " %s",
                 action = "Oil",
+            },
+            {
+                icon = "󰊢  ",
+                icon_hl = "DashboardIcon",
+                desc = "Neogit                                    ",
+                desc_hl = "DashboardDesc",
+                key = "s",
+                key_hl = "DashboardKey",
+                key_format = " %s",
+                action = "Neogit",
+            },
+            {
+                icon = "  ",
+                icon_hl = "DashboardIcon",
+                desc = "Grep                                      ",
+                desc_hl = "DashboardDesc",
+                key = "g",
+                key_hl = "DashboardKey",
+                key_format = " %s",
+                action = "Telescope live_grep",
             },
             {
                 icon = "󰈞  ",

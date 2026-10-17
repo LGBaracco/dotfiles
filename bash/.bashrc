@@ -50,15 +50,16 @@ alias ll='command ls --color=auto'
 alias gs='git status'
 alias ga='git add'
 alias gc='git commit'
+alias start-server='uv run --with jupyter jupyter server --no-browser --ip=0.0.0.0 --port 8888 --MappingKernelManager.default_kernel_name=atlas'
 if command -v nvim >/dev/null 2>&1; then
     alias vi=nvim vim=nvim neovim=nvim
 fi
 
 # Galaxy
-[ -r "$HOME/galaxy/init.sh" ] && . "$HOME/galaxy/init.sh"
+#[ -r "$HOME/galaxy/init.sh" ] && . "$HOME/galaxy/init.sh"
 
 # Loading modules
-module try-load atlas
+#module try-load atlas
 module try-load uv
 
 # ── Prompt ───────────────────────────────────────────────────────────────────

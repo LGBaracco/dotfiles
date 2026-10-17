@@ -30,10 +30,20 @@ alias gc 'git commit'
 alias vi nvim
 alias vim nvim
 alias neovim nvim
+
 # SSHFS mount for workstation and JURECA
 alias mws 'sshfs lbaracco@medpc057.ime.kfa-juelich.de:/home/lbaracco /mnt/workpc/ && sshfs lbaracco@medpc057.ime.kfa-juelich.de:/ /mnt/workroot/'
 alias mju 'sshfs -o AddressFamily=inet -o IdentityFile=$HOME/.ssh/id_jureca -o follow_symlinks,reconnect,ServerAliveInterval=15 baracco1@jureca.fz-juelich.de:/p /mnt/jureca/'
+# Neovim sync script
 alias nvim-hpc-sync '$HOME/dotfiles/neovim/scripts/nvim-hpc-sync'
+# SSH tunnel for Jupyter on HPC: tunnel <node>
+function tunnel
+    if test (count $argv) -ne 1
+        echo "usage: tunnel <node>" >&2
+        return 1
+    end
+    ssh -4 -i ~/.ssh/id_jureca -N -L 8888:$argv[1]:8888 baracco1@jureca.fz-juelich.de
+end
 # Claude Code read-only Ask mode (agent + Bash hook in ~/.claude)
 alias ask 'CLAUDE_ASK_MODE=1 claude --agent ask'
 # Rebuild shortcuts

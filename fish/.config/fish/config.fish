@@ -20,13 +20,13 @@ set -gx VISUAL nvim
 set -g fish_greeting
 
 # ── Aliases ──────────────────────────────────────────────────────────────────
-alias ll eza
-alias ls 'eza -lah --icons auto'
+alias ls eza
+alias ll 'eza -lah --icons auto'
 alias tree 'eza --tree --icons'
 alias cd z # zoxide
 alias gs 'git status'
 alias ga 'git add'
-alias gc 'git commit'
+alias gc 'git commit -m'
 alias vi nvim
 alias vim nvim
 alias neovim nvim

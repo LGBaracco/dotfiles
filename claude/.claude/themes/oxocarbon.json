@@ -1,5 +1,60 @@
 {
   "name": "Oxocarbon",
   "base": "dark",
-  "overrides": {}
+  "overrides": {
+    "claude": "#be95ff",
+    "claudeShimmer": "#d4bbff",
+    "text": "#f2f4f8",
+    "inverseText": "#161616",
+    "inactive": "#8d8d8d",
+    "inactiveShimmer": "#a8a8a8",
+    "subtle": "#525252",
+    "suggestion": "#33b1ff",
+    "permission": "#78a9ff",
+    "permissionShimmer": "#a6c8ff",
+    "remember": "#ff7eb6",
+
+    "success": "#42be65",
+    "error": "#ee5396",
+    "warning": "#ff7eb6",
+    "warningShimmer": "#ffa6d0",
+    "merged": "#be95ff",
+
+    "promptBorder": "#525252",
+    "promptBorderShimmer": "#6f6f6f",
+    "planMode": "#3ddbd9",
+    "autoAccept": "#42be65",
+    "bashBorder": "#ff7eb6",
+    "ide": "#33b1ff",
+    "fastMode": "#08bdba",
+    "fastModeShimmer": "#3ddbd9",
+
+    "diffAdded": "#1c3326",
+    "diffRemoved": "#3a1d2a",
+    "diffAddedDimmed": "#1a241e",
+    "diffRemovedDimmed": "#261b20",
+    "diffAddedWord": "#2d6b41",
+    "diffRemovedWord": "#7a2a4c",
+
+    "userMessageBackground": "#262626",
+    "userMessageBackgroundHover": "#393939",
+    "bashMessageBackgroundColor": "#262626",
+    "memoryBackgroundColor": "#262626",
+    "selectionBg": "#393939",
+    "composerSidebarBackground": "#1c1c1c",
+
+    "rate_limit_fill": "#78a9ff",
+    "rate_limit_empty": "#393939",
+    "briefLabelYou": "#33b1ff",
+    "briefLabelClaude": "#be95ff",
+
+    "red_FOR_SUBAGENTS_ONLY": "#ee5396",
+    "blue_FOR_SUBAGENTS_ONLY": "#78a9ff",
+    "green_FOR_SUBAGENTS_ONLY": "#42be65",
+    "yellow_FOR_SUBAGENTS_ONLY": "#ffe97b",
+    "purple_FOR_SUBAGENTS_ONLY": "#be95ff",
+    "orange_FOR_SUBAGENTS_ONLY": "#ff832b",
+    "pink_FOR_SUBAGENTS_ONLY": "#ff7eb6",
+    "cyan_FOR_SUBAGENTS_ONLY": "#3ddbd9"
+  }
 }

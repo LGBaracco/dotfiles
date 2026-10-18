@@ -33,6 +33,6 @@
     }
   },
   "awaySummaryEnabled": false,
-  "theme": "dark-ansi",
+  "theme": "custom:oxocarbon",
   "editorMode": "vim"
 }

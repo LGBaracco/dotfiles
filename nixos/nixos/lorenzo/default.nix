@@ -2,7 +2,6 @@
   imports = [
     ./git.nix
     ./home-packages.nix
-    ./fastfetch.nix
     ./chromium.nix
     ./theming
     ./dcal.nix

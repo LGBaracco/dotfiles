@@ -1,0 +1,172 @@
+// Dual columns (key | value) with rounded corners, one color per section.
+// Key cell: "│ " + label padded to 11 cols + " │" (fits "Compositor").
+// Value cell: 42 cols of content, then the right │. The value is wrapped in
+// ESC[s ... ESC[u ESC[42C (save cursor, restore, move 42 cols right) so the
+// border lands in a fixed column whatever the value's length.
+// Section top/bottom borders must stay 15 (key) and 45 (value) cols wide.
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/master/doc/json_schema.json",
+  "display": {
+    "color": {
+      "output": "white"
+    },
+    // Colored percentage numbers (memory / disk / battery).
+    "percent": {
+      "type": 9
+    },
+    "separator": ""
+  },
+  "logo": {
+    "source": "none"
+  },
+  "modules": [
+    {
+      "format": "{#cyan}╭─ system ──────────────────────────────────╮",
+      "key": "{#cyan}╭─────────────╮",
+      "type": "custom"
+    },
+    {
+      "format": "{#cyan}│ {#white}\u001b[s{user-name}\u001b[u\u001b[42C{#cyan}│",
+      "key": "{#cyan}│ User        │",
+      "type": "title"
+    },
+    {
+      "format": "{#cyan}│ {#white}\u001b[s{host-name}\u001b[u\u001b[42C{#cyan}│",
+      "key": "{#cyan}│ Hostname    │",
+      "type": "title"
+    },
+    {
+      "format": "{#cyan}│ {#white}\u001b[s{pretty-name} {arch}\u001b[u\u001b[42C{#cyan}│",
+      "key": "{#cyan}│ OS          │",
+      "type": "os"
+    },
+    {
+      "format": "{#cyan}│ {#white}\u001b[s{name} ({version})\u001b[u\u001b[42C{#cyan}│",
+      "key": "{#cyan}│ Host        │",
+      "type": "host"
+    },
+    {
+      "format": "{#cyan}│ {#white}\u001b[s{sysname} {release}\u001b[u\u001b[42C{#cyan}│",
+      "key": "{#cyan}│ Kernel      │",
+      "type": "kernel"
+    },
+    {
+      "format": "{#cyan}│ {#white}\u001b[s{pretty-name} {version}\u001b[u\u001b[42C{#cyan}│",
+      "key": "{#cyan}│ Shell       │",
+      "type": "shell"
+    },
+    {
+      "format": "{#cyan}╰───────────────────────────────────────────╯",
+      "key": "{#cyan}╰─────────────╯",
+      "type": "custom"
+    },
+    {
+      "format": "{#magenta}╭─ desktop ─────────────────────────────────╮",
+      "key": "{#magenta}╭─────────────╮",
+      "type": "custom"
+    },
+    {
+      "format": "{#magenta}│ {#white}\u001b[s{width}x{height} @ {scale-factor}x in {inch}\", {refresh-rate} Hz\u001b[u\u001b[42C{#magenta}│",
+      "key": "{#magenta}│ Display     │",
+      "type": "display"
+    },
+    {
+      "format": "{#magenta}│ {#white}\u001b[s{pretty-name} {version}\u001b[u\u001b[42C{#magenta}│",
+      "key": "{#magenta}│ Compositor  │",
+      "type": "wm"
+    },
+    // Icons: the native module always appends [GTK…]; read the theme name instead.
+    {
+      "format": "{#magenta}│ {#white}\u001b[s{result}\u001b[u\u001b[42C{#magenta}│",
+      "key": "{#magenta}│ Icons       │",
+      "text": "(gsettings get org.gnome.desktop.interface icon-theme 2>/dev/null || echo \"'yet-another-monochrome-icon-set'\") | tr -d \"'\"",
+      "type": "command"
+    },
+    {
+      "format": "{#magenta}│ {#white}\u001b[s{font2}\u001b[u\u001b[42C{#magenta}│",
+      "key": "{#magenta}│ Font        │",
+      "type": "font"
+    },
+    {
+      "format": "{#magenta}│ {#white}\u001b[s{theme} ({size})\u001b[u\u001b[42C{#magenta}│",
+      "key": "{#magenta}│ Cursor      │",
+      "type": "cursor"
+    },
+    {
+      "format": "{#magenta}╰───────────────────────────────────────────╯",
+      "key": "{#magenta}╰─────────────╯",
+      "type": "custom"
+    },
+    {
+      "format": "{#green}╭─ hardware ────────────────────────────────╮",
+      "key": "{#green}╭─────────────╮",
+      "type": "custom"
+    },
+    {
+      "format": "{#green}│ {#white}\u001b[s{name}\u001b[u\u001b[42C{#green}│",
+      "key": "{#green}│ CPU         │",
+      "type": "cpu"
+    },
+    {
+      "format": "{#green}│ {#white}\u001b[s{name}\u001b[u\u001b[42C{#green}│",
+      "hideType": "integrated",
+      "key": "{#green}│ GPU         │",
+      "type": "gpu"
+    },
+    {
+      "format": "{#green}│ {#white}\u001b[s{used} / {total} ({percentage})\u001b[u\u001b[42C{#green}│",
+      "key": "{#green}│ Memory      │",
+      "type": "memory"
+    },
+    {
+      "folders": [
+        "/"
+      ],
+      "format": "{#green}│ {#white}\u001b[s{size-used} / {size-total} ({size-percentage}) - {filesystem}\u001b[u\u001b[42C{#green}│",
+      "key": "{#green}│ Disk        │",
+      "type": "disk"
+    },
+    // {capacity} already includes a % sign
+    {
+      "format": "{#green}│ {#white}\u001b[s{capacity} [{status}]\u001b[u\u001b[42C{#green}│",
+      "key": "{#green}│ Battery     │",
+      "type": "battery"
+    },
+    {
+      "format": "{#green}╰───────────────────────────────────────────╯",
+      "key": "{#green}╰─────────────╯",
+      "type": "custom"
+    },
+    {
+      "format": "{#yellow}╭─ miscellaneous ───────────────────────────╮",
+      "key": "{#yellow}╭─────────────╮",
+      "type": "custom"
+    },
+    {
+      "format": "{#yellow}│ {#white}\u001b[s{ipv4}\u001b[u\u001b[42C{#yellow}│",
+      "key": "{#yellow}│ Local IP    │",
+      "type": "localip"
+    },
+    {
+      "format": "{#yellow}│ {#white}\u001b[s{name}\u001b[u\u001b[42C{#yellow}│",
+      "key": "{#yellow}│ Adapter     │",
+      "type": "poweradapter"
+    },
+    {
+      "format": "{#yellow}│ {#white}\u001b[s{formatted}\u001b[u\u001b[42C{#yellow}│",
+      "key": "{#yellow}│ Uptime      │",
+      "type": "uptime"
+    },
+    {
+      "format": "{#yellow}╰───────────────────────────────────────────╯",
+      "key": "{#yellow}╰─────────────╯",
+      "type": "custom"
+    },
+    "break",
+    {
+      "paddingLeft": 2,
+      "symbol": "circle",
+      "type": "colors"
+    }
+  ]
+}

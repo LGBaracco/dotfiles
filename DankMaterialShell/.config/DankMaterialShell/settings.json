@@ -3,7 +3,7 @@
   "currentThemeCategory": "registry",
   "customThemeFile": "/home/lorenzo/.config/DankMaterialShell/themes/myoxocarbon/theme.json",
   "registryThemeVariants": {
-    "oxocarbon": "Purple",
+    "oxocarbon": "blue",
     "deepdark": {
       "dark": {
         "flavor": "voltage",
@@ -190,11 +190,14 @@
   "matugenTemplateEmacs": false,
   "matugenTemplateZed": false,
   "showDock": true,
-  "dockAutoHide": true,
+  "dockSmartAutoHide": true,
+  "dockGroupByApp": true,
   "dockOpenOnOverview": true,
   "dockSpacing": 8,
   "dockBottomGap": -18,
   "dockIconSize": 50,
+  "dockBorderEnabled": true,
+  "dockIsolateDisplays": true,
   "dockLauncherEnabled": true,
   "dockLauncherLogoMode": "os",
   "dockLauncherLogoColorOverride": "primary",

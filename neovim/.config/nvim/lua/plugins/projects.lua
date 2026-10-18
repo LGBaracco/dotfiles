@@ -4,6 +4,9 @@
 -- project.nvim (v6+) module is `project`, not `project_nvim`.
 require("project").setup({
     manual_mode = false,
+    -- Silently cd into projects owned by other users (e.g. shared/root-owned dirs).
+    -- With allow = false the plugin always shows an error, so notify alone can't mute it.
+    different_owners = { allow = true, notify = false },
 })
 
 local M = {}

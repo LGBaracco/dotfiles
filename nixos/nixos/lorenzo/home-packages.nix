@@ -37,6 +37,7 @@
     zoxide # cd
     starship
     babelfish # translates hm-session-vars.sh for fish
+    fastfetch
     bat
     yq
     jq

@@ -66,10 +66,17 @@ jutil env activate -p cjinm16
 module try-load uv
 
 # ── Prompt ───────────────────────────────────────────────────────────────────
-# Oxocarbon: green host, blue cwd, purple branch
-__git_branch() {
-    local b
-    b=$(git symbolic-ref --short HEAD 2>/dev/null) || return
-    printf ' (%s)' "$b"
-}
-PS1='\n\[\e[38;2;66;190;101m\]\u@\h\[\e[0m\] \[\e[38;2;120;169;255m\]\w\[\e[38;2;190;149;255m\]$(__git_branch)\[\e[0m\]\n\$ '
+if command -v starship >/dev/null 2>&1 && [ "$TERM" != dumb ]; then
+    [ "$DOTFILES_PROFILE" = hpc ] && [ -f "$HOME/.config/starship-hpc.toml" ] &&
+        export STARSHIP_CONFIG="$HOME/.config/starship-hpc.toml"
+    eval "$(starship init bash)"
+else
+    # Oxocarbon: green host, blue cwd, purple branch
+    __git_branch() {
+        local b
+        b=$(git symbolic-ref --short HEAD 2>/dev/null) || return
+        printf ' (%s)' "$b"
+    }
+    command -v git >/dev/null 2>&1 || __git_branch() { :; }
+    PS1='\n\[\e[38;2;66;190;101m\]\u@\h\[\e[0m\] \[\e[38;2;120;169;255m\]\w\[\e[38;2;190;149;255m\]$(__git_branch)\[\e[0m\]\n\$ '
+fi

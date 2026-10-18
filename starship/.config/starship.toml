@@ -1,5 +1,5 @@
 add_newline = true
-format = "$os$hostname[](fg:#393939 bg:#42be65)$username$git_branch$git_status$directory[](fg:#393939) "
+format = "$os$hostname[](fg:#393939 bg:#42be65)$username$git_branch$git_status$directory[](fg:#393939)(\n\n$python$conda) "
 
 # Green pill: OS icon + host | user (thin gray divider). Purple: git. Gray: cwd.
 # Each pill draws its own leading arrow so missing segments leave no gaps.
@@ -13,6 +13,7 @@ NixOS = " "
 Ubuntu = " "
 Debian = " "
 Fedora = " "
+RockyLinux = "\uf32b "
 Arch = " "
 Linux = " "
 Macos = " "
@@ -52,3 +53,19 @@ symbol = " "
 format = "[$all_status$ahead_behind]($style)"
 stashed = ""
 style = "fg:#161616 bg:#be95ff"
+
+# Active venv (uv/virtualenv) or conda/mamba env: a blue powerline segment on a second line.
+# The "(\n\n$python$conda)" group (blank line for breathing room) in format only renders when one is active.
+[python]
+format = "[ $symbol$virtualenv ]($style)[](fg:#78a9ff)"
+symbol = "\ue235 "
+style = "fg:#161616 bg:#78a9ff"
+# Only when a venv is active, not in every Python project
+detect_extensions = []
+detect_files = []
+detect_folders = []
+
+[conda]
+format = "[ $symbol$environment ]($style)[](fg:#78a9ff)"
+symbol = "\ue715 "
+style = "fg:#161616 bg:#78a9ff"

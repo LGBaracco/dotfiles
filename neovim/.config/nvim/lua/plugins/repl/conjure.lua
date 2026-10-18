@@ -1,11 +1,11 @@
 -- Conjure (parked / disabled).
 -- Formerly loaded via nixpkgs vimPlugins.conjure + an lze spec.
 -- Kept here so everything Conjure-related lives in one place; do not require this file.
--- To revive: add `conjure` to module.nix specs.deferred and require this file from plugins/init.lua.
+-- To revive: add the pack.json entry below and require this file from plugins/init.lua.
 
 --[[
--- Nix (module.nix specs.deferred):
---   conjure
+-- pack.json `plugins` (deferred):
+--   { "name": "conjure", "src": "https://github.com/Olical/conjure", "nix": "conjure", "lazy": true }
 
 -- lze spec:
 {

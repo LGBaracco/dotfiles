@@ -29,9 +29,10 @@ end
 -- jupytext.nvim owns BufReadCmd/BufWriteCmd for *.ipynb: on read it converts the
 -- notebook to a sibling <name>.qmd (temporary unless it already existed) and loads
 -- that text with ft=quarto; :w converts back into the *same* .ipynb. Needs the
--- `jupytext` CLI and `quarto` on PATH: desktop gets both from module.nix; the HPC
--- bundle ships quarto only, so run `uv tool install jupytext` on the cluster once.
--- Without the CLI the plugin errors mid-read, so it is skipped and .ipynb opens as JSON.
+-- `jupytext` CLI and `quarto` on PATH: Nix gets both from module.nix; elsewhere they
+-- are host-provided (`uv tool install jupytext`, a Quarto release; :PackSync lists
+-- what is missing). Without the CLI the plugin errors mid-read, so it is skipped and
+-- .ipynb opens as JSON.
 -- Eager: the plugin is in the startup pack, and a lazily registered *Cmd autocmd
 -- would miss `nvim foo.ipynb`.
 do

@@ -2,7 +2,8 @@
 -- Python host: uv tool env `pynvim` (see plugins/repl/quarto.lua). Restart Neovim after installing/refreshing it.
 -- Molten* commands are remote-plugin commands from the rplugin manifest (sourced at
 -- startup). ,i regenerates the manifest itself when it is missing/stale (e.g. after a
--- nixpkgs bump changed molten's store path) and asks for a restart.
+-- nixpkgs bump changed molten's store path) and asks for a restart. Off Nix the
+-- vim.pack hook (config.pack) and :PackSync regenerate it on install/update.
 -- From a .py buffer, ,i opens project-root repl.qmd (or an in-memory template) and owns the kernel.
 -- .ipynb buffers (jupytext.nvim, ft=quarto, see plugins/repl/quarto.lua) auto-attach a kernel on
 -- open (UV project kernel + wiring, else the notebook's kernelspec, else a picker), import saved
@@ -1074,7 +1075,7 @@ local function notebook_export()
     end
     if vim.fn.executable("jupytext") == 0 then
         notify(
-            "`jupytext` CLI not found on PATH (desktop: module.nix runtimePkgs; HPC: `uv tool install jupytext`).",
+            "`jupytext` CLI not found on PATH (Nix: module.nix runtimePkgs; elsewhere: `uv tool install jupytext`).",
             vim.log.levels.ERROR
         )
         return

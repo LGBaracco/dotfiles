@@ -5,6 +5,37 @@
   pkgs,
   ...
 }:
+# Plugin and tool sets come from pack.json, shared with the non-Nix bootstrap
+# (lua/config/pack.lua: vim.pack + mason). Here every entry with a `nix` attr is
+# used: `desktopOnly` and the treesitter lists only matter off Nix, `nix = null`
+# entries (mason.nvim, uv tools) are skipped. List order is kept, so the
+# wrapper's PATH suffix follows the `tools` order.
+let
+  manifest = lib.importJSON ./pack.json;
+  fromAttr = set: path: lib.getAttrFromPath (lib.splitString "." path) set;
+
+  nixPlugins = builtins.filter (p: p.nix or null != null) manifest.plugins;
+  plugins = pred: map (p: fromAttr pkgs.vimPlugins p.nix) (builtins.filter pred nixPlugins);
+
+  # Tools that need more than an attribute lookup.
+  toolOverrides = with pkgs; {
+    # Quarto 1.10 emits pandoc's new `syntax-highlighting` key; nixpkgs pandoc is
+    # still 3.7 (`highlight-style`). Patch until pandoc >= 3.8 lands (nixpkgs#519484).
+    quarto = quarto.overrideAttrs (old: {
+      postPatch = (old.postPatch or "") + ''
+        substituteInPlace bin/quarto.js \
+          --replace-fail "syntax-highlighting" "highlight-style"
+      '';
+    });
+    # Same expression as home-packages, so NixOS shares the store path.
+    zathura = zathura.override {
+      plugins = with zathuraPkgs; [ zathura_pdf_mupdf ];
+    };
+  };
+  tool = attr: toolOverrides.${attr} or (fromAttr pkgs attr);
+  # clang-tools and vscode-langservers-extracted each back two `bin` entries.
+  toolAttrs = lib.unique (map (t: t.nix) (builtins.filter (t: t.nix or null != null) manifest.tools));
+in
 {
   imports = [ wlib.wrapperModules.neovim ];
 
@@ -23,176 +54,25 @@
   # Lazy-load library (must be on start so Lua can require it at boot).
   config.specs.lze = {
     lazy = false;
-    data = with pkgs.vimPlugins; [
-      lze
-      lzextras
-    ];
+    data = plugins (p: p.group or null == "lze");
   };
 
-  # Startup plugins (always packadd'd).
+  # Startup plugins (always packadd'd). Eager on purpose: vimtex (inverse search
+  # breaks if lazy-loaded), jupytext.nvim (owns BufReadCmd *.ipynb), nvim-lspconfig
+  # (lsp/ configs that vim.lsp.config merges; a dependency nixpkgs would add anyway).
   config.specs.core = {
     lazy = false;
     after = [ "lze" ];
-    data = with pkgs.vimPlugins; [
-      # UI / theme (eager chrome)
-      oxocarbon-nvim
-      dashboard-nvim
-      lualine-nvim
-      nvim-navic
-      nvim-web-devicons
-      fidget-nvim
-      noice-nvim
-      nvim-notify
-      nui-nvim
-      plenary-nvim
-
-      # Editor essentials
-      which-key-nvim
-      hop-nvim
-      precognition-nvim
-      comment-nvim
-      nvim-surround
-      smart-splits-nvim
-      todo-comments-nvim
-      toggleterm-nvim
-      project-nvim
-      nvim-autopairs
-      luasnip
-      friendly-snippets
-
-      # LaTeX (eager: inverse search breaks if vimtex is lazy-loaded)
-      vimtex
-
-      # Notebooks (eager: owns BufReadCmd *.ipynb; lazy-loading a *Cmd event is fragile)
-      jupytext-nvim
-
-      # LSP / completion / treesitter
-      blink-cmp
-      conform-nvim
-      lazydev-nvim
-      nvim-lightbulb
-      nvim-treesitter.withAllGrammars
-      nvim-treesitter-textobjects # @code_cell text objects (after/queries/markdown)
-      nvim-treesitter-context
-      nvim-ts-autotag
-    ];
+    data = plugins (p: p.group or null != "lze" && !(p.lazy or false));
   };
 
   # Deferred plugins (opt/ until lze packadd's them).
   config.specs.deferred = {
     lazy = true;
-    data = with pkgs.vimPlugins; [
-      # Light UI (DeferredUIEnter)
-      nvim-scrollbar
-      cinnamon-nvim
-      highlight-undo-nvim
-      indent-blankline-nvim
-      nvim-colorizer-lua
-      vim-illuminate
-      fastaction-nvim
-      nvim-navbuddy
-
-      # Pickers / files
-      telescope-nvim
-      neo-tree-nvim
-      oil-nvim
-      grug-far-nvim
-      undotree
-      diffview-nvim
-      img-clip-nvim
-      snacks-nvim # image module only (Molten plots + markdown/quarto images)
-      run-nvim
-      # conjure  # parked: see lua/plugins/repl/conjure.lua
-
-      # Git
-      gitsigns-nvim
-      neogit
-
-      # LSP UI extras
-      otter-nvim
-      nvim-docs-view
-      trouble-nvim
-
-      # Debug
-      nvim-dap
-      nvim-dap-ui
-      nvim-nio
-
-      # REPL (lua/plugins/repl)
-      iron-nvim
-      molten-nvim
-      quarto-nvim
-      render-markdown-nvim
-
-      # Practice
-      vim-be-good
-    ];
+    data = plugins (p: p.lazy or false);
   };
 
-  config.runtimePkgs = with pkgs; [
-    # Tools used by plugins
-    ripgrep
-    fd
-    tree-sitter
-    imagemagick
-    # .ipynb <-> .qmd conversion (jupytext.nvim). The quarto format shells out to the
-    # `quarto` CLI below.
-    python3Packages.jupytext
-    # Quarto 1.10 emits pandoc's new `syntax-highlighting` key; nixpkgs pandoc is
-    # still 3.7 (`highlight-style`). Patch until pandoc >= 3.8 lands (nixpkgs#519484).
-    (quarto.overrideAttrs (old: {
-      postPatch = (old.postPatch or "") + ''
-        substituteInPlace bin/quarto.js \
-          --replace-fail "syntax-highlighting" "highlight-style"
-      '';
-    }))
-
-    # LaTeX (VimTeX) + clipboard: only used from Neovim. Same expressions as
-    # home-packages so NixOS shares store paths; Ubuntu gets them only here.
-    texliveFull # includes latexmk
-    (zathura.override {
-      plugins = with zathuraPkgs; [ zathura_pdf_mupdf ];
-    })
-    wl-clipboard
-
-    # Formatters (conform)
-    nixfmt
-    # ruff: uv tool (~/.local/bin), not nix — see home-packages Python note
-    stylua
-    shfmt
-    clang-tools # clangd + clang-format
-    prettier
-    astyle
-    taplo
-    tex-fmt
-    deno
-    gersemi
-    sqlfluff
-    dockerfmt
-    jsonfmt
-    mbake
-    fish # fish_indent
-
-    # Language runtimes used by LSPs / REPLs
-    julia-bin
-
-    # LSPs
-    bash-language-server
-    docker-language-server
-    fennel-ls
-    fish-lsp
-    harper
-    jdt-language-server
-    lemminx
-    lua-language-server
-    marksman
-    neocmakelsp
-    nil
-    kdePackages.qtdeclarative # qmlls
-    sqls
-    superhtml
-    texlab
-    # ty: uv tool (~/.local/bin), not nix
-    vscode-langservers-extracted
-  ];
+  # Tools used by plugins, formatters (conform), LSPs, REPL runtimes. ruff/ty are
+  # uv tools on ~/.local/bin (`nix = null`), see home-packages Python note.
+  config.runtimePkgs = map tool toolAttrs;
 }

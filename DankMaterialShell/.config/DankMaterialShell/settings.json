@@ -255,7 +255,8 @@
           "id": "memUsage",
           "enabled": true,
           "minimumWidth": true,
-          "showSwap": true
+          "showSwap": true,
+          "showInGb": false
         },
         {
           "id": "network_speed_monitor",
@@ -268,14 +269,9 @@
       ],
       "centerWidgets": [
         {
-          "id": "focusedWindow",
-          "enabled": true,
-          "focusedWindowSize": 0,
-          "focusedWindowCompactMode": true
-        },
-        {
           "id": "music",
-          "enabled": true
+          "enabled": true,
+          "mediaSize": 0
         },
         {
           "id": "weather",
@@ -284,7 +280,8 @@
         {
           "id": "clock",
           "enabled": true,
-          "clockCompactMode": false
+          "clockCompactMode": false,
+          "clockDateOrder": "dateFirst"
         },
         {
           "id": "runningApps",
@@ -302,7 +299,8 @@
       "rightWidgets": [
         {
           "id": "systemTray",
-          "enabled": true
+          "enabled": true,
+          "trayUseInlineExpansion": false
         },
         {
           "id": "notificationButton",
@@ -320,7 +318,8 @@
           "id": "battery",
           "enabled": true,
           "batteryPillPercentSign": false,
-          "batteryStyle": "icon"
+          "batteryStyle": "icon",
+          "showBatteryPercentOnlyOnBattery": true
         },
         {
           "id": "controlCenterButton",
@@ -340,9 +339,9 @@
       ],
       "spacing": -4,
       "innerPadding": -4,
-      "bottomGap": -13,
+      "bottomGap": -12,
       "transparency": 0,
-      "widgetTransparency": 0.85,
+      "widgetTransparency": 0.75,
       "squareCorners": false,
       "noBackground": false,
       "maximizeWidgetIcons": false,

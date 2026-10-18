@@ -150,7 +150,8 @@ end
 require("nvim-lightbulb").setup({ autocmd = { enabled = true } })
 
 -- Treesitter (nvim-treesitter main rewrite for Nvim 0.12+)
--- Parsers come from Nix (`withAllGrammars`); highlighting/indent use core APIs.
+-- Parsers come from Nix (`withAllGrammars`), off Nix from :PackSync (pack.json
+-- `treesitter`, per profile); highlighting/indent use core APIs.
 require("nvim-treesitter").setup({})
 vim.api.nvim_create_autocmd("FileType", {
   desc = "Enable treesitter highlight + indent",
@@ -180,8 +181,9 @@ require("nvim-treesitter-textobjects").setup({
 
 -- LSP servers -----------------------------------------------------------------
 -- cmd entries are bare PATH binary names (no /nix/store paths). Most come from
--- the nix wrapper (module.nix runtimePkgs). Python is the exception: `ty` (LSP)
--- and `ruff` (conform) are uv tools on ~/.local/bin — not in the wrapper.
+-- pack.json `tools`: the nix wrapper PATH (module.nix runtimePkgs), off Nix mason
+-- (config.tools) or the host. Python is the exception: `ty` (LSP) and `ruff`
+-- (conform) are uv tools on ~/.local/bin — never in the wrapper or mason.
 -- LspAttach keymaps live in config.keymaps; this only wires up
 -- navic breadcrumbs and completion capabilities on attach.
 
@@ -231,8 +233,9 @@ vim.lsp.config("harper", {
   filetypes = { "markdown", "gitcommit", "text" },
 })
 
+-- nixpkgs names the launcher jdt-language-server, mason (off Nix) jdtls.
 vim.lsp.config("jdt-language-server", {
-  cmd = { "jdt-language-server" },
+  cmd = { require("config.pack").is_nix and "jdt-language-server" or "jdtls" },
   filetypes = { "java" },
 })
 

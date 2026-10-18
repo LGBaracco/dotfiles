@@ -65,7 +65,7 @@ local t = ls.text_node
 local i = ls.insert_node
 
 ls.setup({})
--- friendly-snippets is on the runtimepath via module.nix (includes LaTeX).
+-- friendly-snippets is on the runtimepath via pack.json (includes LaTeX).
 require("luasnip.loaders.from_vscode").lazy_load()
 
 ls.add_snippets("quarto", {

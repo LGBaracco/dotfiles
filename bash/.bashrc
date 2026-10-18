@@ -12,7 +12,8 @@ export PATH
 [[ $- == *i* ]] || return
 
 # ── Host profile ─────────────────────────────────────────────────────────────
-# Set DOTFILES_PROFILE beforehand to override. Read by tmux (hpc.conf).
+# Set DOTFILES_PROFILE beforehand to override. Read by tmux (hpc.conf) and
+# Neovim (lua/config/pack.lua: plugin/tool profile).
 if [ -z "${DOTFILES_PROFILE:-}" ]; then
     case "${HOSTNAME%%.*}" in
     jr* | jw* | jusuf*) DOTFILES_PROFILE=hpc ;;

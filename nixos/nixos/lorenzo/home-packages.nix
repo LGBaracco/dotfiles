@@ -29,6 +29,8 @@
     htop
     btop-cuda # NVIDIA GPU stats (driver runpath); no global cudaSupport
     dgop
+    cursor-cli
+    claude-code
 
     # --- Cli tools ---
     stow
@@ -43,8 +45,6 @@
     jq
     gnumake
     rclone
-    cursor-cli
-    claude-code
 
     # --- Nix tooling ---
     nix-output-monitor # prettier `nix build` output
@@ -61,6 +61,9 @@
 
     # --- Julia ---
     julia-bin
+
+    # --- Javascript/Typescript
+    nodejs
 
     # --- C/C++ ---
     clang

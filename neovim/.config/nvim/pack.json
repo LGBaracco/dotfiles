@@ -1,0 +1,148 @@
+{
+  "plugins": [
+    { "name": "lze", "src": "https://github.com/BirdeeHub/lze", "nix": "lze", "group": "lze" },
+    { "name": "lzextras", "src": "https://github.com/BirdeeHub/lzextras", "nix": "lzextras", "group": "lze" },
+
+    { "name": "oxocarbon.nvim", "src": "https://github.com/nyoom-engineering/oxocarbon.nvim", "nix": "oxocarbon-nvim" },
+    { "name": "dashboard-nvim", "src": "https://github.com/nvimdev/dashboard-nvim", "nix": "dashboard-nvim" },
+    { "name": "lualine.nvim", "src": "https://github.com/nvim-lualine/lualine.nvim", "nix": "lualine-nvim" },
+    { "name": "nvim-navic", "src": "https://github.com/SmiteshP/nvim-navic", "nix": "nvim-navic" },
+    { "name": "nvim-web-devicons", "src": "https://github.com/nvim-tree/nvim-web-devicons", "nix": "nvim-web-devicons" },
+    { "name": "fidget.nvim", "src": "https://github.com/j-hui/fidget.nvim", "nix": "fidget-nvim" },
+    { "name": "noice.nvim", "src": "https://github.com/folke/noice.nvim", "nix": "noice-nvim", "desktopOnly": true },
+    { "name": "nvim-notify", "src": "https://github.com/rcarriga/nvim-notify", "nix": "nvim-notify", "desktopOnly": true },
+    { "name": "nui.nvim", "src": "https://github.com/MunifTanjim/nui.nvim", "nix": "nui-nvim" },
+    { "name": "plenary.nvim", "src": "https://github.com/nvim-lua/plenary.nvim", "nix": "plenary-nvim" },
+
+    { "name": "which-key.nvim", "src": "https://github.com/folke/which-key.nvim", "nix": "which-key-nvim" },
+    { "name": "hop.nvim", "src": "https://github.com/smoka7/hop.nvim", "nix": "hop-nvim" },
+    { "name": "precognition.nvim", "src": "https://github.com/tris203/precognition.nvim", "nix": "precognition-nvim", "desktopOnly": true },
+    { "name": "comment.nvim", "src": "https://github.com/numToStr/Comment.nvim", "nix": "comment-nvim" },
+    { "name": "nvim-surround", "src": "https://github.com/kylechui/nvim-surround", "nix": "nvim-surround" },
+    { "name": "smart-splits.nvim", "src": "https://github.com/smart-splits-nvim/smart-splits.nvim", "nix": "smart-splits-nvim" },
+    { "name": "todo-comments.nvim", "src": "https://github.com/folke/todo-comments.nvim", "nix": "todo-comments-nvim" },
+    { "name": "toggleterm.nvim", "src": "https://github.com/akinsho/toggleterm.nvim", "nix": "toggleterm-nvim" },
+    { "name": "project.nvim", "src": "https://github.com/DrKJeff16/project.nvim", "nix": "project-nvim" },
+    { "name": "nvim-autopairs", "src": "https://github.com/windwp/nvim-autopairs", "nix": "nvim-autopairs" },
+    { "name": "luasnip", "src": "https://github.com/L3MON4D3/LuaSnip", "nix": "luasnip" },
+    { "name": "friendly-snippets", "src": "https://github.com/rafamadriz/friendly-snippets", "nix": "friendly-snippets" },
+
+    { "name": "vimtex", "src": "https://github.com/lervag/vimtex", "nix": "vimtex", "desktopOnly": true },
+
+    { "name": "jupytext.nvim", "src": "https://github.com/GCBallesteros/jupytext.nvim", "nix": "jupytext-nvim" },
+
+    { "name": "blink.cmp", "src": "https://github.com/Saghen/blink.cmp", "nix": "blink-cmp", "version": { "range": "1.*" } },
+    { "name": "conform.nvim", "src": "https://github.com/stevearc/conform.nvim", "nix": "conform-nvim" },
+    { "name": "lazydev.nvim", "src": "https://github.com/folke/lazydev.nvim", "nix": "lazydev-nvim" },
+    { "name": "nvim-lightbulb", "src": "https://github.com/kosayoda/nvim-lightbulb", "nix": "nvim-lightbulb" },
+    { "name": "nvim-treesitter", "src": "https://github.com/nvim-treesitter/nvim-treesitter", "nix": "nvim-treesitter.withAllGrammars", "version": "main" },
+    { "name": "nvim-treesitter-textobjects", "src": "https://github.com/nvim-treesitter/nvim-treesitter-textobjects", "nix": "nvim-treesitter-textobjects", "version": "main" },
+    { "name": "nvim-treesitter-context", "src": "https://github.com/nvim-treesitter/nvim-treesitter-context", "nix": "nvim-treesitter-context" },
+    { "name": "nvim-ts-autotag", "src": "https://github.com/windwp/nvim-ts-autotag", "nix": "nvim-ts-autotag" },
+    { "name": "nvim-lspconfig", "src": "https://github.com/neovim/nvim-lspconfig", "nix": "nvim-lspconfig" },
+    { "name": "mason.nvim", "src": "https://github.com/mason-org/mason.nvim", "nix": null },
+
+    { "name": "nvim-scrollbar", "src": "https://github.com/petertriho/nvim-scrollbar", "nix": "nvim-scrollbar", "lazy": true },
+    { "name": "cinnamon.nvim", "src": "https://github.com/declancm/cinnamon.nvim", "nix": "cinnamon-nvim", "lazy": true, "desktopOnly": true },
+    { "name": "highlight-undo.nvim", "src": "https://github.com/tzachar/highlight-undo.nvim", "nix": "highlight-undo-nvim", "lazy": true },
+    { "name": "indent-blankline.nvim", "src": "https://github.com/lukas-reineke/indent-blankline.nvim", "nix": "indent-blankline-nvim", "lazy": true },
+    { "name": "nvim-colorizer.lua", "src": "https://github.com/catgoose/nvim-colorizer.lua", "nix": "nvim-colorizer-lua", "lazy": true },
+    { "name": "vim-illuminate", "src": "https://github.com/RRethy/vim-illuminate", "nix": "vim-illuminate", "lazy": true },
+    { "name": "fastaction.nvim", "src": "https://github.com/Chaitanyabsprip/fastaction.nvim", "nix": "fastaction-nvim", "lazy": true },
+    { "name": "nvim-navbuddy", "src": "https://github.com/SmiteshP/nvim-navbuddy", "nix": "nvim-navbuddy", "lazy": true },
+
+    { "name": "telescope.nvim", "src": "https://github.com/nvim-telescope/telescope.nvim", "nix": "telescope-nvim", "lazy": true },
+    { "name": "neo-tree.nvim", "src": "https://github.com/nvim-neo-tree/neo-tree.nvim", "nix": "neo-tree-nvim", "lazy": true, "desktopOnly": true, "version": "v3.x" },
+    { "name": "oil.nvim", "src": "https://github.com/stevearc/oil.nvim", "nix": "oil-nvim", "lazy": true },
+    { "name": "grug-far.nvim", "src": "https://github.com/MagicDuck/grug-far.nvim", "nix": "grug-far-nvim", "lazy": true },
+    { "name": "undotree", "src": "https://github.com/mbbill/undotree", "nix": "undotree", "lazy": true },
+    { "name": "diffview.nvim", "src": "https://github.com/sindrets/diffview.nvim", "nix": "diffview-nvim", "lazy": true },
+    { "name": "img-clip.nvim", "src": "https://github.com/HakonHarnes/img-clip.nvim", "nix": "img-clip-nvim", "lazy": true },
+    { "name": "snacks.nvim", "src": "https://github.com/folke/snacks.nvim", "nix": "snacks-nvim", "lazy": true },
+    { "name": "run.nvim", "src": "https://codeberg.org/ssnoer/run.nvim", "nix": "run-nvim", "lazy": true },
+
+    { "name": "gitsigns.nvim", "src": "https://github.com/lewis6991/gitsigns.nvim", "nix": "gitsigns-nvim", "lazy": true },
+    { "name": "neogit", "src": "https://github.com/NeogitOrg/neogit", "nix": "neogit", "lazy": true },
+
+    { "name": "otter.nvim", "src": "https://github.com/jmbuhr/otter.nvim", "nix": "otter-nvim", "lazy": true },
+    { "name": "nvim-docs-view", "src": "https://github.com/amrbashir/nvim-docs-view", "nix": "nvim-docs-view", "lazy": true },
+    { "name": "trouble.nvim", "src": "https://github.com/folke/trouble.nvim", "nix": "trouble-nvim", "lazy": true },
+
+    { "name": "nvim-dap", "src": "https://codeberg.org/mfussenegger/nvim-dap", "nix": "nvim-dap", "lazy": true },
+    { "name": "nvim-dap-ui", "src": "https://github.com/rcarriga/nvim-dap-ui", "nix": "nvim-dap-ui", "lazy": true },
+    { "name": "nvim-nio", "src": "https://github.com/nvim-neotest/nvim-nio", "nix": "nvim-nio", "lazy": true },
+
+    { "name": "iron.nvim", "src": "https://github.com/Vigemus/iron.nvim", "nix": "iron-nvim", "lazy": true },
+    { "name": "molten-nvim", "src": "https://github.com/benlubas/molten-nvim", "nix": "molten-nvim", "lazy": true },
+    { "name": "quarto-nvim", "src": "https://github.com/quarto-dev/quarto-nvim", "nix": "quarto-nvim", "lazy": true },
+    { "name": "render-markdown.nvim", "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim", "nix": "render-markdown-nvim", "lazy": true },
+
+    { "name": "vim-be-good", "src": "https://github.com/ThePrimeagen/vim-be-good", "nix": "vim-be-good", "lazy": true }
+  ],
+
+  "treesitter": {
+    "hpc": [
+      "bash", "c", "cmake", "comment", "cpp", "cuda", "diff", "fortran", "git_config", "git_rebase",
+      "gitattributes", "gitcommit", "gitignore", "json", "julia", "lua", "luadoc", "luap", "make", "markdown",
+      "markdown_inline", "python", "query", "regex", "rst", "toml", "vim", "vimdoc", "yaml"
+    ],
+    "desktop": [
+      "bash", "bibtex", "c", "cmake", "comment", "cpp", "css", "cuda", "diff", "dockerfile",
+      "fennel", "fish", "fortran", "git_config", "git_rebase", "gitattributes", "gitcommit", "gitignore", "html", "java",
+      "javascript", "json", "julia", "kdl", "latex", "lua", "luadoc", "luap", "make", "markdown",
+      "markdown_inline", "nix", "python", "qmljs", "query", "regex", "rst", "scss", "sql", "toml",
+      "typescript", "vim", "vimdoc", "xml", "yaml"
+    ]
+  },
+
+  "tools": [
+    { "bin": "rg", "nix": "ripgrep", "mason": null },
+    { "bin": "fd", "nix": "fd", "mason": null },
+    { "bin": "tree-sitter", "nix": "tree-sitter", "mason": "tree-sitter-cli" },
+    { "bin": "magick", "nix": "imagemagick", "mason": null },
+    { "bin": "jupytext", "nix": "python3Packages.jupytext", "mason": null },
+    { "bin": "quarto", "nix": "quarto", "mason": null },
+    { "bin": "latexmk", "nix": "texliveFull", "mason": null, "desktopOnly": true },
+    { "bin": "zathura", "nix": "zathura", "mason": null, "desktopOnly": true },
+    { "bin": "wl-copy", "nix": "wl-clipboard", "mason": null, "desktopOnly": true },
+
+    { "bin": "nixfmt", "nix": "nixfmt", "mason": "nixfmt", "desktopOnly": true },
+    { "bin": "ruff", "nix": null, "mason": null },
+    { "bin": "stylua", "nix": "stylua", "mason": "stylua" },
+    { "bin": "shfmt", "nix": "shfmt", "mason": "shfmt" },
+    { "bin": "clangd", "nix": "clang-tools", "mason": "clangd" },
+    { "bin": "clang-format", "nix": "clang-tools", "mason": "clang-format", "requires": "python3" },
+    { "bin": "prettier", "nix": "prettier", "mason": "prettier", "requires": "npm" },
+    { "bin": "astyle", "nix": "astyle", "mason": null },
+    { "bin": "taplo", "nix": "taplo", "mason": "taplo" },
+    { "bin": "tex-fmt", "nix": "tex-fmt", "mason": "tex-fmt", "desktopOnly": true },
+    { "bin": "deno", "nix": "deno", "mason": "deno" },
+    { "bin": "gersemi", "nix": "gersemi", "mason": "gersemi", "requires": "python3" },
+    { "bin": "sqlfluff", "nix": "sqlfluff", "mason": "sqlfluff", "requires": "python3" },
+    { "bin": "dockerfmt", "nix": "dockerfmt", "mason": "dockerfmt", "requires": "go", "desktopOnly": true },
+    { "bin": "jsonfmt", "nix": "jsonfmt", "mason": null },
+    { "bin": "mbake", "nix": "mbake", "mason": "mbake", "requires": "python3", "desktopOnly": true },
+    { "bin": "fish_indent", "nix": "fish", "mason": null, "desktopOnly": true },
+
+    { "bin": "julia", "nix": "julia-bin", "mason": null },
+
+    { "bin": "bash-language-server", "nix": "bash-language-server", "mason": "bash-language-server", "requires": "npm" },
+    { "bin": "docker-language-server", "nix": "docker-language-server", "mason": "docker-language-server", "desktopOnly": true },
+    { "bin": "fennel-ls", "nix": "fennel-ls", "mason": "fennel-ls", "requires": "luarocks", "desktopOnly": true },
+    { "bin": "fish-lsp", "nix": "fish-lsp", "mason": "fish-lsp", "requires": "npm", "desktopOnly": true },
+    { "bin": "harper-ls", "nix": "harper", "mason": "harper-ls" },
+    { "bin": "jdtls", "nix": "jdt-language-server", "mason": "jdtls", "requires": "java", "desktopOnly": true },
+    { "bin": "lemminx", "nix": "lemminx", "mason": "lemminx" },
+    { "bin": "lua-language-server", "nix": "lua-language-server", "mason": "lua-language-server" },
+    { "bin": "marksman", "nix": "marksman", "mason": "marksman" },
+    { "bin": "neocmakelsp", "nix": "neocmakelsp", "mason": "neocmakelsp" },
+    { "bin": "nil", "nix": "nil", "mason": "nil", "requires": "nix", "desktopOnly": true },
+    { "bin": "qmlls", "nix": "kdePackages.qtdeclarative", "mason": "qmlls", "desktopOnly": true },
+    { "bin": "sqls", "nix": "sqls", "mason": "sqls", "requires": "go" },
+    { "bin": "superhtml", "nix": "superhtml", "mason": "superhtml" },
+    { "bin": "texlab", "nix": "texlab", "mason": "texlab", "desktopOnly": true },
+    { "bin": "ty", "nix": null, "mason": null },
+    { "bin": "vscode-css-language-server", "nix": "vscode-langservers-extracted", "mason": "css-lsp", "requires": "npm" },
+    { "bin": "vscode-json-language-server", "nix": "vscode-langservers-extracted", "mason": "json-lsp", "requires": "npm" }
+  ]
+}

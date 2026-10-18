@@ -1,17 +1,11 @@
 # Home Manager session variables (GTK/QT theming, PATH, ...).
 # HM only ships the POSIX version once programs.fish is off, so translate it.
 if type -q babelfish
-    for f in /etc/profiles/per-user/$USER/etc/profile.d/hm-session-vars.sh \
-        $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh
-        if test -r $f
-            babelfish <$f | source
-            break
-        end
-    end
+    set -l f /etc/profiles/per-user/$USER/etc/profile.d/hm-session-vars.sh
+    test -r $f; and babelfish <$f | source
 end
 
 fish_add_path -g $HOME/.local/bin $HOME/.config/emacs/bin # Doom emacs
-fish_add_path -g $HOME/.nix-profile/bin # Nix on non-nixos machines
 
 status is-interactive; or exit
 
@@ -26,7 +20,7 @@ alias tree 'eza --tree --icons'
 alias cd z # zoxide
 alias gs 'git status'
 alias ga 'git add'
-alias gc 'git commit -m'
+alias gc 'git commit'
 alias vi nvim
 alias vim nvim
 alias neovim nvim
@@ -49,7 +43,6 @@ alias nfu 'cd ~/nixos && nix flake update --commit-lock-file'
 alias nrs 'nh os switch $HOME/nixos#$hostname'
 alias nrt 'nh os test $HOME/nixos#$hostname'
 alias nrb 'nh os boot $HOME/nixos#$hostname'
-alias hms 'home-manager switch --flake $HOME/nixos#$USER@(hostname -s)' # standalone HM (Ubuntu)
 
 # ── Oxocarbon (base16-oxocarbon-dark) ────────────────────────────────────────
 set -g fish_color_normal f2f4f8

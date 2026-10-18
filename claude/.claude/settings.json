@@ -7,10 +7,17 @@
           {
             "type": "command",
             "command": "$HOME/.claude/hooks/ask-readonly-bash.py"
+          },
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/dcal-guard.py"
           }
         ]
       }
     ]
+  },
+  "enabledPlugins": {
+    "i-have-adhd@i-have-adhd": true
   },
   "extraKnownMarketplaces": {
     "i-have-adhd": {
@@ -22,13 +29,10 @@
   },
   "modelSettings": {
     "claude-opus-5-5": {
-      "effortLevel": "medium"
+      "effortLevel": "high"
     }
   },
   "awaySummaryEnabled": false,
   "theme": "dark-ansi",
-  "editorMode": "vim",
-  "enabledPlugins": {
-    "i-have-adhd@i-have-adhd": true
-  }
+  "editorMode": "vim"
 }

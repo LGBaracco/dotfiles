@@ -6,6 +6,10 @@ case ":$PATH:" in
 *":$HOME/.local/bin:"*) ;;
 *) PATH="$HOME/.local/bin:$PATH" ;;
 esac
+case ":$PATH:" in
+*":$HOME/home_ext/software/nvim/nvim-linux-x86_64/bin:"*) ;;
+*) PATH="$HOME/home_ext/software/nvim/nvim-linux-x86_64/bin:$PATH" ;;
+esac
 export PATH
 
 # Keep scp/rsync/sftp sessions clean

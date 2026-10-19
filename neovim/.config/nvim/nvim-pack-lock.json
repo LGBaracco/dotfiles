@@ -142,10 +142,6 @@
       "rev": "45a3a444b710511c39abca3b60bb6e23a21e3de5",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
-    "nvim-navbuddy": {
-      "rev": "a34786c77a528519f6b8a142db7609f6e387842d",
-      "src": "https://github.com/SmiteshP/nvim-navbuddy"
-    },
     "nvim-navic": {
       "rev": "455808fd0fae06e6d70fadfd61432275db8f34ce",
       "src": "https://github.com/SmiteshP/nvim-navic"

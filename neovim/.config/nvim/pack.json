@@ -49,7 +49,6 @@
     { "name": "nvim-colorizer.lua", "src": "https://github.com/catgoose/nvim-colorizer.lua", "nix": "nvim-colorizer-lua", "lazy": true },
     { "name": "vim-illuminate", "src": "https://github.com/RRethy/vim-illuminate", "nix": "vim-illuminate", "lazy": true },
     { "name": "fastaction.nvim", "src": "https://github.com/Chaitanyabsprip/fastaction.nvim", "nix": "fastaction-nvim", "lazy": true },
-    { "name": "nvim-navbuddy", "src": "https://github.com/SmiteshP/nvim-navbuddy", "nix": "nvim-navbuddy", "lazy": true },
 
     { "name": "telescope.nvim", "src": "https://github.com/nvim-telescope/telescope.nvim", "nix": "telescope-nvim", "lazy": true },
     { "name": "neo-tree.nvim", "src": "https://github.com/nvim-neo-tree/neo-tree.nvim", "nix": "neo-tree-nvim", "lazy": true, "desktopOnly": true, "version": "v3.x" },

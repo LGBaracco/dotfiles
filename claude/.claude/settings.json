@@ -28,11 +28,19 @@
     }
   },
   "modelSettings": {
-    "claude-opus-5-5": {
-      "effortLevel": "high"
-    }
+    "claude-opus-5-5": {}
   },
   "awaySummaryEnabled": false,
   "theme": "custom:oxocarbon",
-  "editorMode": "vim"
+  "editorMode": "vim",
+  "skillOverrides": {
+    "anthropic-skills:docs": "off",
+    "anthropic-skills:docx": "off",
+    "anthropic-skills:pptx": "off",
+    "anthropic-skills:xlsx": "off",
+    "anthropic-skills:google-workspace": "off"
+  },
+  "permissions": {
+    "defaultMode": "auto"
+  }
 }

@@ -24,6 +24,8 @@ alias gc 'git commit'
 alias vi nvim
 alias vim nvim
 alias neovim nvim
+# Off-Nix plugin/tool/parser sync (lua/config/tools.lua); exits 1 on failure
+alias packsync 'nvim --headless +PackSync +qa'
 
 # SSHFS mount for workstation and JURECA
 alias mws 'sshfs lbaracco@medpc057.ime.kfa-juelich.de:/home/lbaracco /mnt/workpc/ && sshfs lbaracco@medpc057.ime.kfa-juelich.de:/ /mnt/workroot/'

@@ -82,7 +82,6 @@ require("lze").load({
                     "dashboard",
                     "alpha",
                     "notify",
-                    "Navbuddy",
                     "fastaction_popup",
                 },
             })

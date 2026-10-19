@@ -52,6 +52,8 @@ alias gc='git commit -m'
 alias start-server='uv run --with jupyter jupyter server --no-browser --ip=0.0.0.0 --port 8888 --MappingKernelManager.default_kernel_name=atlas'
 if command -v nvim >/dev/null 2>&1; then
     alias vi=nvim vim=nvim neovim=nvim
+    # Off-Nix plugin/tool/parser sync (lua/config/tools.lua); exits 1 on failure
+    alias packsync='nvim --headless +PackSync +qa'
 fi
 
 # Sets $project

@@ -119,6 +119,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
         lmap("n", "<leader>ltf", function()
             vim.b.disableFormatSave = not vim.b.disableFormatSave
         end, "Toggle format on save")
+        lmap("n", "<leader>lti", function()
+            local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
+            vim.lsp.inlay_hint.enable(not enabled, { bufnr = bufnr })
+        end, "Toggle inlay hints")
     end,
 })
 

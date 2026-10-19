@@ -98,6 +98,13 @@ local diagnostic_base = {
   underline = { severity = { min = DiagSev.WARN } },
 }
 
+-- Inline cues show the first paragraph only: ruff appends "\n\nhelp: …", which
+-- virtual_lines would render as an extra line. The float keeps the full message.
+---@param d vim.Diagnostic
+local function first_paragraph(d)
+  return (d.message:gsub("\n%s*\n.*", ""))
+end
+
 local diagnostic_modes = {
   quiet = {
     virtual_text = false,
@@ -105,7 +112,11 @@ local diagnostic_modes = {
   },
   focus = {
     virtual_text = false,
-    virtual_lines = { current_line = true },
+    virtual_lines = {
+      current_line = true,
+      severity = { min = DiagSev.WARN },
+      format = first_paragraph,
+    },
   },
   loud = {
     virtual_text = {
@@ -113,6 +124,7 @@ local diagnostic_modes = {
       source = "if_many",
       prefix = "●",
       severity = { min = DiagSev.WARN },
+      format = first_paragraph,
     },
     virtual_lines = false,
   },
@@ -147,7 +159,12 @@ end
 
 -- Misc LSP UI ---------------------------------------------------------------
 
-require("nvim-lightbulb").setup({ autocmd = { enabled = true } })
+-- Only cursor-local fixes/refactors: ruff offers source.fixAll/organizeImports
+-- on every line, which would keep the bulb permanently lit.
+require("nvim-lightbulb").setup({
+  autocmd = { enabled = true },
+  action_kinds = { "quickfix", "refactor" },
+})
 
 -- Treesitter (nvim-treesitter main rewrite for Nvim 0.12+)
 -- Parsers come from Nix (`withAllGrammars`), off Nix from :PackSync (pack.json
@@ -180,12 +197,14 @@ require("nvim-treesitter-textobjects").setup({
 })
 
 -- LSP servers -----------------------------------------------------------------
--- cmd entries are bare PATH binary names (no /nix/store paths). Most come from
--- pack.json `tools`: the nix wrapper PATH (module.nix runtimePkgs), off Nix mason
--- (config.tools) or the host. Python is the exception: `ty` (LSP) and `ruff`
--- (conform) are uv tools on ~/.local/bin — never in the wrapper or mason.
--- LspAttach keymaps live in config.keymaps; this only wires up
--- navic breadcrumbs and completion capabilities on attach.
+-- Names match nvim-lspconfig's lsp/<name>.lua so its cmd/root_markers/settings
+-- merge in; blocks below only hold overrides. cmd entries are bare PATH binary
+-- names (no /nix/store paths). Most come from pack.json `tools`: the nix wrapper
+-- PATH (module.nix runtimePkgs), off Nix mason (config.tools) or the host. Python
+-- is the exception: `ty` and `ruff` (LSP + conform) are uv tools on ~/.local/bin —
+-- never in the wrapper or mason.
+-- LspAttach keymaps live in config.keymaps; this wires up navic breadcrumbs,
+-- inlay hints and completion capabilities on attach.
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 local has_blink, blink = pcall(require, "blink.cmp")
@@ -200,12 +219,14 @@ vim.lsp.config("*", {
     if has_navic and client:supports_method("textDocument/documentSymbol") then
       navic.attach(client, bufnr)
     end
+    if client:supports_method("textDocument/inlayHint") then
+      vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+    end
+    -- ty owns hover in Python; ruff's only documents noqa rule codes.
+    if client.name == "ruff" or client.name == "ruff_otter" then
+      client.server_capabilities.hoverProvider = false
+    end
   end,
-})
-
-vim.lsp.config("bash-language-server", {
-  cmd = { "bash-language-server", "start" },
-  filetypes = { "bash", "sh" },
 })
 
 vim.lsp.config("clangd", {
@@ -213,30 +234,14 @@ vim.lsp.config("clangd", {
   filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
 })
 
-vim.lsp.config("docker-language-server", {
-  cmd = { "docker-language-server", "start", "--stdio" },
-  filetypes = { "dockerfile" },
-})
-
 vim.lsp.config("fennel_ls", {
   cmd = { "fennel-ls" },
   filetypes = { "fennel" },
 })
 
-vim.lsp.config("fish-lsp", {
-  cmd = { "fish-lsp", "start" },
-  filetypes = { "fish" },
-})
-
-vim.lsp.config("harper", {
-  cmd = { "harper-ls", "--stdio" },
+-- Prose only: lspconfig's harper_ls also spell-checks comments in ~28 code filetypes.
+vim.lsp.config("harper_ls", {
   filetypes = { "markdown", "gitcommit", "text" },
-})
-
--- nixpkgs names the launcher jdt-language-server, mason (off Nix) jdtls.
-vim.lsp.config("jdt-language-server", {
-  cmd = { require("config.pack").is_nix and "jdt-language-server" or "jdtls" },
-  filetypes = { "java" },
 })
 
 -- LanguageServer.jl is a Julia package, not a PATH binary. Launch via julia.
@@ -279,6 +284,7 @@ vim.lsp.config("lua_ls", {
       runtime = { version = "LuaJIT" },
       workspace = { checkThirdParty = false },
       telemetry = { enable = false },
+      hint = { enable = true },
     },
   },
 })
@@ -291,11 +297,6 @@ vim.lsp.config("marksman", {
 vim.lsp.config("neocmakelsp", {
   cmd = { "neocmakelsp", "--stdio" },
   filetypes = { "cmake" },
-})
-
-vim.lsp.config("nil", {
-  cmd = { "nil" },
-  filetypes = { "nix" },
 })
 
 vim.lsp.config("qmlls", {
@@ -335,38 +336,76 @@ vim.lsp.config("ty", {
   filetypes = { "python" },
 })
 
-vim.lsp.config("vscode-css-language-server", {
-  cmd = { "vscode-css-language-server", "--stdio" },
-  filetypes = { "css", "scss", "less" },
+-- Ruff = lint/fixes/organize imports, ty = types/names/hover/inlay hints.
+-- F821 (undefined name) duplicates ty's unresolved-reference. filesystemFirst:
+-- a project's own ruff config wins over these editor settings.
+local ruff_markers = { "pyproject.toml", "ruff.toml", ".ruff.toml", ".git" }
+
+---@param otter boolean attach only to otter's hidden `<main>.otter.py` buffers, or never
+local function ruff_root_dir(otter)
+  return function(bufnr, on_dir)
+    local name = vim.api.nvim_buf_get_name(bufnr)
+    if (name:match("%.otter%.py$") ~= nil) == otter then
+      on_dir(vim.fs.root(bufnr, ruff_markers) or vim.fs.dirname(name))
+    end
+  end
+end
+
+vim.lsp.config("ruff", {
+  root_dir = ruff_root_dir(false),
+  init_options = {
+    settings = {
+      configurationPreference = "filesystemFirst",
+      lint = { ignore = { "F821" } },
+    },
+  },
 })
 
-vim.lsp.config("vscode-json-language-server", {
-  cmd = { "vscode-json-language-server", "--stdio" },
-  filetypes = { "json", "jsonc" },
+-- Quarto/notebook cells (otter concatenates them into one .py): notebook idioms.
+vim.lsp.config("ruff_otter", {
+  cmd = { "ruff", "server" },
+  filetypes = { "python" },
+  root_dir = ruff_root_dir(true),
+  init_options = {
+    settings = {
+      configurationPreference = "filesystemFirst",
+      lint = {
+        ignore = {
+          "F821", -- undefined name: ty
+          "E402", -- imports in later cells
+          "E703", -- trailing `;` suppresses cell output
+          "F811", -- redefinition when cells are re-run / re-imported
+          "F704", -- top-level await
+        },
+      },
+    },
+  },
 })
 
 vim.lsp.enable({
-  "bash-language-server",
+  "bashls",
   "clangd",
-  "docker-language-server",
+  "cssls",
+  "docker_language_server",
   "fennel_ls",
-  "fish-lsp",
-  "harper",
-  "jdt-language-server",
+  "fish_lsp",
+  "harper_ls",
+  "jdtls",
+  "jsonls",
   "julials",
   "lemminx",
   "lua_ls",
   "marksman",
   "neocmakelsp",
-  "nil",
+  "nil_ls",
   "qmlls",
+  "ruff",
+  "ruff_otter",
   "sqls",
   "superhtml",
   "taplo",
   "texlab",
   "ty",
-  "vscode-css-language-server",
-  "vscode-json-language-server",
 })
 
 -- Deferred LSP UI extras ------------------------------------------------------
@@ -380,16 +419,6 @@ require("lze").load({
     after = function()
       require("fastaction").setup({
         popup = { border = "rounded" },
-      })
-    end,
-  },
-  {
-    "nvim-navbuddy",
-    event = "LspAttach",
-    cmd = { "Navbuddy" },
-    after = function()
-      require("nvim-navbuddy").setup({
-        lsp = { auto_attach = true },
       })
     end,
   },
@@ -410,7 +439,6 @@ require("lze").load({
 })
 
 local map = vim.keymap.set
-map("n", "<leader>lN", "<cmd>Navbuddy<CR>", { desc = "Navbuddy" })
 map("n", "<leader>lvt", "<cmd>DocsViewToggle<CR>", { desc = "Open or close the docs view panel" })
 map("n", "<leader>lvu", "<cmd>DocsViewUpdate<CR>", { desc = "Manually update the docs view panel" })
 map("n", "<leader>lwd", "<cmd>Trouble diagnostics toggle<CR>", { desc = "Workspace diagnostics [trouble]" })

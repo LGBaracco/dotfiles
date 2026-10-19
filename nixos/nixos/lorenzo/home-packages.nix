@@ -13,6 +13,7 @@
     thunderbird-bin
     stable.zotero
     zoom-us
+    godot
 
     # --- terminals ---
     ghostty
@@ -30,6 +31,7 @@
     btop-cuda # NVIDIA GPU stats (driver runpath); no global cudaSupport
     dgop
     claude-code
+    opencode
 
     # --- Cli tools ---
     stow

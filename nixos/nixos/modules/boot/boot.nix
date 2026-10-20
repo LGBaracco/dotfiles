@@ -17,8 +17,13 @@
           graphicalTerminal.brightForeground = "e0def4";
           wallpapers = [ ];
         };
+        extraConfig = ''
+          quiet: yes
+        '';
       };
       efi.canTouchEfiVariables = true;
+      timeout = 1;
+
     };
 
     plymouth.enable = true;

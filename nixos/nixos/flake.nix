@@ -36,25 +36,14 @@
     };
     # CachyOS kernels. Do not override nixpkgs — nyx cache is built against its own rev.
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
+    import-tree.url = "github:vic/import-tree";
   };
 
   outputs =
-    { nixpkgs, ... }@inputs:
-    let
-      mkHost =
-        hostPath:
-        nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs; };
-          modules = [
-            { nixpkgs.hostPlatform = "x86_64-linux"; }
-            hostPath
-            inputs.chaotic.nixosModules.default
-            ./modules
-          ];
-        };
-    in
-    {
-      nixosConfigurations.nixdesktop = mkHost ./hosts/nixdesktop;
-      nixosConfigurations.nixlaptop = mkHost ./hosts/nixlaptop;
-    };
+    inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);
 }

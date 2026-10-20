@@ -1,9 +1,12 @@
-{ pkgs, lib, ... }: {
-  boot.kernelPackages = lib.mkDefault pkgs.linuxPackages;
+{
+  flake.modules.nixos.common =
+    { pkgs, lib, ... }: {
+      boot.kernelPackages = lib.mkDefault pkgs.linuxPackages;
 
-  specialisation.Cachy = {
-    configuration = {
-      boot.kernelPackages = lib.mkForce pkgs.linuxPackages_cachyos;
+      specialisation.Cachy = {
+        configuration = {
+          boot.kernelPackages = lib.mkForce pkgs.linuxPackages_cachyos;
+        };
+      };
     };
-  };
 }

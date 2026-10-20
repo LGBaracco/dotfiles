@@ -163,6 +163,14 @@ end
 require("nvim-lightbulb").setup({
   autocmd = { enabled = true },
   action_kinds = { "quickfix", "refactor" },
+  -- nil offers refactor.rewrite (flatten/pack attrset, indent string) on
+  -- nearly every Nix binding; only light the bulb for its quickfixes.
+  filter = function(client_name, result)
+    if client_name == "nil_ls" then
+      return result.kind ~= nil and vim.startswith(result.kind, "quickfix")
+    end
+    return true
+  end,
 })
 
 -- Treesitter (nvim-treesitter main rewrite for Nvim 0.12+)

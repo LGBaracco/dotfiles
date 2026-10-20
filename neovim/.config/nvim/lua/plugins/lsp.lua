@@ -42,7 +42,6 @@ require("conform").setup({
     tex = { "tex-fmt" },
     python = { "ruff_format" },
     sh = { "shfmt" },
-    sql = { "sqlfluff" },
     toml = { "taplo" },
   },
   formatters = {

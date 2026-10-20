@@ -34,8 +34,8 @@
       url = "github:AvengeMedia/dankcalendar";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # Do not override nixpkgs — pinned overlay + attic cache need their own rev.
-    nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
+    # CachyOS kernels. Do not override nixpkgs — nyx cache is built against its own rev.
+    chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
   };
 
   outputs =
@@ -48,6 +48,7 @@
           modules = [
             { nixpkgs.hostPlatform = "x86_64-linux"; }
             hostPath
+            inputs.chaotic.nixosModules.default
             ./modules
           ];
         };

@@ -13,7 +13,7 @@
     thunderbird-bin
     stable.zotero
     zoom-us
-    godot
+    stable.godot # unstable 4.7.2 fails (harfbuzz-vector); fixed by nixpkgs#575619, revert once it lands
 
     # --- terminals ---
     ghostty

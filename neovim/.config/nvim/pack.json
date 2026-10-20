@@ -117,7 +117,6 @@
     { "bin": "tex-fmt", "nix": "tex-fmt", "mason": "tex-fmt", "desktopOnly": true },
     { "bin": "deno", "nix": "deno", "mason": "deno" },
     { "bin": "gersemi", "nix": "gersemi", "mason": "gersemi", "requires": "python3" },
-    { "bin": "sqlfluff", "nix": "sqlfluff", "mason": "sqlfluff", "requires": "python3" },
     { "bin": "dockerfmt", "nix": "dockerfmt", "mason": "dockerfmt", "requires": "go", "desktopOnly": true },
     { "bin": "jsonfmt", "nix": "jsonfmt", "mason": null },
     { "bin": "mbake", "nix": "mbake", "mason": "mbake", "requires": "python3", "desktopOnly": true },

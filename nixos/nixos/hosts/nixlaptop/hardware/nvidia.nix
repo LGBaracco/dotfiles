@@ -1,4 +1,4 @@
-{config, ...}: {
+{config, lib, pkgs, ...}: {
   # ── NVIDIA ────────────────────────────────────────────────────────────────
   hardware.nvidia = {
     powerManagement = {
@@ -19,4 +19,7 @@
       nvidiaBusId = "PCI:01:00:0";
     };
   };
+
+  # Nyx-cached driver built for the Cachy kernel (nixpkgs stable isn't cached for it)
+  specialisation.Cachy.configuration.hardware.nvidia.package = lib.mkForce pkgs.nvidia_cachyos;
 }

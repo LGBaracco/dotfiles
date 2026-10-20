@@ -13,7 +13,7 @@
     thunderbird-bin
     stable.zotero
     zoom-us
-    stable.godot # unstable 4.7.2 fails (harfbuzz-vector); fixed by nixpkgs#575619, revert once it lands
+    stable.godot
 
     # --- terminals ---
     ghostty
@@ -55,7 +55,6 @@
     nil # nix lsp
 
     # --- Python ---
-    # Bare interpreter for casual one-offs only. Project envs + tools (ruff, ty,
     # debugpy, ipython, jupyter, pynvim) are uv-managed (`uv tool` / `uv run`).
     uv
     python3

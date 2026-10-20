@@ -1,36 +1,13 @@
-{ pkgs, inputs, ... }: {
+{ ... }: {
   imports = [
+    ./editors.nix
+    ./misc.nix
     ./git.nix
     ./home-packages.nix
     ./chromium.nix
-    ./theming
+    ./theming/gtk-qt.nix
     ./dcal.nix
     ./davmail.nix
     ./desktop-entries.nix
   ];
-
-  # Neovim via nix-wrapper-modules (liveLua=true by default: ~/.config/nvim via stow)
-  wrappers.neovim = {
-    enable = true;
-    # liveLua = false;  # uncomment to force rebuild after lua edits
-  };
-
-  # Let Home Manager manage itself
-  programs.home-manager.enable = true;
-
-  programs.emacs = {
-    enable = true;
-    package = pkgs.emacs-pgtk; # emacs30-pgtk
-    #extraPackages = epkgs: [ epkgs.vterm ]; # currently using ghostel
-  };
-
-  home.sessionPath = [
-    "$HOME/.config/emacs/bin" # Doom emacs
-    "$HOME/.local/bin"
-  ];
-
-  # ── Environment variables ────────────────────────────────────────────────
-  #home.sessionVariables = {
-  #};
-
 }

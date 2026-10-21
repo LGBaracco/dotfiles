@@ -13,6 +13,8 @@
           nativeBuildInputs = [ pkgs.makeWrapper ];
           postBuild = ''
             for bin in $out/bin/*; do
+              # Skip companion CLIs (e.g. obsidian-cli): they parse the flag as a command.
+              case "$(basename "$bin")" in *-cli) continue ;; esac
               if [ -L "$bin" ]; then
                 target=$(readlink -f "$bin")
                 rm "$bin"

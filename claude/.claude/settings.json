@@ -1,4 +1,14 @@
 {
+  "permissions": {
+    "defaultMode": "auto"
+  },
+  "skillOverrides": {
+    "anthropic-skills:docs": "off",
+    "anthropic-skills:docx": "off",
+    "anthropic-skills:pptx": "off",
+    "anthropic-skills:xlsx": "off",
+    "anthropic-skills:google-workspace": "off"
+  },
   "hooks": {
     "PreToolUse": [
       {
@@ -15,42 +25,82 @@
         ]
       },
       {
-        "hooks": [{ "type": "command", "command": "$HOME/.config/tmux/agents.sh hook" }]
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.config/tmux/agents.sh hook"
+          }
+        ]
       }
     ],
     "PostToolUse": [
       {
-        "hooks": [{ "type": "command", "command": "$HOME/.config/tmux/agents.sh hook" }]
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.config/tmux/agents.sh hook"
+          }
+        ]
       }
     ],
     "SessionStart": [
       {
-        "hooks": [{ "type": "command", "command": "$HOME/.config/tmux/agents.sh hook" }]
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.config/tmux/agents.sh hook"
+          }
+        ]
       }
     ],
     "UserPromptSubmit": [
       {
-        "hooks": [{ "type": "command", "command": "$HOME/.config/tmux/agents.sh hook" }]
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.config/tmux/agents.sh hook"
+          }
+        ]
       }
     ],
     "PermissionRequest": [
       {
-        "hooks": [{ "type": "command", "command": "$HOME/.config/tmux/agents.sh hook" }]
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.config/tmux/agents.sh hook"
+          }
+        ]
       }
     ],
     "Notification": [
       {
-        "hooks": [{ "type": "command", "command": "$HOME/.config/tmux/agents.sh hook" }]
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.config/tmux/agents.sh hook"
+          }
+        ]
       }
     ],
     "Stop": [
       {
-        "hooks": [{ "type": "command", "command": "$HOME/.config/tmux/agents.sh hook" }]
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.config/tmux/agents.sh hook"
+          }
+        ]
       }
     ],
     "SessionEnd": [
       {
-        "hooks": [{ "type": "command", "command": "$HOME/.config/tmux/agents.sh hook" }]
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.config/tmux/agents.sh hook"
+          }
+        ]
       }
     ]
   },
@@ -63,6 +113,12 @@
         "source": "github",
         "repo": "ayghri/i-have-adhd"
       }
+    },
+    "obsidian-skills": {
+      "source": {
+        "source": "github",
+        "repo": "kepano/obsidian-skills"
+      }
     }
   },
   "modelSettings": {
@@ -70,15 +126,5 @@
   },
   "awaySummaryEnabled": false,
   "theme": "custom:oxocarbon",
-  "editorMode": "vim",
-  "skillOverrides": {
-    "anthropic-skills:docs": "off",
-    "anthropic-skills:docx": "off",
-    "anthropic-skills:pptx": "off",
-    "anthropic-skills:xlsx": "off",
-    "anthropic-skills:google-workspace": "off"
-  },
-  "permissions": {
-    "defaultMode": "auto"
-  }
+  "editorMode": "vim"
 }

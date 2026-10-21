@@ -250,7 +250,7 @@ cmd_strip() {
         case $state in
             blocked) glyph="#[fg=$red]● " ;;
             working) glyph="#[fg=$yellow]⦿ " ;;
-            "done") glyph="#[fg=$([[ $current == 1 ]] && echo "$text" || echo "$green")]○ " ;;
+            "done") glyph="#[fg=$green]○ " ;;
             *) glyph="" ;;
         esac
         # Arrow only where the colour changes (start, gray↔active), as in the window list.

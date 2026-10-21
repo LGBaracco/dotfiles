@@ -13,6 +13,44 @@
             "command": "$HOME/.claude/hooks/dcal-guard.py"
           }
         ]
+      },
+      {
+        "hooks": [{ "type": "command", "command": "$HOME/.config/tmux/agents.sh hook" }]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [{ "type": "command", "command": "$HOME/.config/tmux/agents.sh hook" }]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [{ "type": "command", "command": "$HOME/.config/tmux/agents.sh hook" }]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [{ "type": "command", "command": "$HOME/.config/tmux/agents.sh hook" }]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [{ "type": "command", "command": "$HOME/.config/tmux/agents.sh hook" }]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [{ "type": "command", "command": "$HOME/.config/tmux/agents.sh hook" }]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [{ "type": "command", "command": "$HOME/.config/tmux/agents.sh hook" }]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [{ "type": "command", "command": "$HOME/.config/tmux/agents.sh hook" }]
       }
     ]
   },

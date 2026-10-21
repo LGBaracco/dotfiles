@@ -15,6 +15,7 @@
     { "name": "plenary.nvim", "src": "https://github.com/nvim-lua/plenary.nvim", "nix": "plenary-nvim" },
 
     { "name": "which-key.nvim", "src": "https://github.com/folke/which-key.nvim", "nix": "which-key-nvim" },
+    { "name": "hydra.nvim", "src": "https://github.com/nvimtools/hydra.nvim", "nix": "hydra-nvim" },
     { "name": "hop.nvim", "src": "https://github.com/smoka7/hop.nvim", "nix": "hop-nvim" },
     { "name": "precognition.nvim", "src": "https://github.com/tris203/precognition.nvim", "nix": "precognition-nvim", "desktopOnly": true },
     { "name": "comment.nvim", "src": "https://github.com/numToStr/Comment.nvim", "nix": "comment-nvim" },

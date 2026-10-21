@@ -63,6 +63,66 @@ map("n", "<leader>wj", "<C-w>j", { desc = "Focus down" })
 map("n", "<leader>wk", "<C-w>k", { desc = "Focus up" })
 map("n", "<leader>w=", "<C-w>=", { desc = "Balance windows" })
 
+-- Window hydra: <C-w><head> runs the head, then heads repeat without <C-w> until a
+-- non-head key (red: that key exits and runs). Only <C-w><head> is mapped, so native
+-- <C-w> commands that aren't heads (<C-w>gf, <C-w>], …) are untouched.
+do
+    local ok, Hydra = pcall(require, "hydra")
+    if ok then
+        local function wincmd(c)
+            return function()
+                vim.cmd.wincmd(c)
+            end
+        end
+        local function resize(dir)
+            return function()
+                require("smart-splits")["resize_" .. dir]()
+            end
+        end
+        Hydra({
+            name = "Windows",
+            mode = "n",
+            body = "<C-w>",
+            config = { hint = { type = "window", float_opts = { border = "rounded" } } },
+            heads = {
+                -- Plain wincmd (not smart-splits) so focus never leaves nvim for a tmux pane.
+                { "h", wincmd("h"), { desc = "focus ←" } },
+                { "j", wincmd("j"), { desc = "focus ↓" } },
+                { "k", wincmd("k"), { desc = "focus ↑" } },
+                { "l", wincmd("l"), { desc = "focus →" } },
+                { "H", resize("left"), { desc = "resize ←" } },
+                { "J", resize("down"), { desc = "resize ↓" } },
+                { "K", resize("up"), { desc = "resize ↑" } },
+                { "L", resize("right"), { desc = "resize →" } },
+                -- Native <C-w>HJKL (move window to far side), relocated.
+                { "<C-h>", wincmd("H"), { desc = "move far ←" } },
+                { "<C-j>", wincmd("J"), { desc = "move far ↓" } },
+                { "<C-k>", wincmd("K"), { desc = "move far ↑" } },
+                { "<C-l>", wincmd("L"), { desc = "move far →" } },
+                { "w", wincmd("w"), { desc = "next" } },
+                { "<C-w>", wincmd("w"), { desc = false } },
+                { "p", wincmd("p"), { desc = "previous" } },
+                { "x", wincmd("x"), { desc = "swap" } },
+                { "r", wincmd("r"), { desc = "rotate" } },
+                { "n", wincmd("n"), { desc = "new" } },
+                { "=", wincmd("="), { desc = "balance" } },
+                -- desc = false: the auto hint wraps heads in _…_, so a "_" head breaks its parser.
+                { "_", wincmd("_"), { desc = false } },
+                { "|", wincmd("|"), { desc = false } },
+                { "o", wincmd("o"), { desc = "only" } },
+                { "q", wincmd("q"), { desc = "close" } },
+                { "c", wincmd("c"), { desc = false } },
+                -- Splits hand focus to Telescope, so they exit. Exit heads get no <C-w><head>
+                -- entry map; <C-w>v / <C-w>s from normal mode stay in plugins.files.
+                { "s", "<cmd>split | Telescope buffers<cr>", { exit = true, desc = "split" } },
+                { "v", "<cmd>vsplit | Telescope buffers<cr>", { exit = true, desc = "vsplit" } },
+                { "T", wincmd("T"), { exit = true, desc = "to tab" } },
+                { "<Esc>", nil, { exit = true, desc = false } },
+            },
+        })
+    end
+end
+
 --- hop ---
 
 map({ "n", "x" }, "s", "<cmd>HopChar2<cr>", { desc = "Hop to a 2-character sequence" })

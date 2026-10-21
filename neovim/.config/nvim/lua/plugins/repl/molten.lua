@@ -1209,6 +1209,54 @@ map_quarto_buf = function(bufnr)
         map("n", "]b", move_cell("goto_next_start"), "Next code block")
         map("n", "[b", move_cell("goto_previous_start"), "Previous code block")
     end
+
+    -- Cell hydra (molten notebook-setup guide): ,j then j/k move, <CR>/r run, until <Esc>.
+    -- Pink: other keys work as usual. map_quarto_buf can run twice per buffer.
+    local has_hydra, Hydra = pcall(require, "hydra")
+    if has_hydra and not vim.b[bufnr].quarto_hydra then
+        vim.b[bufnr].quarto_hydra = true
+        local function molten_move(cmd)
+            return function()
+                vim.cmd(cmd .. " " .. vim.v.count1)
+            end
+        end
+        local next_cell, prev_cell
+        if has_tso then
+            next_cell = function()
+                require("nvim-treesitter-textobjects.move").goto_next_start("@code_cell.inner", "textobjects")
+            end
+            prev_cell = function()
+                require("nvim-treesitter-textobjects.move").goto_previous_start("@code_cell.inner", "textobjects")
+            end
+        else
+            next_cell, prev_cell = molten_move("MoltenNext"), molten_move("MoltenPrev")
+        end
+        Hydra({
+            name = "Cells",
+            mode = "n",
+            body = "<localleader>j",
+            config = {
+                buffer = bufnr,
+                color = "pink",
+                invoke_on_body = true,
+                desc = "Cell mode",
+                hint = { type = "window", float_opts = { border = "rounded" } },
+            },
+            heads = {
+                { "j", next_cell, { desc = "next" } },
+                { "k", prev_cell, { desc = "prev" } },
+                { "<CR>", with_runner("run_cell"), { desc = false } },
+                { "r", with_runner("run_cell"), { desc = "run" } },
+                { "l", with_runner("run_line"), { desc = "line" } },
+                { "a", with_runner("run_above"), { desc = "above" } },
+                { "A", with_runner("run_all"), { desc = "all" } },
+                { "x", "<cmd>MoltenInterrupt<cr>", { desc = "interrupt" } },
+                { "o", "<cmd>noautocmd MoltenEnterOutput<cr>", { exit_before = true, desc = "output" } },
+                { "q", nil, { exit = true, desc = "exit" } },
+                { "<Esc>", nil, { exit = true, desc = false } },
+            },
+        })
+    end
 end
 
 -- Minimal valid notebook so jupytext.nvim can convert it on :edit. Kernel name is

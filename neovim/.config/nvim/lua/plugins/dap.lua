@@ -122,6 +122,56 @@ local function extract_quarto_python(mode)
   return table.concat(parts, "\n\n# %%\n"), nil
 end
 
+-- Debug step hydra (pink: non-head keys pass through, so hjkl / search still move the
+-- cursor while stepping; heads avoid motion keys). Auto-entered on session start.
+local dap_hydra
+do
+  local ok, Hydra = pcall(require, "hydra")
+  if ok then
+    local function d(fn, ...)
+      local args = { ... }
+      return function()
+        require("dap")[fn](unpack(args))
+      end
+    end
+    dap_hydra = Hydra({
+      name = "Debug",
+      mode = "n",
+      body = "<leader>ds",
+      config = {
+        color = "pink",
+        invoke_on_body = true,
+        desc = "Debug step mode",
+        hint = { type = "window", float_opts = { border = "rounded" } },
+      },
+      heads = {
+        { "n", d("step_over"), { desc = "over" } },
+        { "i", d("step_into"), { desc = "into" } },
+        { "o", d("step_out"), { desc = "out" } },
+        { "c", d("continue"), { desc = "continue" } },
+        { "C", d("run_to_cursor"), { desc = "to cursor" } },
+        { "b", d("toggle_breakpoint"), { desc = "breakpoint" } },
+        { "u", d("up"), { desc = "stack up" } },
+        { "d", d("down"), { desc = "stack down" } },
+        { "K", function() require("dap.ui.widgets").hover() end, { desc = "hover" } },
+        { "r", function() require("dap").repl.toggle() end, { desc = "repl" } },
+        { "U", function() require("dapui").toggle() end, { desc = "ui" } },
+        { "R", d("restart"), { desc = "restart" } },
+        { "X", d("terminate"), { exit = true, desc = "terminate" } },
+        { "q", nil, { exit = true, desc = "exit mode" } },
+        { "<Esc>", nil, { exit = true, desc = false } },
+      },
+    })
+  end
+end
+
+-- Check the pink layer itself: _G.Hydra can be nil while the layer is still active.
+local function dap_hydra_exit()
+  if dap_hydra and dap_hydra.layer.active then
+    dap_hydra.layer:exit()
+  end
+end
+
 local function setup_python(dap)
   local pyproj = require("config.python_project")
 
@@ -282,6 +332,14 @@ require("lze").load({
       end
       dap.listeners.before.event_exited["dapui_config"] = function()
         dapui.close()
+      end
+
+      if dap_hydra then
+        dap.listeners.after.event_initialized["dap_hydra"] = function()
+          dap_hydra:activate() -- no-op if already active
+        end
+        dap.listeners.before.event_terminated["dap_hydra"] = dap_hydra_exit
+        dap.listeners.before.event_exited["dap_hydra"] = dap_hydra_exit
       end
     end,
   },

@@ -6,7 +6,7 @@ onedrive-sync/.config/rclone/rclone.conf
 neovim/AGENTS.md
 
 # claude: ~/.claude lives here via stow, but only config is tracked
-# Whitelist: settings / keybindings / CLAUDE.md / agents / hooks / themes / skills/ask / skills/calendar
+# Whitelist: settings / keybindings / CLAUDE.md / agents / hooks / rules / themes / skills/ask / skills/calendar
 # Everything else (secrets + runtime) stays local and untracked.
 claude/.claude/*
 !claude/.claude/settings.json
@@ -16,6 +16,7 @@ claude/.claude/*
 !claude/.claude/hooks/
 !claude/.claude/themes/
 !claude/.claude/skills/
+!claude/.claude/rules/
 claude/.claude/skills/*
 !claude/.claude/skills/ask/
 !claude/.claude/skills/calendar/

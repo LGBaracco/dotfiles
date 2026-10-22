@@ -33,7 +33,7 @@ require("conform").setup({
     fish = { "fish_indent" },
     java = { "astyle" },
     json = { "jsonfmt" },
-    jsonc = { "jsonfmt" },
+    jsonc = { "prettier" },
     lua = { "stylua" },
     make = { "mbake" },
     markdown = { "deno_fmt" },

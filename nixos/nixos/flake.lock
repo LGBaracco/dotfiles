@@ -7,11 +7,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1792659591,
-        "narHash": "sha256-x2AkmpPqq4LBeguSZ2vZqoQZIT5fLlKOY+xKx0clqC8=",
+        "lastModified": 1792760086,
+        "narHash": "sha256-ouagweeIjAwuh2U0F5VueVvqY3J6FBEspuI8WmEbF3M=",
         "owner": "chaotic-cx",
         "repo": "nyx",
-        "rev": "4cde6dd28fd039ba36b16af3c5ee375fa68707cf",
+        "rev": "0e97f6d8175b03ae27fa68640f1dcb4dfec03c2b",
         "type": "github"
       },
       "original": {
@@ -160,11 +160,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792605213,
-        "narHash": "sha256-J73EBU30r2hXvHCcBtaigQDAIu/GGPYk1nc6P9THcmg=",
+        "lastModified": 1792703141,
+        "narHash": "sha256-3X34FaSeMJXMx8CK/BN6sZ9knwNauuiJXQhLM+bQQuI=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "ab97a5d09e0f2aa7339cfd35ec5824fd6653e27c",
+        "rev": "6750249c69969d09d952efaf3fab88a2bdac7ec6",
         "type": "github"
       },
       "original": {
@@ -180,11 +180,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792703141,
-        "narHash": "sha256-3X34FaSeMJXMx8CK/BN6sZ9knwNauuiJXQhLM+bQQuI=",
+        "lastModified": 1792769188,
+        "narHash": "sha256-g4vKmp/alqd48uhqWbJpCm1eL1UHDDH3/K6G7m/O1Fc=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "6750249c69969d09d952efaf3fab88a2bdac7ec6",
+        "rev": "0cf43f39990c5ec16dd27ce211324cdfd2e8d27f",
         "type": "github"
       },
       "original": {
@@ -237,22 +237,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-strongswan5": {
-      "locked": {
-        "lastModified": 1751274312,
-        "narHash": "sha256-/bVBlRpECLVzjV19t5KMdMFWSwKLtb5RyXdjz3LJT+g=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "50ab793786d9de88ee30ec4e4c24fb4236fc2674",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "nixos-24.11",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixpkgs_2": {
       "locked": {
         "lastModified": 1792502884,
@@ -292,7 +276,6 @@
         "import-tree": "import-tree",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-stable": "nixpkgs-stable",
-        "nixpkgs-strongswan5": "nixpkgs-strongswan5",
         "nvim-config": "nvim-config",
         "wrappers": "wrappers"
       }

@@ -549,6 +549,9 @@ local function ensure_repl_buffer(root, pkg_name)
     vim.cmd("vertical rightbelow split")
     vim.cmd.enew()
     local buf = vim.api.nvim_get_current_buf()
+    -- No swap file: naming the buffer would hit a stale repl.qmd.swp (left by a killed
+    -- session with this unsaved buffer) and abort here on the swap prompt.
+    vim.bo[buf].swapfile = false
     -- Named path so :w writes repl.qmd; not written until the user saves.
     vim.api.nvim_buf_set_name(buf, path)
     vim.bo[buf].filetype = "quarto"

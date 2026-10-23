@@ -13,7 +13,6 @@
         networkmanager = {
           enable = true;
           # FZJ L2TP-over-IPsec (TKI-0387); profiles show up in DMS → VPN
-          # Overlay pins strongswan 5.9.14 (IKEv1); see overlays.nix
           plugins = with pkgs; [ networkmanager-l2tp ];
         };
       };

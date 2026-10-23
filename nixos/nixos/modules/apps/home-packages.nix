@@ -15,7 +15,7 @@
         thunderbird-bin
         stable.zotero
         zoom-us
-        stable.godot
+        godot
 
         # --- terminals ---
         ghostty

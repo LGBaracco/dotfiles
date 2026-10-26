@@ -10,7 +10,7 @@
       imports = [ inputs.dms-plugin-registry.nixosModules.default ];
 
       # ── Display Manager: DMS Greeter ─────────────────────────────────────────────────
-      services.displayManager.dms-greeter = {
+      services.displayManager.dux-greeter = {
         enable = true;
         configHome = "/home/lorenzo"; # copies that user's DMS settings (and wallpaper) into the greeter data directory before greetd starts
         compositor.name = "niri"; # greeter UI compositor
@@ -56,7 +56,7 @@
       };
 
       # DMS shell
-      programs.dms-shell = {
+      programs.dux-shell = {
         enable = true;
         systemd = {
           enable = true;

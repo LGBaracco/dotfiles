@@ -31,7 +31,7 @@
         alsa-utils
         htop
         btop-cuda # NVIDIA GPU stats (driver runpath); no global cudaSupport
-        dgop
+        dux-gop
         claude-code
         opencode
 

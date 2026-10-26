@@ -1,7 +1,7 @@
 {
   flake.modules.nixos.nixlaptop =
     {
-      programs.dms-shell.plugins = {
+      programs.dux-shell.plugins = {
         dmsLenovoBatterySettings.enable = true;
       };
     };

@@ -13,10 +13,13 @@ binds {
     // ─── Applications ───
     //Mod+T                          hotkey-overlay-title="Open Terminal: Foot" { spawn "foot"; }
     //Mod+Space                     hotkey-overlay-title="Open App Launcher: noctalia launcher" { spawn-sh "qs -c noctalia-shell ipc call launcher toggle"; }
-    Mod+B                               hotkey-overlay-title="Open Browser: Brave" { spawn "brave";}
+    // Launch via .desktop entries so the keyring flag in Exec= applies (keyring/ stow
+    // package on Ubuntu, withGnomeKeyring in nixos/.../apps/chromium.nix).
+    // Desktop IDs differ: snap <name>_<app> on Ubuntu, nixpkgs names on NixOS.
+    Mod+B                               hotkey-overlay-title="Open Browser: Brave" { spawn-sh "gtk-launch brave_brave || gtk-launch brave-browser";}
     //Mod+ALT+L                           hotkey-overlay-title="Lock Screen: noctalia lock" { spawn "qs -c noctalia-shell ipc call lockScreen lock"; }
     //Mod+ALT+Q                        hotkey-overlay-title="Session Menu: noctalia sessionMenu" { spawn-sh "qs -c noctalia-shell ipc call sessionMenu toggle"; }
-    Mod+S                            hotkey-overlay-title="Open VSCode" { spawn "code";} 
+    Mod+S                            hotkey-overlay-title="Open VSCode" { spawn-sh "gtk-launch code_code || gtk-launch code";}
     Mod+M                            hotkey-overlay-title="Open Emacs" { spawn-sh "emacsclient -c -a 'emacs'"; } 
     // Please choose your own file manager.
     Mod+E                               hotkey-overlay-title="File Manager: Nautilus" { spawn "nautilus"; }

@@ -53,6 +53,10 @@
       "rev": "6e83486f351066e38c3ae9daad2a4f01dfb262ad",
       "src": "https://github.com/smoka7/hop.nvim"
     },
+    "hydra.nvim": {
+      "rev": "8c4a9f621ec7cdc30411a1f3b6d5eebb12b469dc",
+      "src": "https://github.com/nvimtools/hydra.nvim"
+    },
     "img-clip.nvim": {
       "rev": "99848daf801789dbebe2192b475eb887d375002c",
       "src": "https://github.com/HakonHarnes/img-clip.nvim"

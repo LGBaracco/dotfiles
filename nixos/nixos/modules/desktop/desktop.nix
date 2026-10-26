@@ -55,5 +55,6 @@
       # ── misc ──────────────────────────────────────────────────────────────────
       programs.dconf.enable = true; # needed by some gtk apps under kde
       services.gvfs.enable = true; # needed for trash bin and partition mounts with nautilus outside of kde
+      environment.systemPackages = [ pkgs.gtk3 ]; # gtk-launch: niri binds start apps via their .desktop entries
     };
 }

@@ -105,7 +105,8 @@
     ]
   },
   "enabledPlugins": {
-    "i-have-adhd@i-have-adhd": true
+    "i-have-adhd@i-have-adhd": true,
+    "obsidian@obsidian-skills": true
   },
   "extraKnownMarketplaces": {
     "i-have-adhd": {

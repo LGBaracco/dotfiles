@@ -6,7 +6,7 @@ NixOS-based personal dotfiles.
 
 | Directory              | Description                                                                                                                                                                                     |
 | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **nixos/**             | Main part of the repo: a flake-based, full NixOS configuration. Host-agnostic setup with one flake for three hosts (`nixdesktop`, `nixlaptop`, `nixsurface`) that share common modules and home configuration. `nixsurface` (Surface 3, 2 GB RAM) skips the `workstation` aspect. |
+| **nixos/**             | Main part of the repo: a flake-based, full NixOS configuration. Host-agnostic setup with one flake for two hosts (`nixdesktop`, `nixlaptop`) that share common modules and home configuration. |
 | **niri/**              | Config for [niri](https://github.com/YaLTeR/niri), my Wayland compositor of choice.                                                                                                             |
 | **mango/**             | Config for [mango](https://github.com/mangowm/mango) (mangowc), a dwl-based Wayland compositor selectable alongside niri in the Dux greeter.                                                    |
 | **DankMaterialShell/** | [Dux Shell](https://github.com/duxlabs-dev/dux-shell) config used with niri/mango.                                                                                                              |

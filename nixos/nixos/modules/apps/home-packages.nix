@@ -1,55 +1,5 @@
 {
   flake.modules.homeManager.lorenzo =
-    { pkgs, ... }: {
-      home.packages = with pkgs; [
-
-        # --- Desktop apps ---
-        nautilus
-        nextcloud-client
-
-        # --- terminals ---
-        ghostty
-        foot
-        tmux
-
-        # --- TUI ---
-        lazygit
-        alsa-utils
-        htop
-        claude-code
-
-        # --- Cli tools ---
-        stow
-        imv
-        eza # ls
-        zoxide # cd
-        starship
-        babelfish # translates hm-session-vars.sh for fish
-        fastfetch
-        bat
-        jq
-
-        # --- Nix tooling ---
-        nix-output-monitor # prettier `nix build` output
-        nvd # diff nixos generations
-        nh
-
-        # --- Fuzzy finders ---
-        fzf
-        ripgrep
-        fd
-
-        # --- Misc ---
-        wl-clipboard
-        libsForQt5.qt5ct
-        qt6Packages.qt6ct
-        brightnessctl
-        playerctl
-        xwayland-satellite
-      ];
-    };
-
-  flake.modules.homeManager.workstation =
     { pkgs, ... }:
     let
       # scheme-medium + what my documents, org export and Quarto PDFs need on top.
@@ -97,26 +47,49 @@
         heroic
         firefox-bin
         spotify
+        nautilus
+        nextcloud-client
         thunderbird-bin
         stable.zotero
         zoom-us
         godot
+
+        # --- terminals ---
+        ghostty
+        foot
+        tmux
 
         # --- Editors ---
         neovide
 
         # --- TUI ---
         spotify-player
+        lazygit
+        alsa-utils
+        htop
         btop-cuda # NVIDIA GPU stats (driver runpath); no global cudaSupport
         dux-gop
+        claude-code
         opencode
 
         # --- Cli tools ---
+        stow
+        imv
+        eza # ls
+        zoxide # cd
+        starship
+        babelfish # translates hm-session-vars.sh for fish
+        fastfetch
+        bat
         yq
+        jq
         gnumake
         rclone
 
         # --- Nix tooling ---
+        nix-output-monitor # prettier `nix build` output
+        nvd # diff nixos generations
+        nh
         nixfmt # Doom compatible formatter
         nil # nix lsp
 
@@ -148,13 +121,24 @@
         pandoc # Markdown syntax highlighting
         shellcheck
 
+        # --- Fuzzy finders ---
+        fzf
+        ripgrep
+        fd
+
         # --- Misc ---
         latex # LaTeX (Neovim VimTeX + emacs org export)
         (zathura.override {
           plugins = with zathuraPkgs; [ zathura_pdf_mupdf ];
         })
         imagemagick
+        wl-clipboard
+        libsForQt5.qt5ct
+        qt6Packages.qt6ct
+        brightnessctl
+        playerctl
         tabctl
+        xwayland-satellite
       ];
     };
 }

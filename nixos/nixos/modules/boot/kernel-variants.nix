@@ -1,9 +1,6 @@
-{ inputs, ... }:
 {
-  flake.modules.nixos.workstation =
+  flake.modules.nixos.common =
     { pkgs, lib, ... }: {
-      imports = [ inputs.chaotic.nixosModules.default ];
-
       boot.kernelPackages = lib.mkDefault pkgs.linuxPackages;
 
       specialisation.Cachy = {

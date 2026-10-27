@@ -1,5 +1,5 @@
 {
-  flake.modules.homeManager.workstation =
+  flake.modules.homeManager.lorenzo =
     {
       # Run neovim with (ghostty) terminal to avoid theming abominations
       xdg.desktopEntries.nvim = {

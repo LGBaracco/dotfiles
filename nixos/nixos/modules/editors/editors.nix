@@ -1,5 +1,5 @@
 {
-  flake.modules.homeManager.workstation =
+  flake.modules.homeManager.lorenzo =
     { pkgs, ... }: {
       # Neovim via nix-wrapper-modules (liveLua=true by default: ~/.config/nvim via stow)
       wrappers.neovim = {

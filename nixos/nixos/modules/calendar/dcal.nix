@@ -1,6 +1,6 @@
 { inputs, ... }:
 {
-  flake.modules.homeManager.workstation =
+  flake.modules.homeManager.lorenzo =
     { ... }: {
       imports = [ inputs.dankcalendar.homeModules.dank-calendar ];
 

@@ -22,8 +22,4 @@
         };
       };
     };
-
-  flake.modules.nixos.workstation = {
-    home-manager.users.lorenzo.imports = [ config.flake.modules.homeManager.workstation ];
-  };
 }

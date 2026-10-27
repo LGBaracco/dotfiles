@@ -34,11 +34,6 @@
     };
     # CachyOS kernels. Do not override nixpkgs — nyx cache is built against its own rev.
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
-    # linux-surface kernel and hardware profiles (nixsurface)
-    nixos-hardware = {
-      url = "github:NixOS/nixos-hardware/master";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
 
     flake-parts = {
       url = "github:hercules-ci/flake-parts";

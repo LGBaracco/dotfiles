@@ -49,117 +49,142 @@
     {
       "id": "user",
       "enabled": true,
-      "w": 5,
-      "h": 1
+      "w": 4,
+      "h": 1,
+      "col": 0,
+      "row": 0
     },
     {
       "id": "settings",
       "enabled": true,
       "w": 1,
       "h": 1,
-      "small": true
+      "small": true,
+      "col": 5,
+      "row": 0
     },
     {
       "id": "lock",
       "enabled": true,
       "w": 1,
       "h": 1,
-      "small": true
+      "small": true,
+      "col": 6,
+      "row": 0
     },
     {
       "id": "power",
       "enabled": true,
       "w": 1,
       "h": 1,
-      "small": true
+      "small": true,
+      "col": 7,
+      "row": 0
     },
     {
       "id": "volumeSlider",
       "enabled": true,
       "w": 4,
-      "h": 1
+      "h": 1,
+      "col": 0,
+      "row": 1
     },
     {
       "id": "brightnessSlider",
       "enabled": true,
       "w": 4,
-      "h": 1
+      "h": 1,
+      "col": 4,
+      "row": 1
     },
     {
       "id": "wifi",
       "enabled": true,
       "w": 4,
-      "h": 1
+      "h": 1,
+      "col": 0,
+      "row": 2
     },
     {
       "id": "builtin_vpn",
       "enabled": true,
       "w": 4,
-      "h": 1
+      "h": 1,
+      "col": 4,
+      "row": 2
     },
     {
       "id": "audioOutput",
       "enabled": true,
       "w": 4,
-      "h": 1
+      "h": 1,
+      "col": 0,
+      "row": 3
     },
     {
       "id": "audioInput",
       "enabled": true,
       "w": 4,
-      "h": 1
+      "h": 1,
+      "col": 4,
+      "row": 3
     },
     {
       "id": "bluetooth",
       "enabled": true,
       "w": 4,
-      "h": 1
+      "h": 1,
+      "col": 0,
+      "row": 4
     },
     {
       "id": "battery",
       "enabled": true,
       "w": 4,
-      "h": 1
+      "h": 1,
+      "col": 4,
+      "row": 4
     },
     {
       "id": "idleInhibitor",
       "enabled": true,
       "w": 2,
-      "h": 1
+      "h": 1,
+      "col": 0,
+      "row": 5
     },
     {
       "id": "doNotDisturb",
       "enabled": true,
       "w": 2,
-      "h": 1
+      "h": 1,
+      "col": 2,
+      "row": 5
     },
     {
       "id": "colorPicker",
       "enabled": true,
       "w": 2,
-      "h": 1
+      "h": 1,
+      "col": 4,
+      "row": 5
     },
     {
       "id": "nightMode",
       "enabled": true,
       "w": 2,
-      "h": 1
+      "h": 1,
+      "col": 6,
+      "row": 5
     },
     {
       "id": "edit",
       "enabled": true,
       "w": 1,
       "h": 1,
-      "small": true
-    },
-    {
-      "id": "runningApps",
-      "enabled": true,
-      "w": 4,
-      "h": 1,
       "small": true,
-      "col": 0,
-      "row": 7
+      "col": 4,
+      "row": 0
     }
   ],
   "appIdSubstitutions": [],
@@ -368,7 +393,7 @@
           "id": "controlCenterButton",
           "enabled": true,
           "showAudioPercent": true,
-          "showVpnIcon": false,
+          "showVpnIcon": true,
           "showBrightnessIcon": true,
           "showBrightnessPercent": true,
           "showMicIcon": false,

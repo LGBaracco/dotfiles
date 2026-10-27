@@ -27,7 +27,7 @@
         @import 'colors.css';
       '';
 
-      # Overwrite DMS/imperative leftovers without fighting stale .bak files
+      # Overwrite Dux Shell/imperative leftovers without fighting stale .bak files
       forceText = text: {
         inherit text;
         force = true;
@@ -89,7 +89,7 @@
       home.file.".local/share/color-schemes/DankMatugen.colors" = forceText generated.kdeScheme;
       home.file.".local/share/color-schemes/DankMatugenDark.colors" = forceText generated.kdeDarkScheme;
 
-      # gtk.enable also writes settings.ini; force so activation never fights DMS leftovers
+      # gtk.enable also writes settings.ini; force so activation never fights Dux Shell leftovers
       xdg.configFile = {
         "gtk-3.0/settings.ini".force = true;
         "gtk-3.0/gtk.css" = forceText gtkCssImports;

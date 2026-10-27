@@ -3,7 +3,7 @@
 let
   themeLib = import ./_lib.nix { inherit lib; };
 
-  dmsConfigDir = ../../../../DankMaterialShell/.config/DankMaterialShell;
+  duxConfigDir = ../../../../DankMaterialShell/.config/DankMaterialShell;
 
   templates = {
     gtk = ./templates/gtk-colors.css;
@@ -12,8 +12,8 @@ let
     qtCt = ./templates/qtct-colors.conf;
   };
 
-  generated = themeLib.generateFromDmsSettings {
-    inherit dmsConfigDir templates;
+  generated = themeLib.generateFromDuxSettings {
+    inherit duxConfigDir templates;
     mode = "dark";
   };
 

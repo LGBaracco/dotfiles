@@ -39,9 +39,9 @@ let
     in
     if stringLength contents > 0 then fromJSON contents else throw "Empty settings.json at ${path}";
 
-  # Map DMS customThemeFile (/home/.../themes/<dir>/theme.json) onto the flake tree.
+  # Map Dux Shell customThemeFile (/home/.../themes/<dir>/theme.json) onto the flake tree.
   resolveThemeJsonPath =
-    dmsConfigDir: settings:
+    duxConfigDir: settings:
     let
       customThemeFile = settings.customThemeFile or null;
       matched =
@@ -52,14 +52,14 @@ let
     in
     if matched == null then
       throw ''
-        lorenzo/theming: DMS settings must set customThemeFile to a path under
+        lorenzo/theming: Dux Shell settings must set customThemeFile to a path under
         ~/.config/DankMaterialShell/themes/<name>/theme.json (got: ${
           if customThemeFile == null then "null" else customThemeFile
         }).
         Wallpaper/dynamic matugen themes are not supported for HM rebuild.
       ''
     else
-      dmsConfigDir + "/${builtins.head matched}";
+      duxConfigDir + "/${builtins.head matched}";
 
   # registryThemeVariants entry for this theme id, or multi/options defaults.
   resolveVariantSpec =
@@ -144,7 +144,7 @@ let
     theme: key: fallback:
     theme.${key} or fallback;
 
-  # Port of DMS Theme.qml buildMatugenColorsFromTheme()
+  # Port of Dux Shell Theme.qml buildMatugenColorsFromTheme()
   buildMatugenColors =
     {
       darkTheme,
@@ -345,15 +345,15 @@ let
       qtCtConf = render templates.qtCt;
     };
 
-  generateFromDmsSettings =
+  generateFromDuxSettings =
     {
-      dmsConfigDir,
+      duxConfigDir,
       mode ? "dark",
       templates,
     }:
     let
-      settings = loadSettingsJson (dmsConfigDir + "/settings.json");
-      themeJsonPath = resolveThemeJsonPath dmsConfigDir settings;
+      settings = loadSettingsJson (duxConfigDir + "/settings.json");
+      themeJsonPath = resolveThemeJsonPath duxConfigDir settings;
       themeJson = loadThemeJson themeJsonPath;
       variant = resolveVariantSpec themeJson settings;
     in
@@ -385,7 +385,7 @@ in
     buildMatugenColors
     renderTemplate
     generateFromTheme
-    generateFromDmsSettings
+    generateFromDuxSettings
     kdeglobalsHeader
     hexToRgb
     ;

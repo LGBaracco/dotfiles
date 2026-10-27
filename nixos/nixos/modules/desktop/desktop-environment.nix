@@ -9,10 +9,10 @@
     {
       imports = [ inputs.dms-plugin-registry.nixosModules.default ];
 
-      # ── Display Manager: DMS Greeter ─────────────────────────────────────────────────
+      # ── Display Manager: Dux Greeter ─────────────────────────────────────────────────
       services.displayManager.dux-greeter = {
         enable = true;
-        configHome = "/home/lorenzo"; # copies that user's DMS settings (and wallpaper) into the greeter data directory before greetd starts
+        configHome = "/home/lorenzo"; # copies that user's Dux Shell settings (and wallpaper) into the greeter data directory before greetd starts
         compositor.name = "niri"; # greeter UI compositor
       };
       environment.etc."greetd/niri_overrides.kdl".text = ''
@@ -55,12 +55,12 @@
         enable = true;
       };
 
-      # DMS shell
+      # Dux Shell
       programs.dux-shell = {
         enable = true;
         systemd = {
           enable = true;
-          # Primary: niri.service; mango also pulls DMS via mango-session.target below
+          # Primary: niri.service; mango also pulls Dux Shell via mango-session.target below
           target = "niri.service";
           restartIfChanged = true;
         };
@@ -76,7 +76,7 @@
         };
       };
 
-      # ── mango (mangowc) — selectable alongside niri in the DMS greeter
+      # ── mango (mangowc) — selectable alongside niri in the Dux greeter
       programs.mango = {
         enable = true;
       };
@@ -89,7 +89,7 @@
           After = [ "graphical-session-pre.target" ];
         };
       };
-      # Also start DMS when logging into mango
+      # Also start Dux Shell when logging into mango (unit is still named dms.service)
       systemd.user.services.dms.wantedBy = [ "mango-session.target" ];
 
     };

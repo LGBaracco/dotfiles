@@ -12,7 +12,7 @@
         firewall.checkReversePath = "loose";
         networkmanager = {
           enable = true;
-          # FZJ L2TP-over-IPsec (TKI-0387); profiles show up in DMS → VPN
+          # FZJ L2TP-over-IPsec (TKI-0387); profiles show up in Dux Shell → VPN
           plugins = with pkgs; [ networkmanager-l2tp ];
         };
       };

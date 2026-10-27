@@ -102,7 +102,7 @@
     { "bin": "magick", "nix": "imagemagick", "mason": null },
     { "bin": "jupytext", "nix": "python3Packages.jupytext", "mason": null },
     { "bin": "quarto", "nix": "quarto", "mason": null },
-    { "bin": "latexmk", "nix": "texliveFull", "mason": null, "desktopOnly": true },
+    { "bin": "latexmk", "nix": null, "mason": null, "desktopOnly": true },
     { "bin": "zathura", "nix": "zathura", "mason": null, "desktopOnly": true },
     { "bin": "wl-copy", "nix": "wl-clipboard", "mason": null, "desktopOnly": true },
 
@@ -130,7 +130,6 @@
     { "bin": "fennel-ls", "nix": "fennel-ls", "mason": "fennel-ls", "requires": "luarocks", "desktopOnly": true },
     { "bin": "fish-lsp", "nix": "fish-lsp", "mason": "fish-lsp", "requires": "npm", "desktopOnly": true },
     { "bin": "harper-ls", "nix": "harper", "mason": "harper-ls" },
-    { "bin": "jdtls", "nix": "jdt-language-server", "mason": "jdtls", "requires": "java", "desktopOnly": true },
     { "bin": "lemminx", "nix": "lemminx", "mason": "lemminx" },
     { "bin": "lua-language-server", "nix": "lua-language-server", "mason": "lua-language-server" },
     { "bin": "marksman", "nix": "marksman", "mason": "marksman" },

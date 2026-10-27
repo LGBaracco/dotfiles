@@ -397,7 +397,6 @@ vim.lsp.enable({
   "fennel_ls",
   "fish_lsp",
   "harper_ls",
-  "jdtls",
   "jsonls",
   "julials",
   "lemminx",

@@ -8,7 +8,7 @@
 # Plugin and tool sets come from pack.json, shared with the non-Nix bootstrap
 # (lua/config/pack.lua: vim.pack + mason). Here every entry with a `nix` attr is
 # used: `desktopOnly` and the treesitter lists only matter off Nix, `nix = null`
-# entries (mason.nvim, uv tools) are skipped. List order is kept, so the
+# entries (mason.nvim, uv tools, TeX from home-packages) are skipped. List order is kept, so the
 # wrapper's PATH suffix follows the `tools` order.
 let
   manifest = lib.importJSON ./pack.json;
@@ -21,7 +21,8 @@ let
   toolOverrides = with pkgs; {
     # Quarto 1.10 emits pandoc's new `syntax-highlighting` key; nixpkgs pandoc is
     # still 3.7 (`highlight-style`). Patch until pandoc >= 3.8 lands (nixpkgs#519484).
-    quarto = quarto.overrideAttrs (old: {
+    # No R: nixpkgs bundles R + rmarkdown (~1 GiB); notebooks here are Python/Jupyter.
+    quarto = (quarto.override { rWrapper = null; }).overrideAttrs (old: {
       postPatch = (old.postPatch or "") + ''
         substituteInPlace bin/quarto.js \
           --replace-fail "syntax-highlighting" "highlight-style"

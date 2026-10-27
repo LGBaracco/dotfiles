@@ -50,7 +50,44 @@
     };
 
   flake.modules.homeManager.workstation =
-    { pkgs, ... }: {
+    { pkgs, ... }:
+    let
+      # scheme-medium + what my documents, org export and Quarto PDFs need on top.
+      # A document failing with "x.sty not found": add x's TeX Live package here.
+      latex = pkgs.texliveMedium.withPackages (
+        ps: with ps; [
+          # my documents
+          a4wide
+          apacite
+          cleveref
+          footmisc
+          fourier
+          glossaries
+          imakeidx
+          pgfplots
+          preprint
+          supertabular
+          titlesec
+          tocbibind
+          wrapfig
+          # org-mode export
+          capt-of
+          # Quarto/pandoc PDF template
+          csquotes
+          fontawesome5
+          framed
+          multirow
+          tcolorbox
+          upquote
+          xurl
+          # tcolorbox libraries (skins, breakable, listingsutf8)
+          tikzfill
+          pdfcol
+          listingsutf8
+        ]
+      );
+    in
+    {
       home.packages = with pkgs; [
 
         # --- Desktop apps ---
@@ -112,7 +149,7 @@
         shellcheck
 
         # --- Misc ---
-        texliveFull # LaTeX (Neovim VimTeX + emacs org export)
+        latex # LaTeX (Neovim VimTeX + emacs org export)
         (zathura.override {
           plugins = with zathuraPkgs; [ zathura_pdf_mupdf ];
         })

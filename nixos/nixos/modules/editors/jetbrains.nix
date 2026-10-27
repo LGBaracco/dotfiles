@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.common =
+  flake.modules.nixos.workstation =
     {
       pkgs,
       ...

@@ -4,36 +4,19 @@
       home.packages = with pkgs; [
 
         # --- Desktop apps ---
-        mpv
-        system-config-printer
-        proton-pass
-        heroic
-        firefox-bin
-        spotify
         nautilus
         nextcloud-client
-        thunderbird-bin
-        stable.zotero
-        zoom-us
-        godot
 
         # --- terminals ---
         ghostty
         foot
         tmux
 
-        # --- Editors ---
-        neovide
-
         # --- TUI ---
-        spotify-player
         lazygit
         alsa-utils
         htop
-        btop-cuda # NVIDIA GPU stats (driver runpath); no global cudaSupport
-        dux-gop
         claude-code
-        opencode
 
         # --- Cli tools ---
         stow
@@ -44,15 +27,59 @@
         babelfish # translates hm-session-vars.sh for fish
         fastfetch
         bat
-        yq
         jq
-        gnumake
-        rclone
 
         # --- Nix tooling ---
         nix-output-monitor # prettier `nix build` output
         nvd # diff nixos generations
         nh
+
+        # --- Fuzzy finders ---
+        fzf
+        ripgrep
+        fd
+
+        # --- Misc ---
+        wl-clipboard
+        libsForQt5.qt5ct
+        qt6Packages.qt6ct
+        brightnessctl
+        playerctl
+        xwayland-satellite
+      ];
+    };
+
+  flake.modules.homeManager.workstation =
+    { pkgs, ... }: {
+      home.packages = with pkgs; [
+
+        # --- Desktop apps ---
+        mpv
+        system-config-printer
+        proton-pass
+        heroic
+        firefox-bin
+        spotify
+        thunderbird-bin
+        stable.zotero
+        zoom-us
+        godot
+
+        # --- Editors ---
+        neovide
+
+        # --- TUI ---
+        spotify-player
+        btop-cuda # NVIDIA GPU stats (driver runpath); no global cudaSupport
+        dux-gop
+        opencode
+
+        # --- Cli tools ---
+        yq
+        gnumake
+        rclone
+
+        # --- Nix tooling ---
         nixfmt # Doom compatible formatter
         nil # nix lsp
 
@@ -84,24 +111,13 @@
         pandoc # Markdown syntax highlighting
         shellcheck
 
-        # --- Fuzzy finders ---
-        fzf
-        ripgrep
-        fd
-
         # --- Misc ---
         texliveFull # LaTeX (Neovim VimTeX + emacs org export)
         (zathura.override {
           plugins = with zathuraPkgs; [ zathura_pdf_mupdf ];
         })
         imagemagick
-        wl-clipboard
-        libsForQt5.qt5ct
-        qt6Packages.qt6ct
-        brightnessctl
-        playerctl
         tabctl
-        xwayland-satellite
       ];
     };
 }

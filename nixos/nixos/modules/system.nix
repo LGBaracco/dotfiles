@@ -1,13 +1,10 @@
-{ inputs, ... }:
 {
   flake.modules.nixos.common =
     {
-      config,
       pkgs,
       ...
     }:
     {
-      imports = [ inputs.chaotic.nixosModules.default ];
       nixpkgs.hostPlatform = "x86_64-linux";
 
       # ── nix / flakes ──────────────────────────────────────────────────────────
@@ -46,7 +43,6 @@
         stdenv.cc.cc.lib
         libgcc
         zlib
-        config.hardware.nvidia.package
       ];
 
       # ── kernel ────────────────────────────────────────────────────────────────

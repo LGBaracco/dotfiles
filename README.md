@@ -6,10 +6,9 @@ NixOS-based personal dotfiles.
 
 | Directory              | Description                                                                                                                                                                                     |
 | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **nixos/**             | Main part of the repo: a flake-based, full NixOS configuration. Host-agnostic setup with two flakes for two hosts (`nixdesktop`, `nixlaptop`) that share common modules and home configuration. |
+| **nixos/**             | Main part of the repo: a flake-based, full NixOS configuration. Host-agnostic setup with one flake for three hosts (`nixdesktop`, `nixlaptop`, `nixsurface`) that share common modules and home configuration. `nixsurface` (Surface 3, 2 GB RAM) skips the `workstation` aspect. |
 | **niri/**              | Config for [niri](https://github.com/YaLTeR/niri), my Wayland compositor of choice.                                                                                                             |
 | **mango/**             | Config for [mango](https://github.com/mangowm/mango) (mangowc), a dwl-based Wayland compositor selectable alongside niri in the Dux greeter.                                                    |
-| **noctalia/**          | [Noctalia](https://github.com/noctalia-dev/noctalia-shell) shell config used with niri.                                                                                                         |
 | **DankMaterialShell/** | [Dux Shell](https://github.com/duxlabs-dev/dux-shell) config used with niri/mango.                                                                                                              |
 | **julia/**             | Simple Julia startup script enabling [Revise](https://github.com/timholy/Revise.jl) and [OhMyREPL](https://github.com/KristofferC/OhMyREPL.jl).                                                 |
 | **[onedrive-sync/](onedrive-sync/README.md)** | Dotfiles to make OneDrive work seamlessly on Linux over WebDAV. Auth tokens are fetched from Firefox; `onedrive-download`/`onedrive-upload` (`.local/bin`) handle sync. See the [usage guide](onedrive-sync/README.md). |

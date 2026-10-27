@@ -2,6 +2,21 @@
 {
   flake.modules.nixos.common =
     {
+      lib,
+      ...
+    }:
+    {
+      # All DEs try to enforce their own session as default, override to fix
+      services.displayManager.defaultSession = lib.mkForce "niri";
+
+      # ── niri
+      programs.niri = {
+        enable = true;
+      };
+    };
+
+  flake.modules.nixos.workstation =
+    {
       pkgs,
       lib,
       ...
@@ -22,8 +37,6 @@
           }
         }
       '';
-      # All DEs try to enforce their own session as default, override to fix
-      services.displayManager.defaultSession = lib.mkForce "niri";
 
       # ── KDE Plasma
       services.desktopManager.plasma6.enable = true;
@@ -48,11 +61,6 @@
           "QT_QPA_PLATFORMTHEME"
           "QT_QPA_PLATFORMTHEME_QT6"
         ];
-      };
-
-      # ── niri
-      programs.niri = {
-        enable = true;
       };
 
       # Dux Shell

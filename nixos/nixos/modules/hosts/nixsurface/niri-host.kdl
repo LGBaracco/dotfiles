@@ -1,0 +1,33 @@
+// nixsurface only: Home Manager links this to ~/.config/niri-host.kdl, and niri/config.kdl
+// includes it last, so these binds replace the Dux Shell ones from dms/binds.kdl.
+
+// ────────────── On-screen keyboard ──────────────
+spawn-at-startup "wvkbd-mobintl" "--hidden"
+
+switch-events {
+    tablet-mode-on { spawn "pkill" "-USR2" "wvkbd-mobintl"; }
+    tablet-mode-off { spawn "pkill" "-USR1" "wvkbd-mobintl"; }
+}
+
+// ────────────── Noctalia ──────────────
+binds {
+    Alt+Ctrl+Delete hotkey-overlay-title="Power Menu: Toggle" { spawn-sh "noctalia msg panel-toggle session"; }
+    Mod+Space hotkey-overlay-title="App Launcher: Toggle" { spawn-sh "noctalia msg panel-toggle launcher"; }
+    Print hotkey-overlay-title="Screenshot: Full Screen" { screenshot-screen; }
+    Super+Alt+L hotkey-overlay-title="Lock Screen" { spawn-sh "noctalia msg session lock"; }
+    Super+Shift+S hotkey-overlay-title="Screenshot: Interactive" { screenshot; }
+    XF86AudioLowerVolume hotkey-overlay-title="Volume Down" allow-when-locked=true { spawn-sh "noctalia msg volume-down"; }
+    XF86AudioMedia hotkey-overlay-title="Media: Play/Pause" { spawn-sh "noctalia msg media toggle"; }
+    XF86AudioMicMute allow-when-locked=true { spawn-sh "noctalia msg mic-mute"; }
+    XF86AudioMute allow-when-locked=true hotkey-overlay-title="Volume Mute Toggle" { spawn-sh "noctalia msg volume-mute"; }
+    XF86AudioPlay hotkey-overlay-title="Media: Play/Pause" { spawn-sh "noctalia msg media toggle"; }
+    XF86AudioRaiseVolume hotkey-overlay-title="Volume Up" { spawn-sh "noctalia msg volume-up"; }
+    XF86MonBrightnessDown hotkey-overlay-title="Brightness Down" { spawn-sh "noctalia msg brightness-down"; }
+    XF86MonBrightnessUp hotkey-overlay-title="Brightness Up" { spawn-sh "noctalia msg brightness-up"; }
+}
+
+// Floating Noctalia settings window
+window-rule {
+    match app-id="dev.noctalia.Noctalia"
+    open-floating true
+}

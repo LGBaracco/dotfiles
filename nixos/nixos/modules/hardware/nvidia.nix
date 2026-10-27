@@ -1,6 +1,6 @@
 {
-  flake.modules.nixos.common =
-    { ... }:
+  flake.modules.nixos.workstation =
+    { config, ... }:
 
     {
       # ── NVIDIA ────────────────────────────────────────────────────────────────
@@ -18,5 +18,6 @@
       # No global cudaSupport: it forces source builds (e.g. zotero -> firefox-esr ->
       # onnxruntime). Opt in per package instead (btop-cuda, ollama-cuda, ...).
       # uv/PyPI CUDA wheels only need the driver libs, provided via nix-ld.
+      programs.nix-ld.libraries = [ config.hardware.nvidia.package ];
     };
 }

@@ -14,13 +14,17 @@
         };
       };
 
-      # Phone pairing (opens TCP/UDP 1714–1764)
-      programs.kdeconnect.enable = true;
-
       # Nearby file transfer (package + TCP/UDP 53317)
       programs.localsend.enable = true;
 
       # Printer / mDNS discovery (UDP 5353)
       services.avahi.openFirewall = true;
+    };
+
+  flake.modules.nixos.workstation =
+    { ... }:
+    {
+      # Phone pairing (opens TCP/UDP 1714–1764)
+      programs.kdeconnect.enable = true;
     };
 }

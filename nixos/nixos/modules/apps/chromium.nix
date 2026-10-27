@@ -1,69 +1,77 @@
+let
+  # Wrap Chromium/Electron bins and rewrite .desktop Exec= paths that otherwise
+  # bypass the wrapper (absolute /nix/store/.../bin/... from the original pkg).
+  withGnomeKeyring =
+    pkgs: pkg:
+    pkgs.symlinkJoin {
+      name = "${pkg.pname or pkg.name}-keyring-wrapped";
+      paths = [ pkg ];
+      nativeBuildInputs = [ pkgs.makeWrapper ];
+      postBuild = ''
+        for bin in $out/bin/*; do
+          # Skip companion CLIs (e.g. obsidian-cli): they parse the flag as a command.
+          case "$(basename "$bin")" in *-cli) continue ;; esac
+          if [ -L "$bin" ]; then
+            target=$(readlink -f "$bin")
+            rm "$bin"
+            makeWrapper "$target" "$bin" --add-flags "--password-store=gnome-libsecret"
+          fi
+        done
+
+        # Packages like discord symlink the whole share/ tree into the store.
+        # Rewrite desktop files via a temp dir, then materialize share/applications
+        # under $out so we never write through a read-only symlink.
+        if [ -d "$out/share/applications" ]; then
+          tmp=$(mktemp -d)
+          for desktop in "$out/share/applications"/*.desktop; do
+            [ -e "$desktop" ] || continue
+            name=$(basename "$desktop")
+            cp "$(readlink -f "$desktop")" "$tmp/$name"
+            # Point absolute Exec=/TryExec= at our wrapped bins (CLI name-only Exec= is fine via PATH).
+            sed -i -E "s#^(Exec|TryExec)=/nix/store/[^/]+/bin/#\1=$out/bin/#g" "$tmp/$name"
+          done
+
+          if [ -L "$out/share" ]; then
+            share_target=$(readlink -f "$out/share")
+            rm "$out/share"
+            mkdir -p "$out/share"
+            for entry in "$share_target"/*; do
+              [ -e "$entry" ] || continue
+              name=$(basename "$entry")
+              [ "$name" = applications ] && continue
+              ln -s "$entry" "$out/share/$name"
+            done
+          else
+            rm -rf "$out/share/applications"
+          fi
+
+          mkdir -p "$out/share/applications"
+          cp "$tmp"/*.desktop "$out/share/applications/"
+          rm -rf "$tmp"
+        fi
+      '';
+    };
+in
 {
   flake.modules.homeManager.lorenzo =
     { pkgs, ... }:
 
-    let
-      # Wrap Chromium/Electron bins and rewrite .desktop Exec= paths that otherwise
-      # bypass the wrapper (absolute /nix/store/.../bin/... from the original pkg).
-      withGnomeKeyring =
-        pkg:
-        pkgs.symlinkJoin {
-          name = "${pkg.pname or pkg.name}-keyring-wrapped";
-          paths = [ pkg ];
-          nativeBuildInputs = [ pkgs.makeWrapper ];
-          postBuild = ''
-            for bin in $out/bin/*; do
-              # Skip companion CLIs (e.g. obsidian-cli): they parse the flag as a command.
-              case "$(basename "$bin")" in *-cli) continue ;; esac
-              if [ -L "$bin" ]; then
-                target=$(readlink -f "$bin")
-                rm "$bin"
-                makeWrapper "$target" "$bin" --add-flags "--password-store=gnome-libsecret"
-              fi
-            done
-
-            # Packages like discord symlink the whole share/ tree into the store.
-            # Rewrite desktop files via a temp dir, then materialize share/applications
-            # under $out so we never write through a read-only symlink.
-            if [ -d "$out/share/applications" ]; then
-              tmp=$(mktemp -d)
-              for desktop in "$out/share/applications"/*.desktop; do
-                [ -e "$desktop" ] || continue
-                name=$(basename "$desktop")
-                cp "$(readlink -f "$desktop")" "$tmp/$name"
-                # Point absolute Exec=/TryExec= at our wrapped bins (CLI name-only Exec= is fine via PATH).
-                sed -i -E "s#^(Exec|TryExec)=/nix/store/[^/]+/bin/#\1=$out/bin/#g" "$tmp/$name"
-              done
-
-              if [ -L "$out/share" ]; then
-                share_target=$(readlink -f "$out/share")
-                rm "$out/share"
-                mkdir -p "$out/share"
-                for entry in "$share_target"/*; do
-                  [ -e "$entry" ] || continue
-                  name=$(basename "$entry")
-                  [ "$name" = applications ] && continue
-                  ln -s "$entry" "$out/share/$name"
-                done
-              else
-                rm -rf "$out/share/applications"
-              fi
-
-              mkdir -p "$out/share/applications"
-              cp "$tmp"/*.desktop "$out/share/applications/"
-              rm -rf "$tmp"
-            fi
-          '';
-        };
-    in
     {
       home.packages = [
-        (withGnomeKeyring pkgs.brave)
-        (withGnomeKeyring pkgs.vscode)
-        (withGnomeKeyring pkgs.helium)
-        (withGnomeKeyring pkgs.discord)
-        (withGnomeKeyring pkgs.whatsapp-electron)
-        (withGnomeKeyring pkgs.obsidian)
+        (withGnomeKeyring pkgs pkgs.brave)
+        (withGnomeKeyring pkgs pkgs.obsidian)
+      ];
+    };
+
+  flake.modules.homeManager.workstation =
+    { pkgs, ... }:
+
+    {
+      home.packages = [
+        (withGnomeKeyring pkgs pkgs.vscode)
+        (withGnomeKeyring pkgs pkgs.helium)
+        (withGnomeKeyring pkgs pkgs.discord)
+        (withGnomeKeyring pkgs pkgs.whatsapp-electron)
       ];
     };
 }

@@ -1,5 +1,5 @@
 {
-  flake.modules.homeManager.lorenzo =
+  flake.modules.homeManager.workstation =
     { pkgs, ... }:
     let
       # The JDK's bundled cacerts lacks HARICA TLS RSA Root CA 2021 (root of FZJ's

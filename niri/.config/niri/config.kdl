@@ -15,3 +15,6 @@ include "dms/windowrules.kdl"
 include "dms/cursor.kdl"
 include "dms/wpblur.kdl"
 include "dms/input.kdl"
+
+// Per-host overrides; only nixsurface has this file (written by Home Manager)
+include optional=true "~/.config/niri-host.kdl"

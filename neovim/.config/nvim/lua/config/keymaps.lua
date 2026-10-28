@@ -3,25 +3,32 @@
 local map = vim.keymap.set
 
 --- which-key groups ---
+-- which-key and hydra are deferred (plugins.editor, on_require): requiring them at
+-- top level would load them during startup, so they are set up on DeferredUIEnter.
 
-do
-    local ok, wk = pcall(require, "which-key")
-    if ok then
-        wk.add({
-            { "<leader>b", desc = "+buffer" },
-            { "<leader>d", desc = "+debugger" },
-            { "<leader>f", desc = "+file" },
-            { "<leader>fl", desc = "Telescope LSP" },
-            { "<leader>fv", desc = "Telescope Git" },
-            { "<leader>fvc", desc = "Commits" },
-            { "<leader>g", desc = "+Git" },
-            { "<leader>l", desc = "+lsp" },
-            { "<leader>lw", desc = "+Workspace" },
-            { "<leader>r", desc = "+run/repl" }, -- run-nvim rr; iron rc/rf/rl/rm/rx/rq/… (plugins.repl.*)
-            { "<leader>w", desc = "+window" },
-        })
-    end
-end
+vim.api.nvim_create_autocmd("User", {
+    pattern = "DeferredUIEnter",
+    once = true,
+    desc = "which-key groups",
+    callback = function()
+        local ok, wk = pcall(require, "which-key")
+        if ok then
+            wk.add({
+                { "<leader>b", desc = "+buffer" },
+                { "<leader>d", desc = "+debugger" },
+                { "<leader>f", desc = "+file" },
+                { "<leader>fl", desc = "Telescope LSP" },
+                { "<leader>fv", desc = "Telescope Git" },
+                { "<leader>fvc", desc = "Commits" },
+                { "<leader>g", desc = "+Git" },
+                { "<leader>l", desc = "+lsp" },
+                { "<leader>lw", desc = "+Workspace" },
+                { "<leader>r", desc = "+run/repl" }, -- run-nvim rr; iron rc/rf/rl/rm/rx/rq/… (plugins.repl.*)
+                { "<leader>w", desc = "+window" },
+            })
+        end
+    end,
+})
 
 --- Buffers (<leader> b) ---
 map("n", "<leader>bn", "<cmd>bnext<cr>", { desc = "Next buffer" })
@@ -66,62 +73,68 @@ map("n", "<leader>w=", "<C-w>=", { desc = "Balance windows" })
 -- Window hydra: <C-w><head> runs the head, then heads repeat without <C-w> until a
 -- non-head key (red: that key exits and runs). Only <C-w><head> is mapped, so native
 -- <C-w> commands that aren't heads (<C-w>gf, <C-w>], …) are untouched.
-do
-    local ok, Hydra = pcall(require, "hydra")
-    if ok then
-        local function wincmd(c)
-            return function()
-                vim.cmd.wincmd(c)
+-- Until DeferredUIEnter the native <C-w> commands apply.
+vim.api.nvim_create_autocmd("User", {
+    pattern = "DeferredUIEnter",
+    once = true,
+    desc = "Window hydra",
+    callback = function()
+        local ok, Hydra = pcall(require, "hydra")
+        if ok then
+            local function wincmd(c)
+                return function()
+                    vim.cmd.wincmd(c)
+                end
             end
-        end
-        local function resize(dir)
-            return function()
-                require("smart-splits")["resize_" .. dir]()
+            local function resize(dir)
+                return function()
+                    require("smart-splits")["resize_" .. dir]()
+                end
             end
+            Hydra({
+                name = "Windows",
+                mode = "n",
+                body = "<C-w>",
+                config = { hint = { type = "window", float_opts = { border = "rounded" } } },
+                heads = {
+                    -- Plain wincmd (not smart-splits) so focus never leaves nvim for a tmux pane.
+                    { "h", wincmd("h"), { desc = "focus ←" } },
+                    { "j", wincmd("j"), { desc = "focus ↓" } },
+                    { "k", wincmd("k"), { desc = "focus ↑" } },
+                    { "l", wincmd("l"), { desc = "focus →" } },
+                    { "H", resize("left"), { desc = "resize ←" } },
+                    { "J", resize("down"), { desc = "resize ↓" } },
+                    { "K", resize("up"), { desc = "resize ↑" } },
+                    { "L", resize("right"), { desc = "resize →" } },
+                    -- Native <C-w>HJKL (move window to far side), relocated.
+                    { "<C-h>", wincmd("H"), { desc = "move far ←" } },
+                    { "<C-j>", wincmd("J"), { desc = "move far ↓" } },
+                    { "<C-k>", wincmd("K"), { desc = "move far ↑" } },
+                    { "<C-l>", wincmd("L"), { desc = "move far →" } },
+                    { "w", wincmd("w"), { desc = "next" } },
+                    { "<C-w>", wincmd("w"), { desc = false } },
+                    { "p", wincmd("p"), { desc = "previous" } },
+                    { "x", wincmd("x"), { desc = "swap" } },
+                    { "r", wincmd("r"), { desc = "rotate" } },
+                    { "n", wincmd("n"), { desc = "new" } },
+                    { "=", wincmd("="), { desc = "balance" } },
+                    -- desc = false: the auto hint wraps heads in _…_, so a "_" head breaks its parser.
+                    { "_", wincmd("_"), { desc = false } },
+                    { "|", wincmd("|"), { desc = false } },
+                    { "o", wincmd("o"), { desc = "only" } },
+                    { "q", wincmd("q"), { desc = "close" } },
+                    { "c", wincmd("c"), { desc = false } },
+                    -- Splits hand focus to Telescope, so they exit. Exit heads get no <C-w><head>
+                    -- entry map; <C-w>v / <C-w>s from normal mode stay in plugins.files.
+                    { "s", "<cmd>split | Telescope buffers<cr>", { exit = true, desc = "split" } },
+                    { "v", "<cmd>vsplit | Telescope buffers<cr>", { exit = true, desc = "vsplit" } },
+                    { "T", wincmd("T"), { exit = true, desc = "to tab" } },
+                    { "<Esc>", nil, { exit = true, desc = false } },
+                },
+            })
         end
-        Hydra({
-            name = "Windows",
-            mode = "n",
-            body = "<C-w>",
-            config = { hint = { type = "window", float_opts = { border = "rounded" } } },
-            heads = {
-                -- Plain wincmd (not smart-splits) so focus never leaves nvim for a tmux pane.
-                { "h", wincmd("h"), { desc = "focus ←" } },
-                { "j", wincmd("j"), { desc = "focus ↓" } },
-                { "k", wincmd("k"), { desc = "focus ↑" } },
-                { "l", wincmd("l"), { desc = "focus →" } },
-                { "H", resize("left"), { desc = "resize ←" } },
-                { "J", resize("down"), { desc = "resize ↓" } },
-                { "K", resize("up"), { desc = "resize ↑" } },
-                { "L", resize("right"), { desc = "resize →" } },
-                -- Native <C-w>HJKL (move window to far side), relocated.
-                { "<C-h>", wincmd("H"), { desc = "move far ←" } },
-                { "<C-j>", wincmd("J"), { desc = "move far ↓" } },
-                { "<C-k>", wincmd("K"), { desc = "move far ↑" } },
-                { "<C-l>", wincmd("L"), { desc = "move far →" } },
-                { "w", wincmd("w"), { desc = "next" } },
-                { "<C-w>", wincmd("w"), { desc = false } },
-                { "p", wincmd("p"), { desc = "previous" } },
-                { "x", wincmd("x"), { desc = "swap" } },
-                { "r", wincmd("r"), { desc = "rotate" } },
-                { "n", wincmd("n"), { desc = "new" } },
-                { "=", wincmd("="), { desc = "balance" } },
-                -- desc = false: the auto hint wraps heads in _…_, so a "_" head breaks its parser.
-                { "_", wincmd("_"), { desc = false } },
-                { "|", wincmd("|"), { desc = false } },
-                { "o", wincmd("o"), { desc = "only" } },
-                { "q", wincmd("q"), { desc = "close" } },
-                { "c", wincmd("c"), { desc = false } },
-                -- Splits hand focus to Telescope, so they exit. Exit heads get no <C-w><head>
-                -- entry map; <C-w>v / <C-w>s from normal mode stay in plugins.files.
-                { "s", "<cmd>split | Telescope buffers<cr>", { exit = true, desc = "split" } },
-                { "v", "<cmd>vsplit | Telescope buffers<cr>", { exit = true, desc = "vsplit" } },
-                { "T", wincmd("T"), { exit = true, desc = "to tab" } },
-                { "<Esc>", nil, { exit = true, desc = false } },
-            },
-        })
-    end
-end
+    end,
+})
 
 --- hop ---
 

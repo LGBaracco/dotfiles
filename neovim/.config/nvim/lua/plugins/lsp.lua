@@ -156,23 +156,6 @@ local function cycle_diagnostic_mode()
   vim.notify("Diagnostics: " .. next_mode, vim.log.levels.INFO, { title = "diagnostic" })
 end
 
--- Misc LSP UI ---------------------------------------------------------------
-
--- Only cursor-local fixes/refactors: ruff offers source.fixAll/organizeImports
--- on every line, which would keep the bulb permanently lit.
-require("nvim-lightbulb").setup({
-  autocmd = { enabled = true },
-  action_kinds = { "quickfix", "refactor" },
-  -- nil offers refactor.rewrite (flatten/pack attrset, indent string) on
-  -- nearly every Nix binding; only light the bulb for its quickfixes.
-  filter = function(client_name, result)
-    if client_name == "nil_ls" then
-      return result.kind ~= nil and vim.startswith(result.kind, "quickfix")
-    end
-    return true
-  end,
-})
-
 -- Treesitter (nvim-treesitter main rewrite for Nvim 0.12+)
 -- Parsers come from Nix (`withAllGrammars`), off Nix from :PackSync (pack.json
 -- `treesitter`, per profile); highlighting/indent use core APIs.
@@ -189,7 +172,6 @@ vim.api.nvim_create_autocmd("FileType", {
     end
   end,
 })
-require("treesitter-context").setup({})
 require("nvim-ts-autotag").setup({})
 -- Text objects (main branch: no keymaps in setup; maps live where they are used,
 -- e.g. @code_cell in plugins.repl.molten).
@@ -338,9 +320,36 @@ vim.lsp.config("texlab", {
   },
 })
 
+-- Python servers come in pairs: <name> for real files, <name>_otter for otter's hidden
+-- `<main>.otter.py` buffers (Quarto/notebook cells concatenated into one .py).
+---@param markers string[]
+---@param otter boolean attach only to otter buffers, or never
+local function python_root_dir(markers, otter)
+  return function(bufnr, on_dir)
+    local name = vim.api.nvim_buf_get_name(bufnr)
+    if (name:match("%.otter%.py$") ~= nil) == otter then
+      on_dir(vim.fs.root(bufnr, markers) or vim.fs.dirname(name))
+    end
+  end
+end
+
+local kernel_env = require("config.kernel_env")
+
 vim.lsp.config("ty", {
   cmd = { "ty", "server" },
   filetypes = { "python" },
+  root_dir = python_root_dir(kernel_env.markers, false),
+})
+
+-- Cells run in a Molten kernel, which may live in a container image ty cannot see
+-- (remote `atlas`): config.kernel_env swaps in that image's packages for this root.
+vim.lsp.config("ty_otter", {
+  cmd = { "ty", "server" },
+  filetypes = { "python" },
+  root_dir = python_root_dir(kernel_env.markers, true),
+  on_init = function(client)
+    client.settings = kernel_env.ty_settings(client.root_dir) or client.settings
+  end,
 })
 
 -- Ruff = lint/fixes/organize imports, ty = types/names/hover/inlay hints.
@@ -348,18 +357,8 @@ vim.lsp.config("ty", {
 -- a project's own ruff config wins over these editor settings.
 local ruff_markers = { "pyproject.toml", "ruff.toml", ".ruff.toml", ".git" }
 
----@param otter boolean attach only to otter's hidden `<main>.otter.py` buffers, or never
-local function ruff_root_dir(otter)
-  return function(bufnr, on_dir)
-    local name = vim.api.nvim_buf_get_name(bufnr)
-    if (name:match("%.otter%.py$") ~= nil) == otter then
-      on_dir(vim.fs.root(bufnr, ruff_markers) or vim.fs.dirname(name))
-    end
-  end
-end
-
 vim.lsp.config("ruff", {
-  root_dir = ruff_root_dir(false),
+  root_dir = python_root_dir(ruff_markers, false),
   init_options = {
     settings = {
       configurationPreference = "filesystemFirst",
@@ -368,11 +367,11 @@ vim.lsp.config("ruff", {
   },
 })
 
--- Quarto/notebook cells (otter concatenates them into one .py): notebook idioms.
+-- Quarto/notebook cells: notebook idioms.
 vim.lsp.config("ruff_otter", {
   cmd = { "ruff", "server" },
   filetypes = { "python" },
-  root_dir = ruff_root_dir(true),
+  root_dir = python_root_dir(ruff_markers, true),
   init_options = {
     settings = {
       configurationPreference = "filesystemFirst",
@@ -412,12 +411,42 @@ vim.lsp.enable({
   "taplo",
   "texlab",
   "ty",
+  "ty_otter",
 })
 
 -- Deferred LSP UI extras ------------------------------------------------------
 -- fastaction is required from the LspAttach <leader>la map (config.keymaps).
+-- lightbulb and treesitter-context run off their own autocmds (CursorHold,
+-- CursorMoved, …), so loading after the first draw only skips the first frame.
 
 require("lze").load({
+  {
+    "nvim-lightbulb",
+    event = "DeferredUIEnter",
+    after = function()
+      -- Only cursor-local fixes/refactors: ruff offers source.fixAll/organizeImports
+      -- on every line, which would keep the bulb permanently lit.
+      require("nvim-lightbulb").setup({
+        autocmd = { enabled = true },
+        action_kinds = { "quickfix", "refactor" },
+        -- nil offers refactor.rewrite (flatten/pack attrset, indent string) on
+        -- nearly every Nix binding; only light the bulb for its quickfixes.
+        filter = function(client_name, result)
+          if client_name == "nil_ls" then
+            return result.kind ~= nil and vim.startswith(result.kind, "quickfix")
+          end
+          return true
+        end,
+      })
+    end,
+  },
+  {
+    "nvim-treesitter-context",
+    event = "DeferredUIEnter",
+    after = function()
+      require("treesitter-context").setup({})
+    end,
+  },
   {
     "fastaction.nvim",
     event = "DeferredUIEnter",

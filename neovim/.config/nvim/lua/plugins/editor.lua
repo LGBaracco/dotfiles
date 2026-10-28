@@ -1,12 +1,61 @@
--- Eager editor plugins only. Deferred plugins live in their topic files.
-require("which-key").setup({
-    preset = "helix",
-    win = { border = "rounded" },
-    notify = false, -- avoid spurious which-key "no mappings" noise after leader spam
-    delay = 200,
+-- Editor plugins. Comment, nvim-surround, autopairs and LuaSnip stay eager (their
+-- operator / insert-mode maps must work from the first keypress); the rest load one
+-- tick after UIEnter. Their keymaps are defined eagerly in config.keymaps, so
+-- which-key lists them before the plugin loads; on_require covers code that needs a
+-- module earlier (e.g. which-key.add() from a FileType callback, smart-splits maps).
+require("lze").load({
+    {
+        "which-key.nvim",
+        event = "DeferredUIEnter",
+        on_require = "which-key",
+        after = function()
+            require("which-key").setup({
+                preset = "helix",
+                win = { border = "rounded" },
+                notify = false, -- avoid spurious which-key "no mappings" noise after leader spam
+                delay = 200,
+            })
+        end,
+    },
+    -- Built by their users on DeferredUIEnter: window hydra (config.keymaps), debug
+    -- step hydra (plugins.dap).
+    { "hydra.nvim", on_require = "hydra" },
+    {
+        "hop.nvim",
+        event = "DeferredUIEnter",
+        cmd = { "HopChar2", "HopWord" }, -- s / S (config.keymaps)
+        after = function()
+            require("hop").setup({})
+        end,
+    },
+    {
+        "smart-splits.nvim",
+        event = "DeferredUIEnter",
+        on_require = "smart-splits", -- <C-hjkl> / <C-S-hjkl> (config.keymaps)
+        after = function()
+            require("smart-splits").setup({})
+        end,
+    },
+    {
+        "todo-comments.nvim",
+        event = "DeferredUIEnter",
+        after = function()
+            -- start() also highlights windows that were open before the load.
+            require("todo-comments").setup({})
+        end,
+    },
+    {
+        -- No cmd stub: <C-t> runs `{count}ToggleTerm`, and lze's stub would replay
+        -- that count as a range.
+        "toggleterm.nvim",
+        event = "DeferredUIEnter",
+        after = function()
+            require("toggleterm").setup({
+                direction = "horizontal",
+            })
+        end,
+    },
 })
-
-require("hop").setup({})
 
 -- mappings.basic/extra disabled; replacement gc/gb/gcc/gbc maps live in
 -- config.keymaps.
@@ -50,12 +99,6 @@ vim.keymap.set("n", "gzr", "<Plug>(nvim-surround-change)", {
 })
 vim.keymap.set("n", "gZR", "<Plug>(nvim-surround-change-line)", {
     desc = "Change a surrounding pair, putting replacements on new lines",
-})
-
-require("smart-splits").setup({})
-require("todo-comments").setup({})
-require("toggleterm").setup({
-    direction = "horizontal",
 })
 
 require("nvim-autopairs").setup({})

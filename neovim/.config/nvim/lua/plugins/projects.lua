@@ -1,12 +1,32 @@
 -- project.nvim (auto-cd to project root; `:Telescope projects`) plus helpers for
 -- treating ~/dotfiles as a special project (show hidden files in telescope/oil).
 
--- project.nvim (v6+) module is `project`, not `project_nvim`.
-require("project").setup({
-    manual_mode = false,
-    -- Silently cd into projects owned by other users (e.g. shared/root-owned dirs).
-    -- With allow = false the plugin always shows an error, so notify alone can't mute it.
-    different_owners = { allow = true, notify = false },
+-- Deferred: root detection spawns `git rev-parse`, kept off the first draw.
+-- dep_of telescope: `Telescope projects` (dashboard `p`, <leader>fp) needs the
+-- extension on 'rtp' before telescope's load_extension runs. on_require: is_project()
+-- below (telescope/oil pickers) loads it if needed.
+require("lze").load({
+    {
+        "project.nvim",
+        event = "DeferredUIEnter",
+        on_require = "project",
+        dep_of = "telescope.nvim",
+        after = function()
+            -- project.nvim (v6+) module is `project`, not `project_nvim`.
+            require("project").setup({
+                manual_mode = false,
+                -- Silently cd into projects owned by other users (e.g. shared/root-owned dirs).
+                -- With allow = false the plugin always shows an error, so notify alone can't mute it.
+                different_owners = { allow = true, notify = false },
+            })
+            -- setup only hooks BufEnter; run it for the buffer already open (`nvim file`).
+            pcall(vim.api.nvim_exec_autocmds, "BufEnter", {
+                group = "project.nvim",
+                buffer = vim.api.nvim_get_current_buf(),
+                modeline = false,
+            })
+        end,
+    },
 })
 
 local M = {}

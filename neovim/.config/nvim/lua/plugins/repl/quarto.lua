@@ -58,6 +58,29 @@ do
   end
 end
 
+--- Container kernel environments (config.kernel_env) ---
+-- :KernelEnvSync atlas /mnt/jureca/…/atlas.sif copies the image's Python packages for
+-- ty; a bare :KernelEnvSync atlas re-syncs from the image used last time.
+vim.api.nvim_create_user_command("KernelEnvSync", function(opts)
+  local kernel_env = require("config.kernel_env")
+  local kernel = opts.fargs[1]
+  local sif = opts.fargs[2] or kernel_env.sif(kernel)
+  if not sif then
+    vim.notify(("No image known for %s: :KernelEnvSync %s <path/to/image.sif>"):format(kernel, kernel), vim.log.levels.ERROR)
+    return
+  end
+  kernel_env.sync(kernel, sif)
+end, {
+  nargs = "+",
+  desc = "Copy a container image's Python packages for ty (kernel name, .sif path)",
+  complete = function(_, line)
+    if #vim.split(line, "%s+", { trimempty = true }) <= 2 and not line:match("%s%S+%s+$") then
+      return require("config.kernel_env").list()
+    end
+    return vim.fn.getcompletion(line:match("(%S*)$"), "file")
+  end,
+})
+
 --- Plugins ---
 require("lze").load({
   {

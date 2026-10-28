@@ -106,21 +106,26 @@ end
 -- Kernel state for the statusline (plugins.ui lualine reads vim.b.molten_kernel).
 -- Cached from Molten's User events: calling MoltenStatusLineKernels on every
 -- redraw would spawn the Python host in buffers that never used Molten.
+-- The kernel name also picks ty_otter's environment (config.kernel_env): a remote
+-- kernel whose image was synced with :KernelEnvSync gets that image's packages.
 vim.api.nvim_create_autocmd("User", {
     group = augroup,
     pattern = "MoltenKernelReady",
     callback = function(ev)
         local id = ev.data and ev.data.kernel_id
         if id and id ~= "" then
-            vim.b.molten_kernel = kernel_label(id)
+            local label = kernel_label(id)
+            vim.b.molten_kernel = label
+            require("config.kernel_env").attach(ev.buf, label:match("^(.-)@") or label)
         end
     end,
 })
 vim.api.nvim_create_autocmd("User", {
     group = augroup,
     pattern = "MoltenDeinitPost",
-    callback = function()
+    callback = function(ev)
         vim.b.molten_kernel = nil
+        require("config.kernel_env").attach(ev.buf, nil)
     end,
 })
 

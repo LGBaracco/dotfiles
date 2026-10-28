@@ -77,23 +77,17 @@ binds {
     Mod+Shift+CTRL+Down                 { move-column-to-monitor-down; }
 
     // ─── Mouse Wheel ───
-    // Mirrors the keyboard: wheel up/down = K/J, wheel left/right = H/L,
+    // Mirrors the keyboard: the wheel scrolls the column strip like H/L,
     // CTRL moves instead of focusing, ALT acts on workspaces.
-    Mod+WheelScrollDown                 { focus-window-down; }
-    Mod+WheelScrollUp                   { focus-window-up; }
-    Mod+CTRL+WheelScrollDown            { move-window-down; }
-    Mod+CTRL+WheelScrollUp              { move-window-up; }
+    Mod+WheelScrollDown                 { focus-column-right; }
+    Mod+WheelScrollUp                   { focus-column-left; }
+    Mod+CTRL+WheelScrollDown            { move-column-right; }
+    Mod+CTRL+WheelScrollUp              { move-column-left; }
 
     Mod+WheelScrollRight                { focus-column-right; }
     Mod+WheelScrollLeft                 { focus-column-left; }
     Mod+CTRL+WheelScrollRight           { move-column-right; }
     Mod+CTRL+WheelScrollLeft            { move-column-left; }
-
-    // Shift turns the vertical wheel horizontal (for mice without tilt).
-    Mod+Shift+WheelScrollDown           { focus-column-right; }
-    Mod+Shift+WheelScrollUp             { focus-column-left; }
-    Mod+CTRL+Shift+WheelScrollDown      { move-column-right; }
-    Mod+CTRL+Shift+WheelScrollUp        { move-column-left; }
 
     Mod+ALT+WheelScrollDown             cooldown-ms=150 { focus-workspace-down; }
     Mod+ALT+WheelScrollUp               cooldown-ms=150 { focus-workspace-up; }

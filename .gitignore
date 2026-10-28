@@ -2,6 +2,8 @@ niri/.config/niri/dms/outputs.kdl
 niri/.config/niri/cfg/display.kdl
 niri/.config/niri/dms/cursor.kd
 DankMaterialShell/.config/DankMaterialShell/monitors.json
+DankMaterialShell/.config/DankMaterialShell/plugins/
+DankMaterialShell/.config/DankMaterialShell/plugins.lock.json
 onedrive-sync/.config/rclone/rclone.conf
 neovim/AGENTS.md
 

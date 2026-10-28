@@ -3,41 +3,23 @@ binds {
     // ────────────── Keybindings ──────────────
     // https://github.com/YaLTeR/niri/wiki/Configuration:-Key-Bindings
 
-    // ─── noctalia-shell keybinds ───
-    // https://docs.noctalia.dev/getting-started/keybinds/
-
     Mod+Shift+ESCAPE                     { show-hotkey-overlay; }
     Mod+slash                     { show-hotkey-overlay; }
 
 
     // ─── Applications ───
     //Mod+T                          hotkey-overlay-title="Open Terminal: Foot" { spawn "foot"; }
-    //Mod+Space                     hotkey-overlay-title="Open App Launcher: noctalia launcher" { spawn-sh "qs -c noctalia-shell ipc call launcher toggle"; }
     // Launch via .desktop entries so the keyring flag in Exec= applies (keyring/ stow
     // package on Ubuntu, withGnomeKeyring in nixos/.../apps/chromium.nix).
     // Ubuntu: snap desktop ID <name>_<app>. NixOS has no gtk-launch; bins are already wrapped.
     Mod+B                               hotkey-overlay-title="Open Browser: Brave" { spawn-sh "gtk-launch brave_brave || brave";}
-    //Mod+ALT+L                           hotkey-overlay-title="Lock Screen: noctalia lock" { spawn "qs -c noctalia-shell ipc call lockScreen lock"; }
-    //Mod+ALT+Q                        hotkey-overlay-title="Session Menu: noctalia sessionMenu" { spawn-sh "qs -c noctalia-shell ipc call sessionMenu toggle"; }
     Mod+S                            hotkey-overlay-title="Open VSCode" { spawn-sh "gtk-launch code_code || code";}
     Mod+M                            hotkey-overlay-title="Open Emacs" { spawn-sh "emacsclient -c -a 'emacs'"; } 
     // Please choose your own file manager.
     Mod+E                               hotkey-overlay-title="File Manager: Nautilus" { spawn "nautilus"; }
 
     // ─── Media Controls ───
- //   XF86AudioRaiseVolume                allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call volume increase"; }
- //   XF86AudioLowerVolume                allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call volume decrease"; }
- //   XF86AudioMute                       allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call volume muteOutput"; }
- //   XF86AudioMicMute                    allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call volume muteInput"; }
- //   XF86AudioNext                       allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call media next"; }
- //   XF86AudioPrev                       allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call media previous"; }
- //   XF86AudioPlay                       allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call media playPause"; }
- //   XF86AudioPause                      allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call media playPause"; }
       XF86AudioMicMute                    allow-when-locked=true { spawn "dms" "ipc" "call" "audio" "micmute";}
-
-    // ─── Brightness Controls ───
- //   XF86MonBrightnessUp                 allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call brightness increase"; }
- //   XF86MonBrightnessDown               allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call brightness decrease"; }
 
     // ─── Window Movement and Focus ───
     Mod+R                               { switch-preset-column-width; }
@@ -146,7 +128,6 @@ binds {
     Mod+ESCAPE                          allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
 
     // ─── Exit / Power ───
-    // CTRL+ALT+Delete                     { spawn-sh "qs -c noctalia-shell ipc call sessionMenu toggle"; } // Also quits Niri
     // Mod+Shift+P                         { power-off-monitors; } // Turn off screens (useful for OLED or privacy)
     Mod+O                               repeat=false { toggle-overview; }
 }

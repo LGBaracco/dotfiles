@@ -15,3 +15,6 @@ include "dms/windowrules.kdl"
 include "dms/cursor.kdl"
 include "dms/wpblur.kdl"
 include "dms/input.kdl"
+
+// Per-host overrides; only the Surface has this file (`stow niri-surface`)
+include optional=true "~/.config/niri-host.kdl"

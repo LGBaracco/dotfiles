@@ -61,6 +61,20 @@ fi
 # Sets $project
 jutil env activate -p cjinm16
 
+if [ -d "$PROJECT/home_ext" ]; then
+    export HOME_EXT=$PROJECT/home_ext
+    export XDG_CONFIG_HOME=$HOME_EXT/.config
+    export XDG_DATA_HOME=$HOME_EXT/.local/share
+    export XDG_STATE_HOME=$HOME_EXT/.local/state
+    export NPM_CONFIG_CACHE=$HOME_EXT/.npm
+    export CONDA_PKGS_DIRS=$HOME_EXT/.conda/pkgs
+    export CONDA_ENVS_PATH=$HOME_EXT/.conda/envs
+fi
+if [ -d "$SCRATCH/$USER" ]; then
+    export XDG_CACHE_HOME=$SCRATCH/$USER/.cache
+    export APPTAINER_CACHEDIR=$XDG_CACHE_HOME/apptainer
+fi
+
 # Galaxy
 # Currently disabled because of file conflicts (currently forces old revisions)
 #[ -r "$HOME/galaxy/init.sh" ] && . "$HOME/galaxy/init.sh"

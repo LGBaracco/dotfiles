@@ -8,24 +8,24 @@ onedrive-sync/.config/rclone/rclone.conf
 neovim/AGENTS.md
 
 # claude: ~/.claude lives here via stow, but only config is tracked
-# Whitelist: settings / keybindings / CLAUDE.md / agents / hooks / rules / themes / skills/{ask,calendar,zotero-cli,teach,pause,reflect}
-# Everything else (secrets + runtime) stays local and untracked.
+# Whitelist: top-level config files + every config dir (agents, commands, hooks, output-styles,
+# rules, skills, themes) in full. New skills/rules/hooks are tracked automatically.
+# Everything else (secrets, transcripts, memory, plugin cache, runtime) stays local and untracked.
 claude/.claude/*
 !claude/.claude/settings.json
 !claude/.claude/keybindings.json
 !claude/.claude/CLAUDE.md
+!claude/.claude/.i-have-adhd-always
 !claude/.claude/agents/
+!claude/.claude/commands/
 !claude/.claude/hooks/
-!claude/.claude/themes/
-!claude/.claude/skills/
+!claude/.claude/output-styles/
 !claude/.claude/rules/
-claude/.claude/skills/*
-!claude/.claude/skills/ask/
-!claude/.claude/skills/calendar/
-!claude/.claude/skills/zotero-cli/
-!claude/.claude/skills/teach/
-!claude/.claude/skills/pause/
-!claude/.claude/skills/reflect/
+!claude/.claude/skills/
+!claude/.claude/themes/
+# skills managed by Claude Code itself (claude.ai sync, deleted-skill trash)
+claude/.claude/skills/synced/
+claude/.claude/skills/.trash/
 
 # Explicit denylist — belt-and-suspenders if the whitelist is loosened later
 claude/.claude/settings.local.json

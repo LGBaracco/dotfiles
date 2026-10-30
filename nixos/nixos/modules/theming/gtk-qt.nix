@@ -13,7 +13,16 @@
 
       kdeColorSchemePath = "${config.home.homeDirectory}/.local/share/color-schemes/DankMatugen.colors";
 
-      kdeglobals = themeLib.kdeglobalsHeader generated.kdeDarkScheme;
+      # Qt6 uses the kde platform theme (see sessionVariables), which reads this file directly.
+      # Icons/widgetStyle also live in kdedefaults/, but that dir is only on XDG_CONFIG_DIRS in Plasma.
+      kdeglobals = themeLib.kdeglobalsHeader generated.kdeDarkScheme + ''
+
+        [Icons]
+        Theme=yet-another-monochrome-icon-set
+
+        [KDE]
+        widgetStyle=Breeze
+      '';
 
       qtCtConf = ''
         [Appearance]
@@ -81,9 +90,15 @@
 
       home.sessionVariables = {
         GTK_THEME = "adw-gtk3-dark";
+        # GTK3 FileChooserNative -> portal (dfiles). GTK4 >= 4.22 uses the portal by default.
+        GTK_USE_PORTAL = "1";
         QT_QPA_PLATFORM = "wayland";
+        # Qt6: kde theme (colors/icons/style from kdeglobals) + portal file dialogs (dfiles).
+        # Not xdgdesktopportal: its base theme comes from XDG_CURRENT_DESKTOP, and "niri" yields
+        # the generic theme. Qt5 has no kde theme installed, so it stays on gtk3.
         QT_QPA_PLATFORMTHEME = "gtk3";
-        QT_QPA_PLATFORMTHEME_QT6 = "gtk3";
+        QT_QPA_PLATFORMTHEME_QT6 = "kde";
+        PLASMA_INTEGRATION_USE_PORTAL = "1";
       };
 
       home.file.".local/share/color-schemes/DankMatugen.colors" = forceText generated.kdeScheme;

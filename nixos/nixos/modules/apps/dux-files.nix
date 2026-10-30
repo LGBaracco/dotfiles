@@ -1,18 +1,15 @@
-{ inputs, ... }:
 {
-  # Dux Files (dfiles), trial install. Deliberately not using the upstream
-  # nixosModule: no portal file chooser, no autostart service, and the
-  # org.freedesktop.FileManager1 D-Bus service is stripped so it can't take
-  # "show in folder" away from Nautilus. Launch with `dfiles`.
-  flake.modules.homeManager.lorenzo =
-    { pkgs, ... }:
-    {
-      home.packages = [
-        (inputs.dux-files.packages.${pkgs.stdenv.hostPlatform.system}.dux-files.overrideAttrs (old: {
-          postInstall = old.postInstall + ''
-            rm $out/share/dbus-1/services/dev.duxlabs.files.FileManager1.service
-          '';
-        }))
-      ];
+  # Dux Files (dfiles): default file manager. Owns org.freedesktop.FileManager1
+  # ("show in folder"), serves the portal FileChooser (preferred in desktop.nix),
+  # and runs as a hidden session daemon so Mod+E opens instantly.
+  flake.modules.nixos.common = {
+    programs.dux-files = {
+      enable = true;
+      portal.enable = true;
+      systemd.enable = true;
     };
+
+    # System-level default; ~/.config/mimeapps.list has no inode/directory entry, so this wins.
+    xdg.mime.defaultApplications."inode/directory" = "dev.duxlabs.files.desktop";
+  };
 }

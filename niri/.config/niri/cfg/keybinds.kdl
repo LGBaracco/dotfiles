@@ -16,7 +16,7 @@ binds {
     Mod+S                            hotkey-overlay-title="Open VSCode" { spawn-sh "gtk-launch code_code || code";}
     Mod+M                            hotkey-overlay-title="Open Emacs" { spawn-sh "emacsclient -c -a 'emacs'"; } 
     // Please choose your own file manager.
-    Mod+E                               hotkey-overlay-title="File Manager: Nautilus" { spawn "nautilus"; }
+    Mod+E                               hotkey-overlay-title="File Manager: Dux Files" { spawn "dfiles" "show"; }
 
     // ─── Media Controls ───
       XF86AudioMicMute                    allow-when-locked=true { spawn "dms" "ipc" "call" "audio" "micmute";}

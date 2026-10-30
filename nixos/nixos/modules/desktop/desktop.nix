@@ -20,11 +20,11 @@
           kdePackages.xdg-desktop-portal-kde
         ];
         config.niri = {
-          "org.freedesktop.impl.portal.FileChooser" = [ "gnome" ];
+          "org.freedesktop.impl.portal.FileChooser" = [ "dfiles" "gnome" ];
           "org.freedesktop.impl.portal.Settings" = [ "gtk" ];
         };
         config.mango = {
-          "org.freedesktop.impl.portal.FileChooser" = [ "gnome" ];
+          "org.freedesktop.impl.portal.FileChooser" = [ "dfiles" "gnome" ];
         };
         config.common.default = "*";
       };

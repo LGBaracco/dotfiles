@@ -49,6 +49,14 @@
           "QT_QPA_PLATFORMTHEME_QT6"
         ];
       };
+      # Plasma only. Under niri/mango, Qt apps on the kde platform theme call this backend
+      # directly for KIO "Open With" (bypassing xdg-desktop-portal), and it crashes them
+      # there. With the condition, D-Bus activation fails fast and KIO just cancels.
+      systemd.user.services.plasma-xdg-desktop-portal-kde = {
+        overrideStrategy = "asDropin";
+        enableDefaultPath = false;
+        unitConfig.ConditionEnvironment = "XDG_CURRENT_DESKTOP=KDE";
+      };
 
       # ── niri
       programs.niri = {

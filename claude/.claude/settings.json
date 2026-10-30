@@ -129,5 +129,8 @@
   },
   "awaySummaryEnabled": false,
   "theme": "custom:oxocarbon",
-  "editorMode": "vim"
+  "editorMode": "vim",
+  "env": {
+    "ENABLE_CLAUDEAI_MCP_SERVERS": "false"
+  }
 }

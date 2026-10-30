@@ -15,7 +15,8 @@
 #   agents.sh forks [dir]             open a window per background/fork session (claude attach)
 #   agents.sh strip <P> <colours…>    status segment: one pill per agent of P
 #   agents.sh status-format           splice the strip after the window list
-#   agents.sh hook                    Claude Code hook entry (event JSON on stdin)
+#   agents.sh hook                    Claude Code hook entry (event JSON on stdin); a claude
+#                                     started in P moves to P-agents
 set -u
 
 SUFFIX=-agents
@@ -236,28 +237,52 @@ cmd_forks() {
     return 0
 }
 
-# strip <P> <bg> <fg> <gray> <active> <red> <yellow> <green>
+# strip <P> <bg> <fg> <gray> <active> <red> <yellow> <green> [client_width]
+# With the client width, the strip fits the room the session pill and window list leave:
+# names get shorter, then only indexes are shown, then nothing. A strip wider than the
+# status line makes tmux drop the window list and the strip with it.
 cmd_strip() {
-    local p=$1 bg=$2 fg=$3 gray=$4 active=$5 red=$6 yellow=$7 green=$8
-    local a out="" prev="$bg" idx name state current seg text glyph
+    local p=$1 bg=$2 fg=$3 gray=$4 active=$5 red=$6 yellow=$7 green=$8 width=${9:-0}
+    local a out plain prev idx name state current seg text glyph i max budget=-1 left list
     local arrow=$'\xee\x82\xb0' # powerline U+E0B0, as in the window list
+    local -a idxs=() currents=() names=() states=()
     [[ $p == *"$SUFFIX" ]] && return 0
     a=$(agents_of "$p")
     tmux has-session -t "=$a" 2>/dev/null || return 0
     while IFS=$'\t' read -r idx current name state; do
-        # Inactive agents share the gray band like inactive windows; the active one is a pill.
-        if [[ $current == 1 ]]; then seg=$active text=$bg; else seg=$gray text=$fg; fi
-        case $state in
-            blocked) glyph="#[fg=$red]● " ;;
-            working) glyph="#[fg=$yellow]⦿ " ;;
-            "done") glyph="#[fg=$green]○ " ;;
-            *) glyph="" ;;
-        esac
-        # Arrow only where the colour changes (start, gray↔active), as in the window list.
-        [[ $seg != "$prev" ]] && out+="#[fg=$prev,bg=$seg]$arrow"
-        out+="#[fg=$text,bg=$seg] $idx $name $glyph"
-        prev=$seg
+        idxs+=("$idx") currents+=("$current") names+=("$name") states+=("$state")
     done < <(tmux list-windows -t "=$a" -F '#{window_index}	#{window_active}	#{window_name}	#{@agent_state}')
+    if ((width > 0)); then
+        read -r left list < <(tmux display-message -p -t "=$p:" \
+            '#{w:#{T:status-left}} #{w:#{W:#{T:window-status-format},#{T:window-status-current-format}}}')
+        budget=$((width - left - list - 1))
+    fi
+
+    for max in 24 12 6 0; do
+        out="" plain=" " prev=$bg
+        for i in "${!idxs[@]}"; do
+            name=${names[i]}
+            ((${#name} > max)) && name="${name:0:max-1}…"
+            ((max == 0)) && name=""
+            # Inactive agents share the gray band like inactive windows; the active one is a pill.
+            if [[ ${currents[i]} == 1 ]]; then seg=$active text=$bg; else seg=$gray text=$fg; fi
+            case ${states[i]} in
+                blocked) glyph="#[fg=$red]● " ;;
+                working) glyph="#[fg=$yellow]⦿ " ;;
+                "done") glyph="#[fg=$green]○ " ;;
+                "") glyph="" ;;
+                *) glyph="○ " ;; # idle: uncoloured, as on window tabs
+            esac
+            # Arrow only where the colour changes (start, gray↔active), as in the window list.
+            [[ $seg != "$prev" ]] && out+="#[fg=$prev,bg=$seg]$arrow" plain+=$arrow
+            out+="#[fg=$text,bg=$seg] ${idxs[i]} ${name:+$name }$glyph"
+            plain+=" ${idxs[i]} ${name:+$name }${glyph:+x }"
+            prev=$seg
+        done
+        plain+=$arrow
+        ((budget < 0 || ${#plain} <= budget)) && break
+    done
+    ((budget >= 0 && ${#plain} > budget)) && return 0
     # Leading space on the status background, like the gap after the session pill.
     printf '#[bg=%s] %s#[fg=%s,bg=%s]%s#[default]' "$bg" "$out" "$prev" "$bg" "$arrow"
 }
@@ -271,6 +296,63 @@ cmd_status_format() {
     [[ $f == *'#[nolist align=right'* ]] || return 0
     f=${f/'#[nolist align=right'/'#[nolist]#{E:@agents_strip}#[align=right'}
     tmux set-option -g 'status-format[0]' "$f"
+}
+
+# from_pane_shell <pane_pid>: the claude running this hook (an ancestor) is the pane's command
+# or a child of its shell, and is interactive (no -p). Not when it runs inside another program.
+from_pane_shell() {
+    local pid=$PPID parent _
+    for _ in 1 2 3 4 5 6; do
+        parent=$(ps -o ppid= -p "$pid" | tr -d ' ')
+        if [[ $pid == "$1" || $parent == "$1" ]]; then
+            [[ $(ps -o comm= -p "$pid") == *claude* ]] || return 1
+            ! tr '\0' '\n' <"/proc/$pid/cmdline" | grep -qxE -- '-p|--print'
+            return
+        fi
+        [[ -z $parent || $parent == 1 ]] && return 1
+        pid=$parent
+    done
+    return 1
+}
+
+# push: a claude started in a pane of project session P moves to P-agents (its whole window,
+# or just its pane if the window has others), and the clients showing it follow it there.
+# Only a claude run from the pane's shell: not one inside another program (e.g. a Neovim
+# terminal, whose tmux pane is Neovim's), not an agent window linked into P, not P's last window.
+push() {
+    local pane=$TMUX_PANE s win panes wins linked ppid dir a tmp="" c clients
+    IFS=$'\t' read -r s win panes wins linked ppid dir < <(tmux display-message -p -t "$pane" \
+        '#{session_name}	#{window_id}	#{window_panes}	#{session_windows}	#{window_linked}	#{pane_pid}	#{session_path}')
+    [[ -z $s || $s == *"$SUFFIX" || $linked == 1 ]] && return 0
+    ((panes == 1 && wins == 1)) && return 0
+    from_pane_shell "$ppid" || return 0
+
+    a=$(agents_of "$s")
+    if ! tmux has-session -t "=$a" 2>/dev/null; then
+        # The session needs a first window; a placeholder, gone once the agent is in.
+        ensure "$s" "$dir" "sleep 60"
+        tmp=$(tmux display-message -p -t "=$a:" '#{window_id}')
+    fi
+    clients=$(tmux list-clients -F '#{client_name}	#{window_id}' | awk -F '\t' -v w="$win" '$2 == w { print $1 }')
+    if ((panes == 1)); then
+        tmux move-window -d -s "$win" -t "=$a:"
+    else
+        tmux break-pane -d -s "$pane" -t "=$a:"
+    fi
+    [[ -n $tmp ]] && tmux kill-window -t "$tmp"
+    name_window "$(tmux display-message -p -t "$pane" '#{window_id}')"
+    for c in $clients; do tmux switch-client -c "$c" -t "$pane"; done
+}
+
+# forget_session <sid> <window_id>: unset the session's id and state on all other windows.
+forget_session() {
+    local id
+    tmux list-windows -a -F '#{window_id}	#{@agent_session_id}' |
+        awk -F '\t' -v s="$1" -v w="$2" '$2 == s && $1 != w { print $1 }' | sort -u |
+        while read -r id; do
+            tmux set-option -w -u -t "$id" @agent_session_id
+            tmux set-option -w -u -t "$id" @agent_state
+        done
 }
 
 # hook: Claude Code hook entry. Never prints (stdout of some events is fed to the model).
@@ -301,9 +383,19 @@ cmd_hook() {
     # Subagents only report activity; their stop/idle must not overwrite the parent's state.
     [[ -n $agent && $state != working ]] && return 0
 
+    # New or resumed claude in a project session (not /clear or compaction): to its agents.
+    if [[ $event == SessionStart && $source =~ ^(startup|resume)$ && -n ${TMUX_PANE:-} ]]; then
+        push
+    fi
+
     if [[ -n ${TMUX_PANE:-} ]]; then
         win=$(tmux display-message -p -t "$TMUX_PANE" '#{window_id}' 2>/dev/null)
-        [[ -n $win && -n $sid ]] && tmux set-option -w -t "$win" @agent_session_id "$sid"
+        if [[ -n $win && -n $sid && $state != clear ]]; then
+            # A session lives in one window: drop it from any other, where a claude left without
+            # SessionEnd (else fork hooks, which find windows by session id, light that one up).
+            [[ $event == SessionStart ]] && forget_session "$sid" "$win"
+            tmux set-option -w -t "$win" @agent_session_id "$sid"
+        fi
     elif [[ -n $sid ]]; then
         # Background session (fork): runs under the claude daemon, found by its session id.
         win=$(tmux list-windows -a -F '#{window_id}	#{@agent_session_id}' 2>/dev/null |
@@ -317,6 +409,7 @@ cmd_hook() {
 
     if [[ $state == clear ]]; then
         tmux set-option -w -u -t "$win" @agent_state
+        tmux set-option -w -u -t "$win" @agent_session_id
     else
         tmux set-option -w -t "$win" @agent_state "$state"
     fi

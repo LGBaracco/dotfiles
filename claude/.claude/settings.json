@@ -1,4 +1,7 @@
 {
+  "env": {
+    "ENABLE_CLAUDEAI_MCP_SERVERS": "false"
+  },
   "permissions": {
     "defaultMode": "auto"
   },
@@ -124,13 +127,10 @@
   },
   "modelSettings": {
     "claude-opus-5-5": {
-      "effortLevel": "high"
+      "effortLevel": "xhigh"
     }
   },
   "awaySummaryEnabled": false,
   "theme": "custom:oxocarbon",
-  "editorMode": "vim",
-  "env": {
-    "ENABLE_CLAUDEAI_MCP_SERVERS": "false"
-  }
+  "editorMode": "vim"
 }

@@ -191,7 +191,7 @@
   "centeringMode": "geometric",
   "clockDateFormat": "d MMM",
   "spotlightSectionViewModes": {
-    "apps": "list"
+    "apps": "grid"
   },
   "dankLauncherV2BorderEnabled": true,
   "dankLauncherV2UnloadOnClose": true,

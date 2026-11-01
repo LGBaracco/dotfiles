@@ -80,11 +80,9 @@ cmd_toggle() {
     s=$(tmux display-message ${CLIENT:+-c "$CLIENT"} -p '#S')
     current_project
     if [[ $s == *"$SUFFIX" ]]; then
-        if tmux has-session -t "=$P" 2>/dev/null; then
-            tmux switch-client ${CLIENT:+-c "$CLIENT"} -t "=$P"
-        else
-            tmux switch-client ${CLIENT:+-c "$CLIENT"} -l
-        fi
+        # P gone (killed while its agents live on): start it again in its directory.
+        tmux has-session -t "=$P" 2>/dev/null || tmux new-session -d -s "$P" ${DIR:+-c "$DIR"}
+        tmux switch-client ${CLIENT:+-c "$CLIENT"} -t "=$P"
     else
         ensure "$P" "$DIR"
         tmux switch-client ${CLIENT:+-c "$CLIENT"} -t "=$(agents_of "$P")"
@@ -199,18 +197,32 @@ cmd_new() {
     msg "new agent in $a"
 }
 
-# forks [dir]: one window per live background session (forks, --bg) of dir, if not open yet.
+# deepest_under <dir>: of the "name<TAB>path" lines on stdin, the one whose path is dir or
+# its closest parent.
+deepest_under() {
+    awk -F '\t' -v d="$1" 'BEGIN { n = -1 } { p = $2; sub("/$", "", p) }
+        $2 != "" && (d == $2 || index(d, p "/") == 1) && length(p) > n { n = length(p); best = $0 }
+        END { if (n >= 0) print best }'
+}
+
+# forks [dir]: one window per live background session (forks, --bg) under dir, if not open yet.
 cmd_forks() {
-    local dir=${1:-} a id sid name win
+    local dir=${1:-} a pdir="" id sid name state win
+    # One run at a time: runs overlapping `claude agents` (~0.5 s) each open the same forks.
+    exec 9>"${XDG_RUNTIME_DIR:-/tmp}/tmux-agents-forks.lock"
+    flock -w 30 9 || return 0
     if [[ -n $dir ]]; then
-        # From a hook: the agents session for dir, else the project session started there.
-        a=$(tmux list-sessions -F '#{session_name}	#{@agents_dir}' | awk -F '\t' -v d="$dir" '$2 == d { print $1; exit }')
+        # From a hook: the agents session whose directory holds dir, else the project session
+        # whose path does (the fork may run in a subdirectory). Then all forks of that project.
+        IFS=$'\t' read -r a pdir < <(tmux list-sessions -F '#{session_name}	#{@agents_dir}' | deepest_under "$dir")
         if [[ -n $a ]]; then
             P=$(tmux show-options -t "=$a:" -qv @agents_parent)
         else
-            P=$(tmux list-sessions -F '#{session_name}	#{session_path}' | awk -F '\t' -v d="$dir" -v s="$SUFFIX" '$2 == d && $1 !~ s"$" { print $1; exit }')
+            IFS=$'\t' read -r P pdir < <(tmux list-sessions -F '#{session_name}	#{session_path}' |
+                awk -F '\t' -v s="$SUFFIX" '$1 !~ s"$"' | deepest_under "$dir")
             [[ -z $P ]] && return 0
         fi
+        dir=$pdir
     else
         current_project
         dir=$DIR
@@ -218,7 +230,7 @@ cmd_forks() {
     a=$(agents_of "$P")
 
     local opened=0
-    while IFS=$'\t' read -r id sid name; do
+    while IFS=$'\t' read -r id sid name state; do
         [[ -z $id ]] && continue
         tmux list-windows -a -F '#{@agent_session_id}' | grep -qxF "$sid" && continue
         if tmux has-session -t "=$a" 2>/dev/null; then
@@ -229,10 +241,12 @@ cmd_forks() {
             win=$(tmux display-message -p -t "=$a:" '#{window_id}')
         fi
         tmux set-option -w -t "$win" @agent_session_id "$sid"
+        # Hooks that fired before the window existed found nothing: start from the daemon's state.
+        [[ $state =~ ^(blocked|working|done|idle)$ ]] && tmux set-option -w -t "$win" @agent_state "$state"
         color_window "$win"
         opened=$((opened + 1))
-    done < <(claude agents --json --cwd "$dir" 2>/dev/null |
-        jq -r '.[] | select(.kind == "background") | [.id, .sessionId, (.name // .id)] | @tsv')
+    done < <(claude agents --json --cwd "$dir" 2>/dev/null 9>&- |
+        jq -r '.[] | select(.kind == "background") | [.id, .sessionId, (.name // .id), (.state // "")] | @tsv')
     [[ -z ${1:-} ]] && msg "$opened fork window(s) opened in $a"
     return 0
 }
@@ -318,13 +332,12 @@ from_pane_shell() {
 # push: a claude started in a pane of project session P moves to P-agents (its whole window,
 # or just its pane if the window has others), and the clients showing it follow it there.
 # Only a claude run from the pane's shell: not one inside another program (e.g. a Neovim
-# terminal, whose tmux pane is Neovim's), not an agent window linked into P, not P's last window.
+# terminal, whose tmux pane is Neovim's), not an agent window linked into P.
 push() {
-    local pane=$TMUX_PANE s win panes wins linked ppid dir a tmp="" c clients
-    IFS=$'\t' read -r s win panes wins linked ppid dir < <(tmux display-message -p -t "$pane" \
-        '#{session_name}	#{window_id}	#{window_panes}	#{session_windows}	#{window_linked}	#{pane_pid}	#{session_path}')
+    local pane=$TMUX_PANE s win panes wins linked ppid dir cwd a tmp="" c clients
+    IFS=$'\t' read -r s win panes wins linked ppid dir cwd < <(tmux display-message -p -t "$pane" \
+        '#{session_name}	#{window_id}	#{window_panes}	#{session_windows}	#{window_linked}	#{pane_pid}	#{session_path}	#{pane_current_path}')
     [[ -z $s || $s == *"$SUFFIX" || $linked == 1 ]] && return 0
-    ((panes == 1 && wins == 1)) && return 0
     from_pane_shell "$ppid" || return 0
 
     a=$(agents_of "$s")
@@ -335,6 +348,8 @@ push() {
     fi
     clients=$(tmux list-clients -F '#{client_name}	#{window_id}' | awk -F '\t' -v w="$win" '$2 == w { print $1 }')
     if ((panes == 1)); then
+        # P's only window: a shell takes its place (and index), else moving it destroys P.
+        ((wins == 1)) && tmux new-window -d -b -t "$win" -c "$cwd"
         tmux move-window -d -s "$win" -t "=$a:"
     else
         tmux break-pane -d -s "$pane" -t "=$a:"

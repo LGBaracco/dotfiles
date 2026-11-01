@@ -7,10 +7,12 @@ end
 
 fish_add_path -g $HOME/.local/bin $HOME/.config/emacs/bin # Doom emacs
 
-status is-interactive; or exit
-
+# Also for `fish -c` (tmux runs agent windows' claude that way), else NixOS's nano wins.
 set -gx EDITOR nvim
 set -gx VISUAL nvim
+
+status is-interactive; or exit
+
 set -g fish_greeting
 
 # ── Aliases ──────────────────────────────────────────────────────────────────

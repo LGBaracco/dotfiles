@@ -132,5 +132,10 @@
   },
   "awaySummaryEnabled": false,
   "theme": "custom:oxocarbon",
-  "editorMode": "vim"
+  "editorMode": "vim",
+  "statusLine": {
+    "type": "command",
+    "command": "$HOME/.claude/statusline.sh",
+    "padding": 0
+  }
 }

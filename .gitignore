@@ -16,6 +16,7 @@ claude/.claude/*
 !claude/.claude/keybindings.json
 !claude/.claude/CLAUDE.md
 !claude/.claude/.i-have-adhd-always
+!claude/.claude/statusline.sh
 !claude/.claude/agents/
 !claude/.claude/commands/
 !claude/.claude/hooks/

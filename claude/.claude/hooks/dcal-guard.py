@@ -13,22 +13,20 @@ silently. For dcal calls the hook decides:
   deny   other calendars, account or calendar changes, imports, RSVPs,
          daemon control, and any method not listed below
 
-Calendar ids come from `dcal --json ipc calendars.list`; update ALLOWED if
-the calendars are recreated.
+Calendar ids differ per host, so they are looked up at check time from
+`dcal --json ipc calendars.list` by account and calendar name.
 """
 
 import json
 import re
 import shlex
+import subprocess
 import sys
 
 # -- Tables -------------------------------------------------------------------
 
-ALLOWED = {
-    "fb1d426f-9b48-4baa-9df4-398059688e50": "Work",
-    "8d6323ac-30f8-42f3-b565-6e3b625a2011": "Important",
-    "32f65470-83a7-4409-a8cc-6c33663e2d29": "Free time",
-}
+ACCOUNT = "lorenzobaracco01@gmail.com"
+ALLOWED_NAMES = {"Work", "Important", "Free time"}
 
 # IPC methods that are always fine (read calendar metadata or help only).
 IPC_ALLOW = {"calendars.list", "accounts.list", "list", "ping", "version", "describe"}
@@ -71,6 +69,31 @@ def tokenize(cmd):
     return list(lex)
 
 
+def allowed_calendars():
+    """Map id -> name for the allowed calendars, as the local daemon knows them."""
+    try:
+        out = subprocess.run(["dcal", "--json", "ipc", "calendars.list"],
+                             capture_output=True, text=True, timeout=10, check=True).stdout
+        data = json.loads(out)
+    except (OSError, subprocess.SubprocessError, ValueError) as e:
+        raise Deny(f"could not look up calendar ids with `dcal --json ipc calendars.list` ({e})")
+
+    found = {}
+
+    def walk(node):
+        if isinstance(node, dict):
+            if node.get("accountId") == ACCOUNT and node.get("name") in ALLOWED_NAMES and "id" in node:
+                found[node["id"]] = node["name"]
+            for v in node.values():
+                walk(v)
+        elif isinstance(node, list):
+            for v in node:
+                walk(v)
+
+    walk(data)
+    return found
+
+
 def params(args):
     out = {}
     for a in args:
@@ -89,12 +112,13 @@ def check_ipc(args):
         return
     if method in IPC_SCOPED:
         cal = kv.get("calendarId")
-        if cal in ALLOWED:
-            return
         if method == "events.get" and cal is None:
             raise Ask("events.get without calendarId can read events in any calendar")
+        allowed = allowed_calendars()
+        if cal in allowed:
+            return
         raise Deny(f"calendarId {cal!r} is not Work, Important or Free time "
-                   f"({', '.join(f'{n}={i}' for i, n in ALLOWED.items())})")
+                   f"({', '.join(f'{n}={i}' for i, n in allowed.items())})")
     if method in IPC_ASK:
         raise Ask(f"{method} can read or change events Claude did not create")
     raise Deny(f"ipc method {method} is off-limits for Claude")

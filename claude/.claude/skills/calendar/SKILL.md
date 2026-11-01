@@ -9,11 +9,22 @@ Create calendar events with `dcal`. The `dcal-guard.py` hook in `~/.claude/hooks
 
 Only the account `lorenzobaracco01@gmail.com`, and only these three calendars:
 
-| Calendar | Use for | calendarId |
-|---|---|---|
-| Work | anything work related: meetings, talks, deadlines at FZJ, conferences | `fb1d426f-9b48-4baa-9df4-398059688e50` |
-| Important | personal appointments (doctor, dentist), bureaucratic deadlines (taxes, visa, Anmeldung, contracts, bills) | `8d6323ac-30f8-42f3-b565-6e3b625a2011` |
-| Free time | everything else: friends, sport, hobbies, trips, events | `32f65470-83a7-4409-a8cc-6c33663e2d29` |
+| Calendar | Use for |
+|---|---|
+| Work | anything work related: meetings, talks, deadlines at FZJ, conferences |
+| Important | personal appointments (doctor, dentist), bureaucratic deadlines (taxes, visa, Anmeldung, contracts, bills) |
+| Free time | everything else: friends, sport, hobbies, trips, events |
+
+### Getting the calendar ids
+
+Calendar ids are local to each machine's dcal database, so never reuse ids from another session or host. Look them up once per conversation, before the first call that needs a `calendarId`:
+
+```sh
+dcal --json ipc calendars.list \
+  | jq -r '[.. | objects | select(.accountId? == "lorenzobaracco01@gmail.com" and (.name == "Work" or .name == "Important" or .name == "Free time"))] | unique_by(.id) | .[] | "\(.name)\t\(.id)"'
+```
+
+Expect exactly three lines. If one is missing or a name appears twice, stop and tell Lorenzo instead of guessing. The hook runs the same lookup, so only these ids pass. Below, `<Work id>` etc. stand for the ids from this output; write them literally into commands.
 
 - If the right calendar is unclear, ask before creating.
 - Do not list, read, update or delete any event Claude did not create in this conversation, unless Lorenzo explicitly asks. Claude is allowed to read back, fix or delete events it created itself.
@@ -27,7 +38,7 @@ Only the account `lorenzobaracco01@gmail.com`, and only these three calendars:
 
 ```sh
 dcal --json ipc events.create \
-  calendarId=fb1d426f-9b48-4baa-9df4-398059688e50 \
+  calendarId='<Work id>' \
   summary='Group meeting' \
   start=2026-10-20T14:00:00+02:00 \
   end=2026-10-20T15:00:00+02:00 \
@@ -45,7 +56,7 @@ The output is the event as JSON. Its times are in UTC (`Z`); that is expected.
 
 | Param | Required | Format / notes |
 |---|---|---|
-| `calendarId` | yes | one of the three ids above |
+| `calendarId` | yes | one of the three ids from the lookup above |
 | `summary` | yes | title |
 | `start`, `end` | yes | RFC3339 with offset, e.g. `2026-10-20T14:00:00+02:00` |
 | `location`, `description` | no | free text |
@@ -75,12 +86,12 @@ dcal --json ipc events.delete id=<id>
 
 ```sh
 dcal --json ipc events.list query='dentist' from=2026-10-01T00:00:00Z to=2026-11-01T00:00:00Z \
-  | jq -c '[.. | objects | select(.calendarId? as $c | ["fb1d426f-9b48-4baa-9df4-398059688e50","8d6323ac-30f8-42f3-b565-6e3b625a2011","32f65470-83a7-4409-a8cc-6c33663e2d29"] | index($c))] | unique_by(.id) | .[] | {id,uid,calendarId,summary,start,end}'
+  | jq -c '[.. | objects | select(.calendarId? as $c | ["<Work id>","<Important id>","<Free time id>"] | index($c))] | unique_by(.id) | .[] | {id,uid,calendarId,summary,start,end}'
 ```
 
 ## Allowed helper commands
 
-- `dcal --json ipc calendars.list`: re-check calendar ids if a create fails with "calendar not found".
+- `dcal --json ipc calendars.list`: look up calendar ids (see above), or re-check them if a create fails with "calendar not found".
 - `dcal ipc list`: every IPC method and its params.
 - `dcal sync lorenzobaracco01@gmail.com`: force a sync.
 

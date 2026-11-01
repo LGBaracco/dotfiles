@@ -4,8 +4,11 @@
 # state to its window option @agent_state; tmux.conf shows it on window tabs and as a strip in P.
 # No nested clients: agents are viewed by switching to P-agents, by linking an agent's window
 # into P (link-window: the same window in both sessions), or from a separate terminal.
+# One numbering for both: P's windows are 1..N, its agents N+1.. (Alt+number, tabs, strip, menu).
 #
 #   agents.sh toggle                  switch the client between P and P-agents
+#   agents.sh go <k> <client>         Alt+k: P's window k, or agent k-N in P-agents
+#   agents.sh offsets                 agent tabs number on after their project (window hooks)
 #   agents.sh menu <client>           prefix A: agents of P with their state, plus actions
 #   agents.sh agent-menu <client> <window_id>   switch / link or unlink / rename / kill
 #   agents.sh link <client> <window_id>         show an agent window in P
@@ -27,6 +30,13 @@ msg() { tmux display-message ${CLIENT:+-c "$CLIENT"} "agents: $*"; }
 
 agents_of() { printf '%s%s' "$1" "$SUFFIX"; }
 
+# offset <P>: P's window count, 0 if P is gone. Agent i of P is number offset+i.
+offset() {
+    local n
+    n=$(tmux display-message -p -t "=$1:" '#{session_windows}' 2>/dev/null) # empty, not an error
+    printf '%s' "${n:-0}"
+}
+
 # ensure <P> <dir> [cmd [name]]: create P-agents if missing. Its first window runs cmd
 # (default: a new claude); new windows there always start claude.
 ensure() {
@@ -41,6 +51,7 @@ ensure() {
     # Option commands take a pane target: "=name:" is the exact session.
     tmux set-option -t "=$a:" default-command claude
     tmux set-option -t "=$a:" @agents_parent "$p"
+    tmux set-option -t "=$a:" @agents_offset "$(offset "$p")"
     tmux set-option -t "=$a:" @agents_dir "$dir"
     # Last agent exits: move the client back instead of detaching it from tmux.
     tmux set-option -t "=$a:" detach-on-destroy previous
@@ -89,6 +100,32 @@ cmd_toggle() {
     fi
 }
 
+# go <k> <client>: from P or P-agents, P's kth window or else agent k-N, by position.
+cmd_go() {
+    CLIENT=$2
+    local k=$1 a idx
+    local -a wins=()
+    current_project
+    mapfile -t wins < <(tmux list-windows -t "=$P" -F '#{window_index}' 2>/dev/null)
+    if ((k <= ${#wins[@]})); then
+        tmux switch-client -c "$CLIENT" -t "=$P:${wins[k - 1]}"
+        return 0
+    fi
+    a=$(agents_of "$P")
+    idx=$(tmux list-windows -t "=$a" -F '#{window_index}' 2>/dev/null | sed -n "$((k - ${#wins[@]}))p")
+    [[ -n $idx ]] && tmux switch-client -c "$CLIENT" -t "=$a:$idx"
+    return 0
+}
+
+# offsets: each agents session's @agents_offset, which the tab formats add to agent indexes.
+# A session option: a window linked into P is drawn there with P's own numbering.
+cmd_offsets() {
+    local a p
+    while IFS=$'\t' read -r a p; do
+        [[ -n $p ]] && tmux set-option -t "=$a:" @agents_offset "$(offset "$p")"
+    done < <(tmux list-sessions -F '#{session_name}	#{@agents_parent}')
+}
+
 glyph_of() {
     case $1 in
         blocked) printf '●' ;;
@@ -103,15 +140,18 @@ label() { printf '%s' "${1//#/##}"; }
 
 cmd_menu() {
     CLIENT=$1
-    local a id idx name state args=()
+    local a id num name state args=()
     current_project
     a=$(agents_of "$P")
     if tmux has-session -t "=$a" 2>/dev/null; then
-        while IFS=$'\t' read -r id idx state name; do
+        num=$(offset "$P")
+        # State last: tab is whitespace to read, so an empty field in the middle would vanish.
+        while IFS=$'\t' read -r id name state; do
             local key=""
-            ((idx <= 9)) && key=$idx
-            args+=("$(label "$idx $(glyph_of "$state")  $name")" "$key" "run-shell '$SELF agent-menu $CLIENT $id'")
-        done < <(tmux list-windows -t "=$a" -F '#{window_id}	#{window_index}	#{@agent_state}	#{window_name}')
+            num=$((num + 1))
+            ((num <= 9)) && key=$num
+            args+=("$(label "$num $(glyph_of "$state")  $name")" "$key" "run-shell '$SELF agent-menu $CLIENT $id'")
+        done < <(tmux list-windows -t "=$a" -F '#{window_id}	#{window_name}	#{@agent_state}')
         args+=("")
         args+=("new agent" n "run-shell '$SELF new'")
         args+=("unlink all from project" u "run-shell '$SELF unlink'")
@@ -133,10 +173,10 @@ linked_in() {
 
 cmd_agent_menu() {
     CLIENT=$1
-    local win=$2 a idx name args=()
+    local win=$2 a idx pos name args=()
     current_project
     a=$(agents_of "$P")
-    idx=$(tmux list-windows -t "=$a" -F '#{window_id} #{window_index}' | awk -v w="$win" '$1 == w { print $2 }')
+    read -r idx pos < <(tmux list-windows -t "=$a" -F '#{window_id} #{window_index}' | awk -v w="$win" '$1 == w { print $2, NR }')
     [[ -z $idx ]] && return 0
     name=$(tmux display-message -p -t "$win" '#{window_name}')
     args+=("switch to it" a "switch-client -c '$CLIENT' -t '=$a:$idx'")
@@ -146,7 +186,7 @@ cmd_agent_menu() {
         args+=("link into project" w "run-shell '$SELF link $CLIENT $win'")
     fi
     args+=("rename" r "command-prompt -p 'rename agent:' \"rename-window -t $win -- '%%'\"")
-    args+=("kill" x "confirm-before -p 'kill agent $idx? (y/n)' 'kill-window -t $win'")
+    args+=("kill" x "confirm-before -p 'kill agent $(($(offset "$P") + pos))? (y/n)' 'kill-window -t $win'")
     tmux display-menu -c "$CLIENT" -T "#[align=centre] $(label "$name") " "${args[@]}"
 }
 
@@ -257,24 +297,24 @@ cmd_forks() {
 # status line makes tmux drop the window list and the strip with it.
 cmd_strip() {
     local p=$1 bg=$2 fg=$3 gray=$4 active=$5 red=$6 yellow=$7 green=$8 width=${9:-0}
-    local a out plain prev idx name state current seg text glyph i max budget=-1 left list
+    local a out plain prev num name state current seg text glyph i max budget=-1 n left list
     local arrow=$'\xee\x82\xb0' # powerline U+E0B0, as in the window list
-    local -a idxs=() currents=() names=() states=()
+    local -a currents=() names=() states=()
     [[ $p == *"$SUFFIX" ]] && return 0
     a=$(agents_of "$p")
     tmux has-session -t "=$a" 2>/dev/null || return 0
-    while IFS=$'\t' read -r idx current name state; do
-        idxs+=("$idx") currents+=("$current") names+=("$name") states+=("$state")
-    done < <(tmux list-windows -t "=$a" -F '#{window_index}	#{window_active}	#{window_name}	#{@agent_state}')
-    if ((width > 0)); then
-        read -r left list < <(tmux display-message -p -t "=$p:" \
-            '#{w:#{T:status-left}} #{w:#{W:#{T:window-status-format},#{T:window-status-current-format}}}')
-        budget=$((width - left - list - 1))
-    fi
+    while IFS=$'\t' read -r current name state; do
+        currents+=("$current") names+=("$name") states+=("$state")
+    done < <(tmux list-windows -t "=$a" -F '#{window_active}	#{window_name}	#{@agent_state}')
+    # Agents are numbered on after P's n windows.
+    read -r n left list < <(tmux display-message -p -t "=$p:" \
+        '#{session_windows} #{w:#{T:status-left}} #{w:#{W:#{T:window-status-format},#{T:window-status-current-format}}}')
+    ((width > 0)) && budget=$((width - left - list - 1))
 
     for max in 24 12 6 0; do
         out="" plain=" " prev=$bg
-        for i in "${!idxs[@]}"; do
+        for i in "${!currents[@]}"; do
+            num=$((n + i + 1))
             name=${names[i]}
             ((${#name} > max)) && name="${name:0:max-1}…"
             ((max == 0)) && name=""
@@ -289,8 +329,8 @@ cmd_strip() {
             esac
             # Arrow only where the colour changes (start, gray↔active), as in the window list.
             [[ $seg != "$prev" ]] && out+="#[fg=$prev,bg=$seg]$arrow" plain+=$arrow
-            out+="#[fg=$text,bg=$seg] ${idxs[i]} ${name:+$name }$glyph"
-            plain+=" ${idxs[i]} ${name:+$name }${glyph:+x }"
+            out+="#[fg=$text,bg=$seg] $num ${name:+$name }$glyph"
+            plain+=" $num ${name:+$name }${glyph:+x }"
             prev=$seg
         done
         plain+=$arrow
@@ -432,6 +472,8 @@ cmd_hook() {
 
 case ${1:-} in
     toggle) cmd_toggle ;;
+    go) cmd_go "${2:-}" "${3:-}" ;;
+    offsets) cmd_offsets ;;
     menu) cmd_menu "${2:-}" ;;
     agent-menu) cmd_agent_menu "${2:-}" "${3:-}" ;;
     link) cmd_link "${2:-}" "${3:-}" ;;
@@ -444,7 +486,7 @@ case ${1:-} in
     hook) cmd_hook >/dev/null 2>&1 ;;
     name-window) name_window "$2" ;;
     *)
-        echo "usage: agents.sh toggle|menu|agent-menu|link|unlink|term|new|forks|strip|status-format|hook" >&2
+        echo "usage: agents.sh toggle|go|offsets|menu|agent-menu|link|unlink|term|new|forks|strip|status-format|hook" >&2
         exit 2
         ;;
 esac

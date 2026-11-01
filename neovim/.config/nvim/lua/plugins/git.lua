@@ -31,3 +31,7 @@ map("n", "<leader>gs", "<Cmd>Neogit<CR>", { desc = "Git Status [Neogit]" })
 map("n", "<leader>gc", "<Cmd>Neogit commit<CR>", { desc = "Git Commit [Neogit]" })
 map("n", "<leader>gp", "<Cmd>Neogit pull<CR>", { desc = "Git pull [Neogit]" })
 map("n", "<leader>gP", "<Cmd>Neogit push<CR>", { desc = "Git push [Neogit]" })
+
+--- Diffview (<leader> g) ---
+map("n", "<leader>gd", "<Cmd>DiffviewOpen<CR>", { desc = "Diff / resolve conflicts [Diffview]" })
+map("n", "<leader>gD", "<Cmd>DiffviewClose<CR>", { desc = "Close Diffview [Diffview]" })

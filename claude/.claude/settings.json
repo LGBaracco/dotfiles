@@ -107,6 +107,11 @@
       }
     ]
   },
+  "statusLine": {
+    "type": "command",
+    "command": "$HOME/.claude/statusline.sh",
+    "padding": 0
+  },
   "enabledPlugins": {
     "i-have-adhd@i-have-adhd": true,
     "obsidian@obsidian-skills": true
@@ -132,10 +137,5 @@
   },
   "awaySummaryEnabled": false,
   "theme": "custom:oxocarbon",
-  "editorMode": "vim",
-  "statusLine": {
-    "type": "command",
-    "command": "$HOME/.claude/statusline.sh",
-    "padding": 0
-  }
+  "editorMode": "vim"
 }

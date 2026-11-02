@@ -1,7 +1,7 @@
 {
   "currentThemeName": "custom",
   "currentThemeCategory": "registry",
-  "customThemeFile": "/home/lorenzo/.config/dms/themes/myoxocarbon/theme.json",
+  "customThemeFile": "~/.config/dms/themes/myoxocarbon/theme.json",
   "registryThemeVariants": {
     "oxocarbon": "blue",
     "deepdark": {

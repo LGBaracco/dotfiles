@@ -3,15 +3,18 @@
 ## Placeholders used in the references
 | placeholder | value |
 |---|---|
-| `$ATLAS_SRC` | `~/Documents/atlas-agent/atlas` (local clone, `v0.3.0-6-gc64050cf`, 2026-10-30; references' `file:line` match this) |
-| `$GALAXY_SRC` | `~/Documents/atlas-agent/galaxy` (local clone of the galaxy repo) |
+| `$ATLAS_SRC` | local clone of atlas; **path depends on the host**: the project's `AGENTS.md` names it per host, else ask the user. References' `file:line` match `v0.3.0-6-gc64050cf` (2026-10-30) |
+| `$GALAXY_SRC` | local clone of the galaxy repo; host-dependent like `$ATLAS_SRC` (may not exist) |
 | `$GALAXY_ROOT` | JURECA `/p/project1/cjinm16/baracco1/home_ext/galaxy` |
 | `<account>` | `jinm16` (budget; data project `cjinm16`, `jutil env activate -p cjinm16 -A jinm16`) |
 | `<gpu partition>` | `dc-gpu` (JURECA-DC, 4 GPUs/node); tests: `dc-gpu-devel` |
 | `<email>` | `l.baracco@fz-juelich.de` |
 | JSC user | `baracco1` |
 
-If `~/Documents/atlas-agent` doesn't exist on this machine: read the same code on the mount (`$GALAXY_ROOT/code/atlas`, see below) or clone `https://jugit.fz-juelich.de/inm-1/bda/software/analysis/atlas/atlas.git` (SSH: `git@jugit.fz-juelich.de:...`; HTTPS needs a token).
+If this host has no local clone: read the same code on the mount (`$GALAXY_ROOT/code/atlas`, see below) or clone `https://jugit.fz-juelich.de/inm-1/bda/software/analysis/atlas/atlas.git` (SSH: `git@jugit.fz-juelich.de:...`; HTTPS needs a token).
+Env for a local clone: `uv sync --python 3.11` in the clone (fallback `uv venv --python 3.11 && uv pip install -e .`; never plain pip).
+atlas's own jugit deps are HTTPS URLs → for that command only: `GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=url.git@jugit.fz-juelich.de:.insteadOf GIT_CONFIG_VALUE_0=https://jugit.fz-juelich.de/`.
+Keep `.venv/` and `uv.lock` out of atlas commits (`.git/info/exclude`).
 
 ## Reaching JURECA from this machine
 - SSH needs interactive 2FA (`Permission denied (keyboard-interactive)` in batch mode) → Claude cannot run remote commands. The user runs them on JURECA and pastes output, or commits there and pulls here.

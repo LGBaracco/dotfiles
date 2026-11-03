@@ -32,7 +32,7 @@ PLAIN = {
 
 # Commands checked by a dedicated function below.
 GUARDED = {"rg", "fd", "find", "sort", "uniq", "yq", "bat", "xargs", "command",
-           "git", "gh", "nix", "nix-instantiate", "nh"}
+           "git", "gh", "nix", "nix-instantiate", "nh", "zotero-cli", "obsidian"}
 
 # Unquoted globs on these could expand into a dangerous flag (e.g. -delete).
 GLOB_SENSITIVE = GUARDED - {"command"}
@@ -62,6 +62,36 @@ NIX_SUBCOMMANDS = {("eval",), ("search",), ("path-info",), ("why-depends",),
 NIX_DENY = ("--option", "--write-to", "--recreate-lock-file", "--update-input",
             "--commit-lock-file", "--output-lock-file", "--override-input",
             "--allow-unsafe-native-code-during-evaluation")
+
+# zotero-cli: command -> allowed sub-commands (None = no sub-commands, "*" = all).
+# Aliases: s=search, g=get, ann=annotations, n=notes, coll=collections.
+ZOTERO_READ = {
+    "config": None, "search": None, "s": None, "layout": None, "outline": None,
+    "read": None, "export": None, "related": None, "coverage": None,
+    "synthesize": None, "path": None, "plugin": None,
+    "get": "*", "g": "*",
+    "annotations": {"list"}, "ann": {"list"},
+    "notes": {"list"}, "n": {"list"},
+    "collections": {"search"}, "coll": {"search"},
+    "duplicates": {"find"},
+    "db": {"status", "inspect", "batch-status"},
+    "library": {"list"},
+}
+
+# obsidian: commands that only read vault or app state.
+OBSIDIAN_READ = {
+    "help", "version", "bases", "base:views", "base:query", "bookmarks",
+    "commands", "hotkeys", "hotkey", "daily:path", "daily:read", "diff",
+    "history", "history:list", "history:read", "file", "files", "folder",
+    "folders", "read", "backlinks", "links", "unresolved", "orphans",
+    "deadends", "outline", "plugins", "plugins:enabled", "plugin", "aliases",
+    "properties", "property:read", "publish:site", "publish:list",
+    "publish:status", "random:read", "search", "search:context",
+    "sync:status", "sync:history", "sync:read", "sync:deleted", "tags", "tag",
+    "templates", "template:read", "themes", "theme", "snippets",
+    "snippets:enabled", "vault", "vaults", "wordcount", "workspace",
+    "workspaces", "tabs", "recents", "dev:css", "dev:dom",
+}
 
 
 class Deny(Exception):
@@ -275,11 +305,53 @@ def check_nh(args):
         raise Deny("only `nh search` is allowed")
 
 
+def check_zotero(args):
+    if has_long(args, "--help", "--json-schema") or "h" in short_flags(args):
+        return
+    pos = positionals(args)
+    if not pos:
+        return
+    cmd = pos[0]
+    if cmd not in ZOTERO_READ:
+        raise Deny(f"zotero-cli {cmd} writes to the library or opens the UI; "
+                   "use search/get/read/notes list/annotations list instead")
+    subs = ZOTERO_READ[cmd]
+    if isinstance(subs, set) and (pos[1:2] or [None])[0] not in subs:
+        raise Deny(f"zotero-cli {cmd} is limited to: {', '.join(sorted(subs))}")
+    if cmd == "config" and has_long(args, "--show-secrets"):
+        raise Deny("zotero-cli config --show-secrets prints API keys")
+    if cmd == "read" and has_long(args, "--out"):
+        raise Deny("zotero-cli read --out writes images to a chosen directory; omit it")
+    if cmd == "plugin" and has_long(args, "--reveal"):
+        raise Deny("zotero-cli plugin --reveal opens the file manager")
+
+
+def check_obsidian(args):
+    if has_long(args, "--copy"):
+        raise Deny("obsidian --copy writes to the clipboard")
+    rest = args[1:] if args[:1] and args[0].startswith("vault=") else args
+    if not rest:
+        raise Deny("bare `obsidian` opens the TUI; name a read command")
+    cmd, opts = rest[0], rest[1:]
+    if cmd in OBSIDIAN_READ:
+        return
+    if cmd == "task" and not any(o in ("toggle", "done", "todo") or o.startswith("status=")
+                                 for o in opts):
+        return
+    if cmd == "dev:screenshot" and not any(o.startswith("path=") for o in opts):
+        return
+    if cmd in ("dev:errors", "dev:console") and "clear" not in opts:
+        return
+    raise Deny(f"obsidian {cmd} writes, executes code, or opens UI; "
+               "use read/search/search:context/files/backlinks/properties instead")
+
+
 CHECKS = {
     "rg": check_rg, "fd": check_fd, "find": check_find, "sort": check_sort,
     "uniq": check_uniq, "yq": check_yq, "bat": check_bat, "xargs": check_xargs,
     "command": check_command, "git": check_git, "gh": check_gh, "nix": check_nix,
     "nix-instantiate": check_nix_instantiate, "nh": check_nh,
+    "zotero-cli": check_zotero, "obsidian": check_obsidian,
 }
 
 

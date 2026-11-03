@@ -1,6 +1,6 @@
 # atlas as a Python library
 
-Paths relative to `$ATLAS_SRC/atlas/` (atlas `v0.3.0-6-gc64050cf`). Run inside the galaxy container (`python`/`ipython`/Jupyter kernel `atlas`) or an env with atlas installed (`pip install -e .`; jugit deps need credentials).
+Paths relative to `$ATLAS_SRC/atlas/` (atlas `v0.3.0-6-gc64050cf`). Run inside the galaxy container (`python`/`ipython`/Jupyter kernel `atlas`) or an env with atlas installed (`uv sync` in the clone, fallback `uv pip install -e .`; jugit deps need SSH, see `../local-setup.md`).
 
 ## Import facts
 - `import atlas` needs an installed package (`importlib.metadata.version`).

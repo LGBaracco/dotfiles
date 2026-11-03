@@ -9,6 +9,15 @@
             
     }
     }
+    // Zoom: fully opaque, no blur (main window, meetings, share toolbar, popups)
+    window-rule {
+        match app-id=r#"(?i)^zoom"#
+        opacity 1.0
+        background-effect {
+            blur false
+        }
+    }
+
     window-rule {
         match app-id="brave-browser"
         match app-id="code" 

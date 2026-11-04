@@ -27,6 +27,26 @@
         })
       ];
 
+      # SSH client defaults (/etc/ssh/ssh_config; ~/.ssh/config still wins).
+      # FZJ hosts by short name:
+      #   `ssh medpc057`             → lbaracco@medpc057.ime.kfa-juelich.de
+      #   `ssh jureca`/`ssh jrlogin01` → baracco1@<name>.fz-juelich.de
+      # The VPN pushes no DNS search domain (and Tailscale owns resolv.conf),
+      # so short names don't resolve. `!*.*` leaves full hostnames and IPs
+      # untouched. IPv4 by default; `ssh -6` still forces IPv6 (CLI wins).
+      programs.ssh.extraConfig = ''
+        Host medpc* !*.*
+          HostName %h.ime.kfa-juelich.de
+          User lbaracco
+
+        Host j* !*.*
+          HostName %h.fz-juelich.de
+          User baracco1
+
+        Host *
+          AddressFamily inet
+      '';
+
       services.strongswan = {
         enable = true;
         secrets = [ "ipsec.d/ipsec.nm-l2tp.secrets" ];

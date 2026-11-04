@@ -246,7 +246,7 @@
     }
   },
   "fontScale": 1.15,
-  "useSystemSoundTheme": true,
+  "useSystemSoundTheme": false,
   "acSuspendBehavior": 2,
   "batteryChargeLimit": 80,
   "lockBeforeSuspend": true,
@@ -792,5 +792,7 @@
     }
   ],
   "lockScreenShowPowerActions": true,
-  "lockScreenFontFamily": "Notable"
+  "lockScreenFontFamily": "Notable",
+  "batteryProfileName": "0",
+  "muteSoundsWhenMediaPlaying": false
 }

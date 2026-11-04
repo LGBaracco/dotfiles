@@ -14,6 +14,12 @@
         };
       };
 
+      users.users.lorenzo.openssh.authorizedKeys.keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO8t0CH1IEEdEX/g8k+8NCz7p1Nc3NoEl7NfLmsPAnJN l.baracco@fz-juelich.de"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII6Q0+lLUKNLsrarxJqeXo4E03jZnVL417Fp495DCgGr u0_a529@localhost"
+
+      ];
+
       # Phone pairing (opens TCP/UDP 1714–1764)
       programs.kdeconnect.enable = true;
 

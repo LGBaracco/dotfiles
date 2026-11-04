@@ -78,7 +78,7 @@
           tabsLauncher.enable = true;
           dmsSessionizer = {
             enable = true;
-            # Override registry package with our fork (pinned via flake.lock)
+            # Override registry package with upstream HEAD (pinned via flake.lock); registry lags behind
             src = lib.mkForce inputs.dms-sessionizer.packages.${pkgs.stdenv.hostPlatform.system}.default;
           };
         };

@@ -25,7 +25,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     dms-sessionizer = {
-      url = "github:LGBaracco/dms-sessionizer";
+      url = "github:leonardofranco01/dms-sessionizer";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     dankcalendar = {

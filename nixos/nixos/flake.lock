@@ -85,15 +85,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1788986229,
+        "lastModified": 1793820476,
         "narHash": "sha256-R82q4yu5Sq3BYlXHPKBD2iLtZLqmJAAlszwawFkEwcs=",
-        "owner": "LGBaracco",
+        "owner": "leonardofranco01",
         "repo": "dms-sessionizer",
-        "rev": "7f1f787508fee983d27ae79bb20a8b0578623b3c",
+        "rev": "57666cc21c887848f6422db4c200145affd7259e",
         "type": "github"
       },
       "original": {
-        "owner": "LGBaracco",
+        "owner": "leonardofranco01",
         "repo": "dms-sessionizer",
         "type": "github"
       }

@@ -17,6 +17,7 @@
       users.users.lorenzo.openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO8t0CH1IEEdEX/g8k+8NCz7p1Nc3NoEl7NfLmsPAnJN l.baracco@fz-juelich.de"
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII6Q0+lLUKNLsrarxJqeXo4E03jZnVL417Fp495DCgGr u0_a529@localhost"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDjKn1d+DMBiS4LwvX1BrIlqrNUbsqUS44HRiDT2x/gj l.baracco@fz-juelich.de"
 
       ];
 

@@ -13,13 +13,15 @@ binds {
     // package on Ubuntu, withGnomeKeyring in nixos/.../apps/chromium.nix).
     // Ubuntu: snap desktop ID <name>_<app>. NixOS has no gtk-launch; bins are already wrapped.
     Mod+B                               hotkey-overlay-title="Open Browser: Brave" { spawn-sh "gtk-launch brave_brave || brave";}
-    Mod+S                            hotkey-overlay-title="Open VSCode" { spawn-sh "gtk-launch code_code || code";}
-    Mod+M                            hotkey-overlay-title="Open Emacs" { spawn-sh "emacsclient -c -a 'emacs'"; } 
-    // Please choose your own file manager.
+    Mod+S                               hotkey-overlay-title="Open VSCode" { spawn-sh "gtk-launch code_code || code";}
+    // Mod+M                            hotkey-overlay-title="Open Emacs" { spawn-sh "emacsclient -c -a 'emacs'"; } 
+    Mod+M                               hotkey-overlay-title="Open Thunderbird" {spawn "thunderbird";}
+    Mod+Z                               hotkey-overlay-title="Open Zotero" {spawn "Zotero";}
+    Mod+N                               hotkey-overlay-title="Open Obsidian" {spawn-sh "gtk-launch obsidian_obsidian || obsidian";}
     Mod+E                               hotkey-overlay-title="File Manager: Dux Files" { spawn "dfiles" "show"; }
 
     // ─── Media Controls ───
-      XF86AudioMicMute                    allow-when-locked=true { spawn "dms" "ipc" "call" "audio" "micmute";}
+    XF86AudioMicMute                    allow-when-locked=true { spawn "dms" "ipc" "call" "audio" "micmute";}
 
     // ─── Window Movement and Focus ───
     Mod+R                               { switch-preset-column-width; }

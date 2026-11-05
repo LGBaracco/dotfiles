@@ -45,6 +45,9 @@
 
       hardware.bluetooth.enable = true;
 
+      # ── input ─────────────────────────────────────────────────────────────────
+      services.input-remapper.enable = true; # remap mouse/keyboard buttons (GUI: input-remapper-gtk)
+
       # ── printing ──────────────────────────────────────────────────────────────
       services.printing.enable = true;
       services.avahi = {

@@ -48,7 +48,7 @@ alias ll='ls --color=auto -lah'
 alias ls='command ls --color=auto'
 alias gs='git status'
 alias ga='git add'
-alias gc='git commit -m'
+alias gc='git commit'
 # Drop PYTHONPATH: modules (e.g. Python-bundle-PyPI) inject py3.12 site-packages
 # that shadow the uv env's packages and break on its newer Python
 alias start-server='env -u PYTHONPATH uv run --with jupyter jupyter server --no-browser --ip=0.0.0.0 --port 8888 --MappingKernelManager.default_kernel_name=atlas'

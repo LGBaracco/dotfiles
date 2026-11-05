@@ -32,13 +32,16 @@ alias packsync 'nvim --headless +PackSync +qa'
 # SSHFS mount for workstation and JURECA
 alias mws 'sshfs lbaracco@medpc057.ime.kfa-juelich.de:/home/lbaracco /mnt/workpc/ && sshfs lbaracco@medpc057.ime.kfa-juelich.de:/ /mnt/workroot/'
 alias mju 'sshfs -o AddressFamily=inet -o IdentityFile=$HOME/.ssh/id_jureca -o follow_symlinks,reconnect,ServerAliveInterval=15 baracco1@jureca.fz-juelich.de:/p /mnt/jureca/'
-# SSH tunnel for Jupyter on HPC: tunnel <node>
+# SSH tunnel for Jupyter on HPC: tunnel [-p <remote-port>] <node>
 function tunnel
+    argparse 'p/port=' -- $argv; or return 1
     if test (count $argv) -ne 1
-        echo "usage: tunnel <node>" >&2
+        echo "usage: tunnel [-p <remote-port>] <node>" >&2
         return 1
     end
-    ssh -4 -i ~/.ssh/id_jureca -N -L 8888:$argv[1]:8888 baracco1@jureca.fz-juelich.de
+    set -l port 8888
+    set -q _flag_port; and set port $_flag_port
+    ssh -4 -i ~/.ssh/id_jureca -N -L 8888:$argv[1]:$port baracco1@jureca.fz-juelich.de
 end
 # Claude Code read-only Ask mode (agent + Bash hook in ~/.claude)
 alias ask 'CLAUDE_ASK_MODE=1 claude --agent ask'

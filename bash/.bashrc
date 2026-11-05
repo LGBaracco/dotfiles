@@ -76,10 +76,9 @@ if [ -d "$SCRATCH/$USER" ]; then
 fi
 
 # Galaxy
-[ -r "$HOME/galaxy/init.sh" ] && . "$HOME/galaxy/init.sh"
-
+#[ -r "$HOME/galaxy/init.sh" ] && . "$HOME/galaxy/init.sh"
 # Loading modules
-module try-load atlas
+# module try-load atlas
 module try-load uv
 module try-load tmux
 

@@ -22,11 +22,11 @@ fi
 export DOTFILES_PROFILE
 
 # Unknown TERM (e.g. xterm-ghostty without terminfo) breaks tmux/less/vim.
-# Only downgrades when infocmp exists and positively reports the entry missing.
-if command -v infocmp >/dev/null 2>&1 && [ -n "${TERM:-}" ] && [ "$TERM" != dumb ] &&
-    ! infocmp "$TERM" >/dev/null 2>&1; then
-    export TERM=xterm-256color
-fi
+# # Only downgrades when infocmp exists and positively reports the entry missing.
+# if command -v infocmp >/dev/null 2>&1 && [ -n "${TERM:-}" ] && [ "$TERM" != dumb ] &&
+#     ! infocmp "$TERM" >/dev/null 2>&1; then
+#     export TERM=xterm-256color
+# fi
 
 # ── Editor ───────────────────────────────────────────────────────────────────
 for _ed in nvim vim vi; do
@@ -76,13 +76,12 @@ if [ -d "$SCRATCH/$USER" ]; then
 fi
 
 # Galaxy
-# Currently disabled because of file conflicts (currently forces old revisions)
-#[ -r "$HOME/galaxy/init.sh" ] && . "$HOME/galaxy/init.sh"
-#module try-load atlas
+[ -r "$HOME/galaxy/init.sh" ] && . "$HOME/galaxy/init.sh"
 
 # Loading modules
+module try-load atlas
 module try-load uv
-module try-load tmux/3.5a
+module try-load tmux
 
 # ── Prompt (starship only if installed)
 if command -v starship >/dev/null 2>&1 && [ "$TERM" != dumb ]; then

@@ -59,7 +59,7 @@
     {
       home.packages = [
         (withGnomeKeyring pkgs.brave)
-        (withGnomeKeyring pkgs.vscode)
+        (withGnomeKeyring pkgs.unstable.vscode)
         (withGnomeKeyring pkgs.helium)
         (withGnomeKeyring pkgs.discord)
         (withGnomeKeyring pkgs.whatsapp-electron)

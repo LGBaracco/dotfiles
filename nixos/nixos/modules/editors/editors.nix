@@ -1,9 +1,12 @@
 {
   flake.modules.homeManager.lorenzo =
-    { pkgs, ... }: {
+    { pkgs, lib, ... }: {
       # Neovim via nix-wrapper-modules (liveLua=true by default: ~/.config/nvim via stow)
       wrappers.neovim = {
         enable = true;
+        # Plugins, LSPs and tools from unstable, close to plugin HEAD like the non-Nix setup.
+        # mkForce: the install module already sets pkgs, and a pkgs set can't be merged.
+        pkgs = lib.mkForce pkgs.unstable;
         # liveLua = false;  # uncomment to force rebuild after lua edits
       };
 

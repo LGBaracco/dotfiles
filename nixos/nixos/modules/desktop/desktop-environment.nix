@@ -12,6 +12,7 @@
       # ── Display Manager: Dux Greeter ─────────────────────────────────────────────────
       services.displayManager.dux-greeter = {
         enable = true;
+        package = pkgs.unstable.dux-greeter;
         configHome = "/home/lorenzo"; # copies that user's Dux Shell settings (and wallpaper) into the greeter data directory before greetd starts
         compositor.name = "niri"; # greeter UI compositor
       };
@@ -61,11 +62,19 @@
       # ── niri
       programs.niri = {
         enable = true;
+        package = pkgs.unstable.niri;
       };
 
       # Dux Shell
       programs.dux-shell = {
         enable = true;
+        package = pkgs.unstable.dux-shell;
+        quickshell.package = pkgs.unstable.quickshell;
+        # The module installs these from pkgs; take them from unstable with the rest of the shell
+        excludePackages = [
+          pkgs.matugen
+          pkgs.cava
+        ];
         systemd = {
           enable = true;
           # Primary: niri.service; mango also pulls Dux Shell via mango-session.target below
@@ -87,6 +96,7 @@
       # ── mango (mangowc) — selectable alongside niri in the Dux greeter
       programs.mango = {
         enable = true;
+        package = pkgs.unstable.mango;
       };
       # systemd target started from mango autostart
       systemd.user.targets.mango-session = {
@@ -99,6 +109,12 @@
       };
       # Also start Dux Shell when logging into mango (unit is still named dms.service)
       systemd.user.services.dms.wantedBy = [ "mango-session.target" ];
+
+      # matugen/cava excluded from programs.dux-shell above
+      environment.systemPackages = [
+        pkgs.unstable.matugen
+        pkgs.unstable.cava
+      ];
 
     };
 }

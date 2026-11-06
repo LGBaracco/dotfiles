@@ -2,9 +2,10 @@
   # Dux Files (dfiles): default file manager. Owns org.freedesktop.FileManager1
   # ("show in folder"), serves the portal FileChooser (preferred in desktop.nix),
   # and runs as a hidden session daemon so Mod+E opens instantly.
-  flake.modules.nixos.common = {
+  flake.modules.nixos.common = { pkgs, ... }: {
     programs.dux-files = {
       enable = true;
+      package = pkgs.unstable.dux-files;
       portal.enable = true;
       systemd.enable = true;
     };

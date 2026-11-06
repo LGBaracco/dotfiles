@@ -7,7 +7,12 @@
       ...
     }:
     {
-      imports = [ inputs.chaotic.nixosModules.default ];
+      # Chaotic's documented setup for stable NixOS (default also pulls unstable-only modules).
+      imports = with inputs.chaotic.nixosModules; [
+        nyx-cache
+        nyx-overlay
+        nyx-registry
+      ];
       nixpkgs.hostPlatform = "x86_64-linux";
 
       # ── nix / flakes ──────────────────────────────────────────────────────────
@@ -30,6 +35,9 @@
             "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="
           ];
         };
+
+        # `nix shell unstable#foo`; `nixpkgs#` stays pinned to the system's (stable) nixpkgs
+        registry.unstable.flake = inputs.nixpkgs-unstable;
 
         gc = {
           automatic = true;

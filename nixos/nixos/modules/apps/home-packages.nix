@@ -44,7 +44,7 @@
         mpv
         system-config-printer
         proton-pass
-        heroic
+        unstable.heroic
         firefox-bin
         spotify
         nautilus
@@ -52,10 +52,10 @@
         thunderbird-bin
         stable.zotero
         zoom-us
-        godot
+        unstable.godot
 
         # --- terminals ---
-        ghostty
+        unstable.ghostty
         foot
         tmux
 
@@ -64,13 +64,13 @@
 
         # --- TUI ---
         spotify-player
-        lazygit
+        unstable.lazygit
         alsa-utils
         htop
         btop-cuda # NVIDIA GPU stats (driver runpath); no global cudaSupport
-        dux-gop
-        claude-code
-        opencode
+        unstable.dux-gop
+        unstable.claude-code
+        unstable.opencode
 
         # --- Cli tools ---
         stow
@@ -95,11 +95,11 @@
 
         # --- Python ---
         # debugpy, ipython, jupyter, pynvim) are uv-managed (`uv tool` / `uv run`).
-        uv
+        unstable.uv
         python3
 
         # --- Julia ---
-        julia-bin
+        unstable.julia-bin
 
         # --- Javascript/Typescript
         nodejs
@@ -110,8 +110,8 @@
         coreutils
 
         # --- Rust ---
-        cargo
-        rustc
+        unstable.cargo
+        unstable.rustc
 
         # --- Other languages ---
         sbcl # Common Lisp
@@ -128,8 +128,9 @@
 
         # --- Misc ---
         latex # LaTeX (Neovim VimTeX + emacs org export)
-        (zathura.override {
-          plugins = with zathuraPkgs; [ zathura_pdf_mupdf ];
+        # unstable: same expression as the (unstable) Neovim wrapper, so the store path is shared
+        (unstable.zathura.override {
+          plugins = with unstable.zathuraPkgs; [ zathura_pdf_mupdf ];
         })
         imagemagick
         wl-clipboard
@@ -138,7 +139,7 @@
         brightnessctl
         playerctl
         tabctl
-        xwayland-satellite
+        unstable.xwayland-satellite
       ];
     };
 }

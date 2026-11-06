@@ -45,6 +45,10 @@
       "rev": "bbde8ef5ae46ceee2c3bd8b21fc048c5f8ffbfc0",
       "src": "https://github.com/MagicDuck/grug-far.nvim"
     },
+    "gruvbox.nvim": {
+      "rev": "48262cda6a8a921b159c8ec3e21b48ccd870b7b2",
+      "src": "https://github.com/ellisonleao/gruvbox.nvim"
+    },
     "highlight-undo.nvim": {
       "rev": "ee32e12693d70e66f954d09a504a7371d110fc27",
       "src": "https://github.com/tzachar/highlight-undo.nvim"

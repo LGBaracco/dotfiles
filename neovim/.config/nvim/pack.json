@@ -4,6 +4,7 @@
     { "name": "lzextras", "src": "https://github.com/BirdeeHub/lzextras", "nix": "lzextras", "group": "lze" },
 
     { "name": "oxocarbon.nvim", "src": "https://github.com/nyoom-engineering/oxocarbon.nvim", "nix": "oxocarbon-nvim" },
+    { "name": "gruvbox.nvim", "src": "https://github.com/ellisonleao/gruvbox.nvim", "nix": "gruvbox-nvim", "lazy": true },
     { "name": "dashboard-nvim", "src": "https://github.com/nvimdev/dashboard-nvim", "nix": "dashboard-nvim" },
     { "name": "lualine.nvim", "src": "https://github.com/nvim-lualine/lualine.nvim", "nix": "lualine-nvim" },
     { "name": "nvim-navic", "src": "https://github.com/SmiteshP/nvim-navic", "nix": "nvim-navic" },

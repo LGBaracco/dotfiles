@@ -64,6 +64,25 @@ require("lualine").setup({
 --- Deferred (one tick after UIEnter, or on filetype) ---
 require("lze").load({
     {
+        -- Alternative colorscheme, not active: `:colorscheme gruvbox` loads it
+        -- (lze ColorSchemePre runs setup first). Follows 'background' (dark/light).
+        "gruvbox.nvim",
+        colorscheme = "gruvbox",
+        after = function()
+            require("gruvbox").setup({
+                contrast = "hard", -- "hard" | "soft" | "" (medium)
+                italic = {
+                    strings = false,
+                    emphasis = true,
+                    comments = true,
+                    operators = false,
+                    folds = true,
+                },
+                transparent_mode = false,
+            })
+        end,
+    },
+    {
         "nvim-scrollbar",
         event = "DeferredUIEnter",
         after = function()

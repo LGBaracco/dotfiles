@@ -119,15 +119,12 @@
 (add-hook 'julia-mode-hook #'rainbow-delimiters-mode-enable)
 
 (with-eval-after-load 'eglot-jl
-  (setq eglot-jl-language-server-project "~/.julia/environments/v1.12")
-
- (after! julia-snail
-  (setq julia-snail-terminal-type :vterm))) ;; Necessary until ghostel compatibility is guaranteed upstream
+  (setq eglot-jl-language-server-project "~/.julia/environments/v1.12"))
 
 ;; (after! julia-mode
 ;;   (setq lsp-julia-package-dir nil)
 ;;   (setq julia-program "/home/lorenzo/.juliaup/bin/julia")
-;;   (setq lsp-julia-default-environment "~/.julia/environments/v1.11"))
+;;   (setq lsp-julia-default-environment "~/.julia/environments/v1.12"))
 
 ;; Python
 (with-eval-after-load 'python

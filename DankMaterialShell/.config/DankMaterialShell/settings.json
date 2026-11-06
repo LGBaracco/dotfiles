@@ -794,5 +794,8 @@
   "lockScreenShowPowerActions": true,
   "lockScreenFontFamily": "Notable",
   "batteryProfileName": "0",
-  "muteSoundsWhenMediaPlaying": false
+  "muteSoundsWhenMediaPlaying": false,
+  "blurBorderEnabled": true,
+  "blurEnabled": true,
+  "blurBorderSeeded": true
 }

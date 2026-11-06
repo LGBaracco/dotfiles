@@ -5,9 +5,8 @@ if type -q babelfish
     test -r $f; and babelfish <$f | source
 end
 
-fish_add_path -g $HOME/.local/bin $HOME/.config/emacs/bin # Doom emacs
+fish_add_path -g $HOME/.local/bin $HOME/.config/emacs/bin /home/lbaracco/.opencode/bin
 
-# Also for `fish -c` (tmux runs agent windows' claude that way), else NixOS's nano wins.
 set -gx EDITOR nvim
 set -gx VISUAL nvim
 
@@ -23,6 +22,8 @@ alias cd z # zoxide
 alias gs 'git status'
 alias ga 'git add'
 alias gc 'git commit'
+alias ta 'tmux attach'
+alias td 'tmux detach'
 alias vi nvim
 alias vim nvim
 alias neovim nvim
@@ -82,4 +83,3 @@ if type -q starship; and test "$TERM" != dumb
 end
 
 # opencode
-fish_add_path /home/lbaracco/.opencode/bin

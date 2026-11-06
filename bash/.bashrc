@@ -21,14 +21,7 @@ if [ -z "${DOTFILES_PROFILE:-}" ]; then
 fi
 export DOTFILES_PROFILE
 
-# Unknown TERM (e.g. xterm-ghostty without terminfo) breaks tmux/less/vim.
-# # Only downgrades when infocmp exists and positively reports the entry missing.
-# if command -v infocmp >/dev/null 2>&1 && [ -n "${TERM:-}" ] && [ "$TERM" != dumb ] &&
-#     ! infocmp "$TERM" >/dev/null 2>&1; then
-#     export TERM=xterm-256color
-# fi
-
-# ── Editor ───────────────────────────────────────────────────────────────────
+# ── Editor ─────────────────────────────────────────────────────────────────
 for _ed in nvim vim vi; do
     if command -v "$_ed" >/dev/null 2>&1; then
         export EDITOR="$_ed" VISUAL="$_ed"
@@ -37,7 +30,7 @@ for _ed in nvim vim vi; do
 done
 unset _ed
 
-# ── Shell options ────────────────────────────────────────────────────────────
+# ── Shell options ──────────────────────────────────────────────────────────
 HISTSIZE=10000
 HISTFILESIZE=20000
 HISTCONTROL=ignoreboth:erasedups
@@ -49,7 +42,8 @@ alias ls='command ls --color=auto'
 alias gs='git status'
 alias ga='git add'
 alias gc='git commit'
-# Drop PYTHONPATH: modules (e.g. Python-bundle-PyPI) inject py3.12 site-packages
+alias ta='tmux attach'
+alias td='tmux detach'
 # that shadow the uv env's packages and break on its newer Python
 alias start-server='env -u PYTHONPATH uv run --with jupyter jupyter server --no-browser --ip=0.0.0.0 --port 8888 --MappingKernelManager.default_kernel_name=atlas'
 if command -v nvim >/dev/null 2>&1; then
@@ -77,7 +71,7 @@ fi
 
 # Galaxy
 #[ -r "$HOME/galaxy/init.sh" ] && . "$HOME/galaxy/init.sh"
-# Loading modules
+
 # module try-load atlas
 module try-load uv
 module try-load tmux

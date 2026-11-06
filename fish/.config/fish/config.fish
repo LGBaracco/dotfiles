@@ -19,6 +19,7 @@ alias ls eza
 alias ll 'eza -lah --icons auto'
 alias tree 'eza --tree --icons'
 alias cd z # zoxide
+alias g git
 alias gs 'git status'
 alias ga 'git add'
 alias gc 'git commit'

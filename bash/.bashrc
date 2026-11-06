@@ -39,6 +39,7 @@ shopt -s histappend checkwinsize globstar autocd cdspell
 # ── Aliases ──────────────────────────────────────────────────────────────────
 alias ll='ls --color=auto -lah'
 alias ls='command ls --color=auto'
+alias g='git'
 alias gs='git status'
 alias ga='git add'
 alias gc='git commit'

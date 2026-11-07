@@ -91,5 +91,11 @@
 
       # ── misc ──────────────────────────────────────────────────────────────────
       programs.fuse.userAllowOther = true;
+      # sshfs connections die during standby, and every lookup into a dead mount
+      # hangs (e.g. starship stat-ing ~/home-ext froze new shells). Drop all sshfs
+      # mounts before suspend/shutdown; remount with mju/mws after waking.
+      powerManagement.powerDownCommands = ''
+        ${pkgs.util-linux}/bin/umount -a -l -t fuse.sshfs || true
+      '';
     };
 }

@@ -33,7 +33,8 @@ alias packsync 'nvim --headless +PackSync +qa'
 
 # SSHFS mount for workstation and JURECA
 alias mws 'sshfs lbaracco@medpc057.ime.kfa-juelich.de:/home/lbaracco /mnt/workpc/ && sshfs lbaracco@medpc057.ime.kfa-juelich.de:/ /mnt/workroot/'
-alias mju 'sshfs -o AddressFamily=inet -o IdentityFile=$HOME/.ssh/id_jureca -o follow_symlinks,reconnect,ServerAliveInterval=15 baracco1@jureca.fz-juelich.de:/p /mnt/jureca/'
+# Clears a stale mount first; dead links fail after ~45s, reconnects give up after 10s
+alias mju 'fusermount3 -uz /mnt/jureca 2>/dev/null; sshfs -o AddressFamily=inet -o IdentityFile=$HOME/.ssh/id_jureca -o follow_symlinks,reconnect,ServerAliveInterval=15,ServerAliveCountMax=3,ConnectTimeout=10 baracco1@jureca.fz-juelich.de:/p /mnt/jureca/'
 # SSH tunnel for Jupyter on HPC: tunnel [-p <remote-port>] <node>
 function tunnel
     argparse 'p/port=' -- $argv; or return 1

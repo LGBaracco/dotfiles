@@ -1,4 +1,7 @@
 add_newline = true
+# Don't stat through symlinks when scanning cwd: ~/home-ext points into the JURECA
+# sshfs mount, which blocks every lookup while it reconnects after standby.
+follow_symlinks = false
 format = "$os$hostname[](fg:#393939 bg:#42be65)$username$git_branch$git_status$directory[](fg:#393939)(\n\n$python$conda) "
 
 # Green pill: OS icon + host | user (thin gray divider). Purple: git. Gray: cwd.

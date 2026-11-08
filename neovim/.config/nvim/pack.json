@@ -3,6 +3,7 @@
     { "name": "lze", "src": "https://github.com/BirdeeHub/lze", "nix": "lze", "group": "lze" },
     { "name": "lzextras", "src": "https://github.com/BirdeeHub/lzextras", "nix": "lzextras", "group": "lze" },
 
+    { "name": "nightfox.nvim", "src": "https://github.com/EdenEast/nightfox.nvim", "nix": "nightfox-nvim" },
     { "name": "oxocarbon.nvim", "src": "https://github.com/nyoom-engineering/oxocarbon.nvim", "nix": "oxocarbon-nvim" },
     { "name": "gruvbox.nvim", "src": "https://github.com/ellisonleao/gruvbox.nvim", "nix": "gruvbox-nvim", "lazy": true },
     { "name": "dashboard-nvim", "src": "https://github.com/nvimdev/dashboard-nvim", "nix": "dashboard-nvim" },

@@ -1,0 +1,5 @@
+#!/bin/sh
+# `jupyter` CLI for emacs-jupyter (`jupyter-executable`): it needs jupyter_client's
+# subcommands (`kernelspec list --json`, `kernel`), which the jupyter-core uv tool on
+# PATH lacks. uv caches the environment, so only the first call resolves packages.
+exec uv tool run --quiet --from jupyter-core --with jupyter-client jupyter "$@"

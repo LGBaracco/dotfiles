@@ -1,7 +1,8 @@
 -- Eager UI chrome, then deferred light-UI plugins. Dashboard: plugins.dashboard.
 local has = require("config.has")
 
-vim.cmd.colorscheme("oxocarbon")
+-- nightfox.nvim, carbonfox variant. oxocarbon stays installed: `:colorscheme oxocarbon`.
+vim.cmd.colorscheme("carbonfox")
 
 require("nvim-web-devicons").setup()
 require("fidget").setup()
@@ -70,7 +71,7 @@ require("lze").load({
         colorscheme = "gruvbox",
         after = function()
             require("gruvbox").setup({
-                contrast = "hard", -- "hard" | "soft" | "" (medium)
+                contrast = "soft", -- "hard" | "soft" | "" (medium)
                 italic = {
                     strings = false,
                     emphasis = true,

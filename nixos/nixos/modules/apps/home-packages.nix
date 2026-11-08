@@ -2,8 +2,6 @@
   flake.modules.homeManager.lorenzo =
     { pkgs, ... }:
     let
-      # scheme-medium + what my documents, org export and Quarto PDFs need on top.
-      # A document failing with "x.sty not found": add x's TeX Live package here.
       latex = pkgs.texliveMedium.withPackages (
         ps: with ps; [
           # my documents

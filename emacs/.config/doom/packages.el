@@ -55,3 +55,6 @@
 (package! evil-tutor)
 ;;(unpin! julia-snail)
 (package! kdl-mode)
+
+;; Jupyter (lisp/+jupyter-*.el). emacs-jupyter itself comes from :lang (org +jupyter).
+(package! code-cells)   ; `# %%' cell navigation/bounds for notebook buffers

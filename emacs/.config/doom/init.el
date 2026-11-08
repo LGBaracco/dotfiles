@@ -14,6 +14,11 @@
 ;;   Alternatively, press 'gd' (or 'C-c c d') on a module to browse its
 ;;   directory (for easy access to its source code).
 
+;; `,' as localleader (same as Neovim's maplocalleader). Set before `doom!':
+;; modules read it when their `map! :localleader' forms load.
+(setq doom-localleader-key ","
+      doom-localleader-alt-key "M-,")
+
 (doom! :input
        ;;bidi              ; (tfel ot) thgir etirw uoy gnipleh
        ;;chinese
@@ -97,7 +102,7 @@
        ;;direnv
        ;;docker
        editorconfig      ; let someone else argue about tabs vs spaces
-       ein               ; tame Jupyter notebooks with emacs
+       ;;ein             ; deprecated (2025-12); Jupyter lives in lisp/+jupyter-*.el
        (eval +overlay)     ; run code, run (also, repls)
        lookup              ; navigate your code and its documentation
        ;;llm               ; when I said you needed friends, I didn't mean...

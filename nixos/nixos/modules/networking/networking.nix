@@ -43,6 +43,18 @@
           HostName %h.fz-juelich.de
           User baracco1
 
+        # JSC needs 2FA per login: share one master connection between TRAMP,
+        # Emacs' Jupyter port-forwards (`ssh -O forward`), `tunnel` and `mju`.
+        # %C hashes the resolved host, so `jureca` and the full name share it.
+        Host jureca jr* jureca.fz-juelich.de jr*.fz-juelich.de
+          User baracco1
+          IdentityFile ~/.ssh/id_jureca
+          ControlMaster auto
+          ControlPath ~/.ssh/cm-%C
+          ControlPersist 8h
+          ServerAliveInterval 15
+          ServerAliveCountMax 3
+
         Host *
           AddressFamily inet
       '';

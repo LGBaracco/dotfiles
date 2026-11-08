@@ -129,8 +129,39 @@
 ;; Python
 (with-eval-after-load 'python
   (set-formatter! 'ruff :modes '(python-mode python-ts-mode))
-  (set-eglot-client! '(python-mode python-ts-mode) '("ty" "server")))
+  ;; ty; inside the kernel's container image for cluster buffers (lisp/+jupyter-lsp.el)
+  (set-eglot-client! '(python-mode python-ts-mode) #'+jupyter-lsp-contact))
 
 ;; Neotree
 (after! treemacs
   (setq treemacs-width 25))
+
+;;; Jupyter (lisp/+jupyter-*.el): kernels, `# %%' notebooks with inline outputs,
+;;; Org, remote servers. Replaces the Neovim molten/quarto setup.
+;; `,' is the localleader (init.el); keep evil-snipe off `,'/`;'.
+(setq evil-snipe-override-evil-repeat-keys nil)
+
+;; emacs-jupyter needs jupyter_client's CLI (`kernelspec list'); the jupyter-core
+;; uv tool on PATH has none, so bin/jupyter runs it through `uv tool run'.
+(setq jupyter-executable (expand-file-name "bin/jupyter" doom-user-dir))
+
+;; TRAMP: reuse ssh_config's ControlMaster (one 2FA login shared with the
+;; Jupyter port-forwards and sshfs), find uv tools on the remote PATH.
+(after! tramp
+  (setq tramp-use-connection-share nil
+        tramp-verbose 1
+        remote-file-name-inhibit-locks t)
+  (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+  ;; JSC's 2FA prompt: TRAMP only knows "Verification code"/"TACC Token Code".
+  (setq tramp-otp-password-prompt-regexp
+        (rx-to-string
+         `(: bol (* nonl)
+           (group (| "Verification code" "TACC Token Code" "OTP" "One-time password"
+                     "one-time password" "One Time Password" "Token code"))
+           (* nonl) (any ":៖︓﹕：") (* blank)))))
+
+(load! "lisp/+jupyter-kernels")
+(load! "lisp/+jupyter-cells")
+(load! "lisp/+jupyter-remote")
+(load! "lisp/+jupyter-org")
+(load! "lisp/+jupyter-lsp")

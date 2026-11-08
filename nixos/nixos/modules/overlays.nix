@@ -9,6 +9,8 @@
         (final: _prev: {
           tabctl = final.callPackage ../pkgs/tabctl.nix { };
           yamis-icon-theme = final.callPackage ../pkgs/yamis-icon-theme.nix { };
+          # Dropped from nixpkgs 2026-11-03; vendored, bump by hand (see pkgs/brave/default.nix).
+          brave = final.callPackage ../pkgs/brave { };
         })
 
         # Stable packages through pkgs.stable.<pkg>

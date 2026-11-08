@@ -60,7 +60,7 @@
         tmux
 
         # --- Editors ---
-        neovide
+        stable.neovide
 
         # --- TUI ---
         spotify-player

@@ -1,7 +1,7 @@
-theme = Gruvbox Dark
+theme = Oxocarbon
 confirm-close-surface = false
 font-family = JetBrainsMono Nerd Font
-font-size = 12
+font-size = 16
 window-padding-y = 0
 command = fish -C fastfetch
 keybind = ctrl+enter=unbind

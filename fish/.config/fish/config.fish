@@ -44,7 +44,7 @@ function tunnel
     end
     set -l port 8888
     set -q _flag_port; and set port $_flag_port
-    ssh -4 -i ~/.ssh/id_jureca -N -L 8888:$argv[1]:$port baracco1@jureca.fz-juelich.de
+    ssh -4 -i ~/.ssh/id_judoor -N -L 8888:$argv[1]:$port baracco1@jureca.fz-juelich.de
 end
 # Claude Code read-only Ask mode (agent + Bash hook in ~/.claude)
 alias ask 'CLAUDE_ASK_MODE=1 claude --agent ask'

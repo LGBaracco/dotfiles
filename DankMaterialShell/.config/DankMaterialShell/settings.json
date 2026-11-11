@@ -1,7 +1,7 @@
 {
   "currentThemeName": "custom",
   "currentThemeCategory": "registry",
-  "customThemeFile": "~/.config/dms/themes/myoxocarbon/theme.json",
+  "customThemeFile": "/home/lorenzo/.config/dms/themes/gruvboxMulti/theme.json",
   "registryThemeVariants": {
     "oxocarbon": "blue",
     "deepdark": {
@@ -16,11 +16,11 @@
         "accent": "blue"
       }
     },
-    "gruvboxMaterial": "hard",
+    "gruvboxMaterial": "soft",
     "gruvboxMulti": {
       "dark": {
-        "flavor": "material-hard-dark",
-        "accent": "purple"
+        "flavor": "classic-hard-dark",
+        "accent": "green"
       }
     }
   },

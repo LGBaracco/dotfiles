@@ -8,8 +8,8 @@
   papirus-icon-theme,
   kdePackages,
   # GTK fallback for ColorScheme-Text (Plasma recolors; GTK uses this hex).
-  # Oxocarbon Purple primary from myoxocarbon/theme.json.
-  fallbackColor ? "#be95ff",
+  # Gruvbox yellow
+  fallbackColor ? "#fabd2f",
 }:
 
 stdenvNoCC.mkDerivation {

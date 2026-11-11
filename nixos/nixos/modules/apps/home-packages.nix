@@ -51,6 +51,7 @@
         stable.zotero
         zoom-us
         unstable.godot
+        qbittorrent
 
         # --- terminals ---
         unstable.ghostty

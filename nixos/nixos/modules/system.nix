@@ -22,7 +22,9 @@
             "nix-command"
             "flakes"
           ];
-          auto-optimise-store = true;
+          # Off: on the HDD, per-build dedup (1.7M .links entries) stalls the daemon for minutes
+          # and blocks builder output, so rebuilds look frozen. nix.optimise below dedups weekly.
+          auto-optimise-store = false;
           # recommended binary caches
           substituters = [
             "https://cache.nixos.org"
@@ -38,6 +40,11 @@
 
         # `nix shell unstable#foo`; `nixpkgs#` stays pinned to the system's (stable) nixpkgs
         registry.unstable.flake = inputs.nixpkgs-unstable;
+
+        optimise = {
+          automatic = true;
+          dates = [ "weekly" ];
+        };
 
         gc = {
           automatic = true;

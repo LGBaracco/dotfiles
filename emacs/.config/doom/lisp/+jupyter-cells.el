@@ -36,11 +36,11 @@
   :type 'boolean)
 
 (defface +notebook-output '((t :foreground "#dde1e6")) "Cell output text.")
-(defface +notebook-border '((t :foreground "#525252")) "Output border (pending).")
-(defface +notebook-border-running '((t :foreground "#78a9ff")) "Output border (running).")
-(defface +notebook-border-ok '((t :foreground "#42be65")) "Output border (success).")
-(defface +notebook-border-error '((t :foreground "#ee5396")) "Output border (error).")
-(defface +notebook-footer '((t :foreground "#78a9ff" :slant italic)) "Truncation footer.")
+(defface +notebook-border '((t :foreground "#665c54")) "Output border (pending).")
+(defface +notebook-border-running '((t :foreground "#83a598")) "Output border (running).")
+(defface +notebook-border-ok '((t :foreground "#b8bb26")) "Output border (success).")
+(defface +notebook-border-error '((t :foreground "#fb4934")) "Output border (error).")
+(defface +notebook-footer '((t :foreground "#83a598" :slant italic)) "Truncation footer.")
 
 (defconst +notebook--nbsync
   (expand-file-name "../bin/nbsync.py" (file-name-directory (or load-file-name buffer-file-name))))

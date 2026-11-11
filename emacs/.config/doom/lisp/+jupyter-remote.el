@@ -223,6 +223,29 @@ ALIVE-CHECK, if given, is called with a function (ALIVE-P REASON) after failures
 
 ;;; Attaching kernels
 
+;; RFC 6455 4.1: a client must not send frames before the server's handshake
+;; response. emacs-jupyter sends kernel_info_request right after `websocket-open',
+;; but jupyter_server answers the upgrade only after the kernel has replied to its
+;; own kernel_info (10-15 s for a cold atlas container). Until then the request
+;; sits unread in the server's socket, and attaches failed at random (180 s wait,
+;; leaked kernel, a retry works). Hold sends until the handshake is done.
+(defcustom +jupyter-remote-ws-open-timeout 90
+  "Seconds a websocket send waits for the server's handshake response."
+  :type 'integer)
+
+(defun +jupyter-remote--ws-wait-open-a (ws frame)
+  (when (and (eq (websocket-ready-state ws) 'connecting)
+             (not (eq (websocket-frame-opcode frame) 'close)))
+    (let ((proc (websocket-conn ws))
+          (deadline (+ (float-time) +jupyter-remote-ws-open-timeout)))
+      (while (and (eq (websocket-ready-state ws) 'connecting)
+                  (process-live-p proc)
+                  (< (float-time) deadline))
+        (accept-process-output proc 0.1)))))
+
+(with-eval-after-load 'websocket
+  (advice-add 'websocket-send :before #'+jupyter-remote--ws-wait-open-a))
+
 (defun +jupyter-remote--server-object (rec)
   "`jupyter-server' for REC (token header set, no prompts)."
   (require 'jupyter)
@@ -271,10 +294,16 @@ ALIVE-CHECK, if given, is called with a function (ALIVE-P REASON) after failures
          (label (format "%s@%s" name (+jupyter-remote--short (plist-get rec :node)))))
     (+jupyter-detach t)
     (+jupyter--notify "starting %s…" label)
-    (let ((client (let ((jupyter-long-timeout (max 60 jupyter-long-timeout)))
-                    (jupyter-bootstrap-repl
-                     (jupyter-client (jupyter-kernel :server server :spec spec) 'jupyter-repl-client)
-                     label nil nil))))
+    (let* ((kernel (jupyter-kernel :server server :spec spec))
+           (client (condition-case err
+                       (let ((jupyter-long-timeout (max 60 jupyter-long-timeout)))
+                         (jupyter-bootstrap-repl (jupyter-client kernel 'jupyter-repl-client)
+                                                 label nil nil))
+                     ((error quit)
+                      ;; Don't leave the new kernel running on the server for nobody.
+                      (when-let* ((id (jupyter-server-kernel-id kernel)))
+                        (ignore-errors (jupyter-api-shutdown-kernel server id)))
+                      (signal (car err) (cdr err))))))
       (+jupyter-attach client :name name :label label :server server
                        :bootstrap (or bootstrap (+jupyter-remote--bootstrap rec))))))
 

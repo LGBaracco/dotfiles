@@ -54,29 +54,29 @@ alias nrs 'nh os switch $HOME/nixos#$hostname'
 alias nrt 'nh os test $HOME/nixos#$hostname'
 alias nrb 'nh os boot $HOME/nixos#$hostname'
 
-# ── Oxocarbon (base16-oxocarbon-dark) ────────────────────────────────────────
-set -g fish_color_normal f2f4f8
-set -g fish_color_command 42be65
-set -g fish_color_keyword be95ff
-set -g fish_color_quote 33b1ff
-set -g fish_color_redirection ff7eb6
-set -g fish_color_end ee5396
-set -g fish_color_error ee5396 --bold
-set -g fish_color_param f2f4f8
-set -g fish_color_comment 525252
-set -g fish_color_operator ff7eb6
-set -g fish_color_escape 82cfff
-set -g fish_color_autosuggestion 525252
-set -g fish_color_cwd 42be65
-set -g fish_color_cwd_root ee5396
-set -g fish_color_option 78a9ff
+# ── Gruvbox dark hard (morhetz/gruvbox bright colours, as ghostty/tmux/starship) ──
+set -g fish_color_normal ebdbb2
+set -g fish_color_command b8bb26
+set -g fish_color_keyword d3869b
+set -g fish_color_quote fabd2f
+set -g fish_color_redirection 8ec07c
+set -g fish_color_end fe8019
+set -g fish_color_error fb4934 --bold
+set -g fish_color_param ebdbb2
+set -g fish_color_comment 928374
+set -g fish_color_operator 8ec07c
+set -g fish_color_escape fe8019
+set -g fish_color_autosuggestion 7c6f64
+set -g fish_color_cwd b8bb26
+set -g fish_color_cwd_root fb4934
+set -g fish_color_option 83a598
 set -g fish_color_valid_path --underline
-set -g fish_color_selection --background=393939
-set -g fish_color_search_match --background=393939
-set -g fish_pager_color_prefix 42be65 --bold
-set -g fish_pager_color_completion f2f4f8
-set -g fish_pager_color_description 525252
-set -g fish_pager_color_progress ee5396 --bold
+set -g fish_color_selection --background=504945
+set -g fish_color_search_match --background=504945
+set -g fish_pager_color_prefix b8bb26 --bold
+set -g fish_pager_color_completion ebdbb2
+set -g fish_pager_color_description 928374
+set -g fish_pager_color_progress fb4934 --bold
 
 # ── Tools ────────────────────────────────────────────────────────────────────
 type -q zoxide; and zoxide init fish | source

@@ -74,9 +74,7 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
-;;; Doom dashboard
-(assoc-delete-all "Open org-agenda" +dashboard-menu-sections)
-(assoc-delete-all "Jump to bookmark" +dashboard-menu-sections)
+;;; Doom dashboard: lisp/+dashboard.el (mirrors the nvim dashboard)
 
 ;
 ;; Send files to trash instead of fully deleting
@@ -90,14 +88,19 @@
 
 ;; font size
 (setq doom-font (font-spec :size 16))
-;; Theme
-(load-theme 'oxocarbon2 t)
+;; Theme: doom-themes' gruvbox, hard variant (bg #1d2021, as ghostty/tmux).
+;; oxocarbon2 stays in themes/: `M-x load-theme RET oxocarbon2`.
+(setq doom-gruvbox-dark-variant "hard")
+(load-theme 'doom-gruvbox t)
 
 ;; Evil settings
 (setq-default evil-escape-key-sequence "kj")
 (setq-default evil-escape-delay 0.1)
 ;; Enable paste from system clipboard with C-v in insert mode
 (evil-define-key 'insert global-map (kbd "C-v") 'clipboard-yank)
+;; ...and in every minibuffer (read-string prompts like ,I's URL/token, completion):
+;; evil is off there, so C-v was the global `scroll-up-command'.
+(define-key! :keymaps +default-minibuffer-maps "C-v" #'clipboard-yank)
 
 
 (setq which-key-idle-delay 1.5) ;; extend which-key delay
@@ -132,14 +135,9 @@
   ;; ty; inside the kernel's container image for cluster buffers (lisp/+jupyter-lsp.el)
   (set-eglot-client! '(python-mode python-ts-mode) #'+jupyter-lsp-contact))
 
-;; Neotree
-(after! treemacs
-  (setq treemacs-width 25))
-
 ;;; Jupyter (lisp/+jupyter-*.el): kernels, `# %%' notebooks with inline outputs,
 ;;; Org, remote servers. Replaces the Neovim molten/quarto setup.
-;; `,' is the localleader (init.el); keep evil-snipe off `,'/`;'.
-(setq evil-snipe-override-evil-repeat-keys nil)
+;; `,' is the localleader (init.el).
 
 ;; emacs-jupyter needs jupyter_client's CLI (`kernelspec list'); the jupyter-core
 ;; uv tool on PATH has none, so bin/jupyter runs it through `uv tool run'.
@@ -165,3 +163,7 @@
 (load! "lisp/+jupyter-remote")
 (load! "lisp/+jupyter-org")
 (load! "lisp/+jupyter-lsp")
+
+;;; Neovim-style keys and dashboard (baseline: ~/dotfiles/neovim/.config/nvim)
+(load! "lisp/+keys")
+(load! "lisp/+dashboard")

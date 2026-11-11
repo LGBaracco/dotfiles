@@ -46,6 +46,16 @@
                   else
                     prev.opencode;
               })
+              # Neovim-wrapper tools broken on nixos-unstable 2026-11-07 (Hydra failed, so no cache).
+              # Drop each once nixos-unstable includes the nixpkgs fix commit.
+              (ufinal: prev: {
+                # No pkg-config for onig_sys; fixed by 5246ebb2. Stable's 0.10.1 is cached.
+                neocmakelsp = final.stable.neocmakelsp;
+                # `cannot find -lsqlite3`; same change as upstream fix b023ece2.
+                gersemi = prev.gersemi.overrideAttrs (old: {
+                  buildInputs = (old.buildInputs or [ ]) ++ [ ufinal.sqlite ];
+                });
+              })
             ];
           };
         })

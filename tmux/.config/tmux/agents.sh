@@ -67,9 +67,9 @@ name_window() {
 }
 
 # Current tab of an agent window in the active-agent colour, in P-agents and wherever it is
-# linked: the window formats read @theme_purple, and a window option shadows the global one.
+# linked: the window formats read @theme_active, and a window option shadows the global one.
 color_window() {
-    tmux set-option -w -t "$1" @theme_purple "$(tmux display-message -p '#{E:@agents_active}')"
+    tmux set-option -w -t "$1" @theme_active "$(tmux display-message -p '#{E:@agents_active}')"
 }
 
 # Project session and its directory for the client, also when inside P-agents.
@@ -291,14 +291,16 @@ cmd_forks() {
     return 0
 }
 
-# strip <P> <bg> <fg> <gray> <active> <red> <yellow> <green> [client_width]
+# strip <P> <bg> <fg> <gray> <active> <red> <yellow> <green> [client_width] [pill_text]
+# pill_text: text colour on the active agent pill (default <bg>).
 # With the client width, the strip fits the room the session pill and window list leave:
 # names get shorter, then only indexes are shown, then nothing. A strip wider than the
 # status line makes tmux drop the window list and the strip with it.
 cmd_strip() {
-    local p=$1 bg=$2 fg=$3 gray=$4 active=$5 red=$6 yellow=$7 green=$8 width=${9:-0}
+    local p=$1 bg=$2 fg=$3 gray=$4 active=$5 red=$6 yellow=$7 green=$8 width=${9:-0} pilltext=${10:-$2}
     local a out plain prev num name state current seg text glyph i max budget=-1 n left list
     local arrow=$'\xee\x82\xb0' # powerline U+E0B0, as in the window list
+    local thin=$'\xee\x82\xb1'  # thin divider U+E0B1 between neighbouring inactive agents
     local -a currents=() names=() states=()
     [[ $p == *"$SUFFIX" ]] && return 0
     a=$(agents_of "$p")
@@ -319,7 +321,7 @@ cmd_strip() {
             ((${#name} > max)) && name="${name:0:max-1}…"
             ((max == 0)) && name=""
             # Inactive agents share the gray band like inactive windows; the active one is a pill.
-            if [[ ${currents[i]} == 1 ]]; then seg=$active text=$bg; else seg=$gray text=$fg; fi
+            if [[ ${currents[i]} == 1 ]]; then seg=$active text=$pilltext; else seg=$gray text=$fg; fi
             case ${states[i]} in
                 blocked) glyph="#[fg=$red]● " ;;
                 working) glyph="#[fg=$yellow]⦿ " ;;
@@ -327,8 +329,13 @@ cmd_strip() {
                 "") glyph="" ;;
                 *) glyph="○ " ;; # idle: uncoloured, as on window tabs
             esac
-            # Arrow only where the colour changes (start, gray↔active), as in the window list.
-            [[ $seg != "$prev" ]] && out+="#[fg=$prev,bg=$seg]$arrow" plain+=$arrow
+            # Arrow where the colour changes (start, gray↔active), thin divider between two
+            # inactive agents, as in the window list.
+            if [[ $seg != "$prev" ]]; then
+                out+="#[fg=$prev,bg=$seg]$arrow" plain+=$arrow
+            else
+                out+="#[fg=$bg,bg=$seg]$thin" plain+=$thin
+            fi
             out+="#[fg=$text,bg=$seg] $num ${name:+$name }$glyph"
             plain+=" $num ${name:+$name }${glyph:+x }"
             prev=$seg

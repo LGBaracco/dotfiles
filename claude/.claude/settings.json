@@ -136,6 +136,6 @@
     }
   },
   "awaySummaryEnabled": false,
-  "theme": "custom:oxocarbon",
+  "theme": "dark-ansi",
   "editorMode": "vim"
 }

@@ -53,6 +53,11 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;; (unpin! t)
 (package! evil-tutor)
+;; s/S are avy jumps (nvim: hop) and f/t stay native; see lisp/+keys.el.
+(package! evil-snipe :disable t)
+;; C-w window hydra, debug step hydra (lisp/+keys.el) and `,j' notebook hydra.
+;; Previously only pulled in by treemacs, which is disabled.
+(package! hydra)
 ;;(unpin! julia-snail)
 (package! kdl-mode)
 

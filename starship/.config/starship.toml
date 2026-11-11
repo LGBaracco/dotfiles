@@ -2,14 +2,16 @@ add_newline = true
 # Don't stat through symlinks when scanning cwd: ~/home-ext points into the JURECA
 # sshfs mount, which blocks every lookup while it reconnects after standby.
 follow_symlinks = false
-format = "$os$hostname[](fg:#393939 bg:#42be65)$username$git_branch$git_status$directory[](fg:#393939)(\n\n$python$conda) "
+format = "$os$hostname[](fg:color_orange bg:color_yellow)$username$git_branch$git_status$directory[](fg:color_blue)(\n\n$python$conda) "
+palette = "gruvbox_dark"
 
-# Green pill: OS icon + host | user (thin gray divider). Purple: git. Gray: cwd.
+# Pills in gruvbox-rainbow order (palette at the bottom): orange = OS icon + host,
+# yellow = user, aqua = git, blue = cwd.
 # Each pill draws its own leading arrow so missing segments leave no gaps.
 [os]
 disabled = false
 format = "[ $symbol]($style)"
-style = "fg:#161616 bg:#42be65"
+style = "fg:color_fg0 bg:color_orange"
 
 [os.symbols]
 NixOS = " "
@@ -26,21 +28,20 @@ Unknown = " "
 [hostname]
 ssh_only = false
 format = "[$hostname ]($style)"
-style = "fg:#161616 bg:#42be65"
+style = "fg:color_fg0 bg:color_orange"
 
 [username]
 show_always = true
 format = "[ $user ]($style)"
-style_user = "fg:#161616 bg:#42be65"
-style_root = "fg:#161616 bg:#42be65"
+style_user = "fg:color_fg0 bg:color_yellow"
+style_root = "fg:color_fg0 bg:color_yellow"
 
-# Neutral pill, matching tmux's inactive windows (gray bg, white fg).
-# Arrow comes from purple inside a repo (git pill precedes), green otherwise.
+# Blue pill. Arrow comes from aqua inside a repo (git pill precedes), yellow (user) otherwise.
 [directory]
-format = "[](fg:#42be65 bg:#393939)[ $path ]($style)"
-repo_root_format = "[](fg:#be95ff bg:#393939)[ $repo_root$path ]($style)"
-style = "fg:#f2f4f8 bg:#393939"
-repo_root_style = "fg:#f2f4f8 bg:#393939"
+format = "[](fg:color_yellow bg:color_blue)[ $path ]($style)"
+repo_root_format = "[](fg:color_aqua bg:color_blue)[ $repo_root$path ]($style)"
+style = "fg:color_fg0 bg:color_blue"
+repo_root_style = "fg:color_fg0 bg:color_blue"
 truncate_to_repo = true
 truncation_length = 3
 # repo_root_format breaks (renders nothing) when the logical path is a symlink
@@ -48,27 +49,44 @@ truncation_length = 3
 use_logical_path = false
 
 [git_branch]
-format = "[](fg:#42be65 bg:#be95ff)[ $symbol$branch ]($style)"
-style = "fg:#161616 bg:#be95ff"
+format = "[](fg:color_yellow bg:color_aqua)[ $symbol$branch ]($style)"
+style = "fg:color_fg0 bg:color_aqua"
 symbol = " "
 
 [git_status]
 format = "[$all_status$ahead_behind]($style)"
 stashed = ""
-style = "fg:#161616 bg:#be95ff"
+style = "fg:color_fg0 bg:color_aqua"
 
-# Active venv (uv/virtualenv) or conda/mamba env: a blue powerline segment on a second line.
+# Active venv (uv/virtualenv) or conda/mamba env: a bg3 (5th rainbow colour) pill on a second line.
 # The "(\n\n$python$conda)" group (blank line for breathing room) in format only renders when one is active.
 [python]
-format = "[ $symbol$virtualenv ]($style)[](fg:#78a9ff)"
+format = "[ $symbol$virtualenv ]($style)[](fg:color_bg3)"
 symbol = "\ue235 "
-style = "fg:#161616 bg:#78a9ff"
+style = "fg:color_fg0 bg:color_bg3"
 # Only when a venv is active, not in every Python project
 detect_extensions = []
 detect_files = []
 detect_folders = []
 
 [conda]
-format = "[ $symbol$environment ]($style)[](fg:#78a9ff)"
+format = "[ $symbol$environment ]($style)[](fg:color_bg3)"
 symbol = "\ue715 "
-style = "fg:#161616 bg:#78a9ff"
+style = "fg:color_fg0 bg:color_bg3"
+
+# Palette of starship's gruvbox-rainbow preset (`starship preset gruvbox-rainbow`).
+# The preset runs its pills orange → yellow → aqua → blue → bg3 → bg1, with fg0 text on each.
+# Used here: orange (os/host) → yellow (user) → aqua (git) → blue (cwd); bg3 (venv/conda, line 2).
+# Next new pill: bg1. green, purple, red: the preset uses them only for the ❯ prompt
+# character (green ok/vi-normal, red error, purple vi-replace; yellow vi-visual).
+[palettes.gruvbox_dark]
+color_fg0 = '#fbf1c7'
+color_bg1 = '#3c3836'
+color_bg3 = '#665c54'
+color_blue = '#458588'
+color_aqua = '#689d6a'
+color_green = '#98971a'
+color_orange = '#d65d0e'
+color_purple = '#b16286'
+color_red = '#cc241d'
+color_yellow = '#d79921'

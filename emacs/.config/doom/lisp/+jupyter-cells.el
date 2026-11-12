@@ -727,6 +727,131 @@ first body position, :end the end of the last non-blank body line."
         (insert (format +notebook--new-template (file-name-base file)))))
     (find-file file)))
 
+;;; Markdown cells
+;; `# %% [markdown]' bodies are `# '-prefixed comment lines. Restyle them as text
+;; with markdown-mode's faces (headings, bold, italic, code, links, lists, quotes,
+;; math, ``` fences); the `# ' prefix stays in the buffer, dimmed (hiding it would
+;; let `x'/`I' at the line start edit an invisible `#').
+
+(defface +notebook-md-prefix '((t :foreground "#504945")) "`# ' prefix of markdown cell lines.")
+(defface +notebook-md-text '((t :inherit default)) "Markdown cell text.")
+(defface +notebook-md-h1 '((t :inherit markdown-header-face-1 :height 1.25)) "Markdown heading 1.")
+(defface +notebook-md-h2 '((t :inherit markdown-header-face-2 :height 1.1)) "Markdown heading 2.")
+
+(defconst +notebook--md-header-re "\\[\\(?:markdown\\|md\\)\\]"
+  "Cell header suffix of markdown cells (raw cells keep the comment look).")
+
+(defconst +notebook--md-inline
+  '(("`[^`\n]+`" 0 (0 . markdown-inline-code-face))
+    ("\\$[^$\n]+\\$" 0 (0 . markdown-math-face))
+    ("\\[\\([^]\n]+\\)\\]\\(([^)\n]+)\\)" 0 (1 . markdown-link-face) (2 . markdown-url-face))
+    ("\\*\\*[^*\n]+\\*\\*" 0 (0 . markdown-bold-face))
+    ("\\(?:\\=\\|[^*]\\)\\(\\*[^*[:space:]][^*\n]*\\*\\)" 1 (1 . markdown-italic-face)))
+  "Inline markdown: (REGEXP SPAN-GROUP (GROUP . FACE)...), earlier rules win overlaps.")
+
+(defun +notebook--cell-header (pos)
+  "Start of the `# %%' line of the cell containing POS; nil in the preamble."
+  (save-excursion
+    (goto-char pos)
+    (end-of-line)
+    (and (re-search-backward code-cells-boundary-regexp nil t) (point))))
+
+(defun +notebook--cell-limit (pos)
+  "Start of the first cell header after POS's line, else `point-max'."
+  (save-excursion
+    (goto-char pos)
+    (end-of-line)
+    (if (re-search-forward code-cells-boundary-regexp nil t) (match-beginning 0) (point-max))))
+
+(defun +notebook--md-header-p (header)
+  (save-excursion
+    (goto-char header)
+    (re-search-forward +notebook--md-header-re (line-end-position) t)))
+
+(defun +notebook--md-extend-region ()
+  "Grow the font-lock region over whole markdown cells.
+A body line's style depends on its header and on ``` fences above it, and
+editing a header line restyles the cell below it."
+  (let* ((beg font-lock-beg) (end font-lock-end)
+         (last (max beg (1- end)))
+         (h (+notebook--cell-header beg))
+         (h-end (+notebook--cell-header last)))
+    (when (and h (+notebook--md-header-p h))
+      (setq beg (min beg h)))
+    (when (and h-end (or (>= h-end font-lock-beg) (+notebook--md-header-p h-end)))
+      (setq end (max end (+notebook--cell-limit last))))
+    (prog1 (or (< beg font-lock-beg) (> end font-lock-end))
+      (setq font-lock-beg beg font-lock-end end))))
+
+(defun +notebook--md-style-line (bol text eol code)
+  "Style one markdown line: `# ' prefix BOL..TEXT, content TEXT..EOL (CODE: in a fence)."
+  (put-text-property bol text 'face '+notebook-md-prefix)
+  (goto-char text)
+  (cond
+   (code (put-text-property text eol 'face 'markdown-code-face))
+   ((looking-at "\\(#\\{1,6\\}\\)\\(?:[ \t]\\|$\\)")
+    (let ((n (- (match-end 1) (match-beginning 1))))
+      (put-text-property text eol 'face (pcase n
+                                          (1 '+notebook-md-h1)
+                                          (2 '+notebook-md-h2)
+                                          (_ (intern (format "markdown-header-face-%d" n)))))
+      (put-text-property (match-beginning 1) (match-end 1) 'face 'markdown-header-delimiter-face)))
+   (t
+    (put-text-property text eol 'face (if (looking-at-p "[ \t]*>")
+                                          'markdown-blockquote-face
+                                        '+notebook-md-text))
+    (when (looking-at "[ \t]*\\([-*+]\\|[0-9]+[.)]\\)[ \t]")
+      (put-text-property (match-beginning 1) (match-end 1) 'face 'markdown-list-face))
+    (let (spans)
+      (pcase-dolist (`(,re ,span . ,faces) +notebook--md-inline)
+        (goto-char text)
+        (while (re-search-forward re eol t)
+          (let ((mb (match-beginning span)) (me (match-end span)))
+            (unless (cl-some (lambda (s) (and (< mb (cdr s)) (> me (car s)))) spans)
+              (push (cons mb me) spans)
+              (pcase-dolist (`(,group . ,face) faces)
+                (add-face-text-property (match-beginning group) (match-end group) face)))
+            (goto-char me))))))))
+
+(defun +notebook--md-fontify (limit)
+  "Font-lock matcher: style markdown cell bodies from point to LIMIT.
+Applies the faces itself and returns nil."
+  (let ((start (point)))
+    (save-excursion
+      (save-match-data
+        (let ((h (or (+notebook--cell-header start) (+notebook--cell-limit start))))
+          (while (< h limit)
+            (let ((next (+notebook--cell-limit h))
+                  (fence nil))
+              (when (+notebook--md-header-p h)
+                (goto-char h)
+                (forward-line 1)
+                (while (< (point) next)
+                  (let ((bol (point)) (eol (line-end-position)))
+                    (when (looking-at "#\\(?: \\|$\\)")
+                      (let* ((text (match-end 0))
+                             (fence-line (progn (goto-char text)
+                                                (looking-at-p "[ \t]*\\(?:```\\|~~~\\)")))
+                             (code (or fence fence-line)))
+                        (when fence-line (setq fence (not fence)))
+                        (when (and (>= bol start) (< bol limit))
+                          (+notebook--md-style-line bol text eol code))))
+                    (goto-char bol)
+                    (forward-line 1))))
+              (setq h next))))))
+    nil))
+
+(defun +notebook--md-setup (on)
+  "Turn markdown cell styling ON or off in the current buffer."
+  (if on
+      (progn
+        (require 'markdown-mode nil t)  ; its faces
+        (font-lock-add-keywords nil '((+notebook--md-fontify)) 'append)
+        (add-hook 'font-lock-extend-region-functions #'+notebook--md-extend-region nil t))
+    (font-lock-remove-keywords nil '((+notebook--md-fontify)))
+    (remove-hook 'font-lock-extend-region-functions #'+notebook--md-extend-region t))
+  (font-lock-flush))
+
 ;;; Mode
 
 (defvar +notebook-mode-map (make-sparse-keymap))
@@ -738,10 +863,17 @@ first body position, :end the end of the last non-blank body line."
       (progn
         (require 'code-cells)
         (code-cells-mode 1)
+        (+notebook--md-setup t)
         (add-hook 'kill-buffer-hook #'+notebook--on-kill nil t))
     (code-cells-mode -1)
+    (+notebook--md-setup nil)
     (+notebook/delete-all-outputs)
     (remove-hook 'kill-buffer-hook #'+notebook--on-kill t)))
+
+;; Evil applies a minor mode's state keys (RET, the `,' notebook keys) only after
+;; `evil-normalize-keymaps'. .ipynb buffers enable the mode after their major mode
+;; (+notebook-ipynb-mode); evil-snipe's local mode used to refresh as a side effect.
+(add-hook '+notebook-mode-hook #'evil-normalize-keymaps)
 
 (defun +notebook--on-kill ()
   "Shut the kernel down when its last associated buffer goes away."

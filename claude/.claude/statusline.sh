@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Claude Code status line: model │ effort │ context window bar │ rate-limit circles (5h, 7d).
 # Reads the session JSON Claude Code pipes on stdin; see `statusLine` in settings.json.
-# Colors are truecolor (gruvbox bright red/yellow/green/purple) so they match tmux/starship in any terminal palette.
+# Colors are the terminal's bright ANSI red/yellow/green/magenta (ghostty gruvbox: #fb4934 #fabd2f #b8bb26 #d3869b).
+# Not truecolor: Claude Code re-emits the line in 256 colours, which turns gruvbox green into a yellow.
 # Circles are Nerd Font glyphs (Material Design circle-outline + circle-slice-1..8).
 exec jq -rj '
   def esc(c): "\u001b[" + c + "m";
-  def rgb(r; g; b): esc("38;2;\(r);\(g);\(b)");
-  def color(p): if p >= 80 then rgb(251; 73; 52) elif p >= 50 then rgb(250; 189; 47) else rgb(184; 187; 38) end;
+  def color(p): if p >= 80 then esc("91") elif p >= 50 then esc("93") else esc("92") end;
   def dim(s): esc("2") + s + esc("0");
   def rep(s; n): if n > 0 then s * n else "" end;
   def clamp(lo; hi): [[., lo] | max, hi] | min;
@@ -27,7 +27,7 @@ exec jq -rj '
   | .rate_limits as $rl
   | [
       esc("1") + (.model.display_name // "Claude") + esc("0"),
-      (if .effort.level then dim("effort") + " " + rgb(211; 134; 155) + .effort.level + esc("0") else empty end),
+      (if .effort.level then dim("effort") + " " + esc("95") + .effort.level + esc("0") else empty end),
       dim("context") + " " + if $cw.used_percentage == null then dim("--")
         else bar($cw.used_percentage) + " " + pct($cw.used_percentage) + " "
           + dim("\(tokens($cw.total_input_tokens // 0))/\(tokens($cw.context_window_size // 0))") end,

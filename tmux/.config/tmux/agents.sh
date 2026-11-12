@@ -126,11 +126,13 @@ cmd_offsets() {
     done < <(tmux list-sessions -F '#{session_name}	#{@agents_parent}')
 }
 
+# glyph_of <state>: the state's dot for menu labels, coloured as on the tabs (idle: menu text).
 glyph_of() {
     case $1 in
-        blocked) printf '●' ;;
-        working) printf '⦿' ;;
-        "done" | idle) printf '○' ;;
+        blocked) printf '#[fg=#{@theme_red}]●#[default]' ;;
+        working) printf '#[fg=#{@theme_yellow}]⦿#[default]' ;;
+        "done") printf '#[fg=#{@theme_green}]⦿#[default]' ;;
+        idle) printf '⦿' ;;
         *) printf ' ' ;;
     esac
 }
@@ -150,7 +152,7 @@ cmd_menu() {
             local key=""
             num=$((num + 1))
             ((num <= 9)) && key=$num
-            args+=("$(label "$num $(glyph_of "$state")  $name")" "$key" "run-shell '$SELF agent-menu $CLIENT $id'")
+            args+=("$(label "$num ")$(glyph_of "$state")$(label "  $name")" "$key" "run-shell '$SELF agent-menu $CLIENT $id'")
         done < <(tmux list-windows -t "=$a" -F '#{window_id}	#{window_name}	#{@agent_state}')
         args+=("")
         args+=("new agent" n "run-shell '$SELF new'")
@@ -325,9 +327,9 @@ cmd_strip() {
             case ${states[i]} in
                 blocked) glyph="#[fg=$red]● " ;;
                 working) glyph="#[fg=$yellow]⦿ " ;;
-                "done") glyph="#[fg=$green]○ " ;;
+                "done") glyph="#[fg=$green]⦿ " ;;
                 "") glyph="" ;;
-                *) glyph="○ " ;; # idle: uncoloured, as on window tabs
+                *) glyph="⦿ " ;; # idle: uncoloured (tab text), as on window tabs
             esac
             # Arrow where the colour changes (start, gray↔active), thin divider between two
             # inactive agents, as in the window list.

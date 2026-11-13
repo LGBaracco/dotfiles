@@ -30,7 +30,7 @@
   "widgetBackgroundColor": "sc",
   "buttonColorMode": "secondary",
   "niriLayoutGapsOverride": 2,
-  "niriLayoutRadiusOverride": 7,
+  "niriLayoutRadiusOverride": 4,
   "niriLayoutBorderSize": 2,
   "mangoLayoutGapsOverride": 4,
   "mangoLayoutGapsOutOverride": 4,
@@ -43,7 +43,7 @@
   "enableRippleEffects": false,
   "motionEffect": 1,
   "barElevationEnabled": false,
-  "blurBorderOpacity": 1,
+  "blurBorderOpacity": 0.35,
   "blurredWallpaperLayer": true,
   "controlCenterWidgets": [
     {
@@ -798,5 +798,8 @@
   "muteSoundsWhenMediaPlaying": false,
   "blurBorderEnabled": true,
   "blurEnabled": true,
-  "blurBorderSeeded": true
+  "blurBorderSeeded": true,
+  "audioShowStreamDevices": true,
+  "blurBorderColor": "outline",
+  "focusRingWidth": 1
 }

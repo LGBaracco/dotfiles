@@ -295,7 +295,7 @@
       :n  "C-S-k" #'+window/resize-up
       :n  "C-S-l" #'+window/resize-right
       :n  "C-\\" #'evil-window-mru
-      :n  "C-t" #'+ghostel/toggle          ; toggleterm
+      :n  "C-t" #'+terminal/toggle         ; toggleterm (remote for remote buffers)
       ;; LuaSnip jumps (corfu's C-j/C-k win while its popup is open)
       :i  "C-j" #'yas-next-field-or-maybe-expand
       :i  "C-k" #'yas-prev-field
@@ -320,7 +320,7 @@
 
 (map! :after ghostel
       :map ghostel-mode-map
-      :nvie "C-t" #'+ghostel/toggle)
+      :nvie "C-t" #'+terminal/toggle)
 
 ;;; Leader -------------------------------------------------------------------
 
@@ -432,7 +432,10 @@
        :desc "Clear REPL"         "x"   #'+repl/clear
        :desc "Quit REPL"          "q"   #'+repl/quit
        :desc "Send RET"           "RET" #'+repl/newline
-       :desc "Interrupt"          "SPC" #'+repl/interrupt))
+       :desc "Interrupt"          "SPC" #'+repl/interrupt)
+
+      (:prefix "o"                   ; extends Doom's map, keeps its other keys
+       :desc "Local terminal"     "t" #'+terminal/toggle-local))
 
 ;;; Localleader --------------------------------------------------------------
 

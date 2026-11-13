@@ -164,6 +164,9 @@
 (load! "lisp/+jupyter-org")
 (load! "lisp/+jupyter-lsp")
 
+;; Ghostel popups on the cluster for remote buffers (C-t), local one on SPC o t.
+(load! "lisp/+terminal")
+
 ;;; Neovim-style keys and dashboard (baseline: ~/dotfiles/neovim/.config/nvim)
 (load! "lisp/+keys")
 (load! "lisp/+dashboard")

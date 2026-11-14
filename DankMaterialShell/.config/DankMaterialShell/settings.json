@@ -248,6 +248,7 @@
   "fontScale": 1.15,
   "useSystemSoundTheme": false,
   "acSuspendBehavior": 2,
+  "batterySuspendBehavior": 2,
   "batteryChargeLimit": 80,
   "lockBeforeSuspend": true,
   "muxCustomCommand": "tmux",

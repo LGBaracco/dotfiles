@@ -5,7 +5,7 @@ if type -q babelfish
     test -r $f; and babelfish <$f | source
 end
 
-fish_add_path -g $HOME/.local/bin $HOME/.config/emacs/bin /home/lbaracco/.opencode/bin
+fish_add_path -g $HOME/.local/bin $HOME/.config/emacs/bin $HOME/.juliaup/bin /home/lbaracco/.opencode/bin
 
 set -gx EDITOR nvim
 set -gx VISUAL nvim

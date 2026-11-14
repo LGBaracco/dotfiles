@@ -1,7 +1,8 @@
 -- Off-Nix tooling, set up by config.pack (never loaded on Nix, where the wrapper
 -- provides all of this):
---   mason.nvim installs pack.json `tools` that have a `mason` package; its bin dir
---   is appended to PATH like the wrapper's runtimePkgs suffix, so host tools win.
+--   mason.nvim installs pack.json `tools` that have a `mason` package, unless the
+--   host already provides the binary; its bin dir is appended to PATH like the
+--   wrapper's runtimePkgs suffix, so host tools win.
 --   :PackSync   install/align everything (network): plugins to nvim-pack-lock.json,
 --               build hooks, mason tools, treesitter parsers, blink.cmp's fuzzy
 --               binary, rplugin manifest; lists missing host-provided tools.
@@ -171,7 +172,9 @@ local function sync_tools()
     for _, t in ipairs(M.tools()) do
         if t.mason and t.requires and not has_bin(t.requires) then
             skipped[#skipped + 1] = ("%s (needs %s)"):format(t.mason, t.requires)
-        elseif t.mason and not registry.is_installed(t.mason) then
+        -- Host binary wins anyway; also covers pip tools without a wheel for the host's
+        -- Python (gersemi on 3.15 builds from source with Rust): `uv tool install --python 3.14`.
+        elseif t.mason and not registry.is_installed(t.mason) and not has_bin(t.bin) then
             local got, pkg = pcall(registry.get_package, t.mason)
             if not got then
                 say("mason has no package " .. t.mason, "error")

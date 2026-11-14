@@ -39,6 +39,18 @@
           HostName %h.ime.kfa-juelich.de
           User lbaracco
 
+        # JUPITER: must precede `j*`, since jupiter.fz-juelich.de is the FZJ web
+        # load balancer, not the login nodes. Same 2FA master sharing as jureca.
+        Host jupiter login.jupiter.fz-juelich.de
+          HostName login.jupiter.fz-juelich.de
+          User baracco1
+          IdentityFile ~/.ssh/id_jupiter
+          ControlMaster auto
+          ControlPath ~/.ssh/cm-%C
+          ControlPersist 8h
+          ServerAliveInterval 15
+          ServerAliveCountMax 3
+
         Host j* !*.*
           HostName %h.fz-juelich.de
           User baracco1

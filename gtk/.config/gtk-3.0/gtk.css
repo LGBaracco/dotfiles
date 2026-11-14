@@ -1,0 +1,15 @@
+/* Dux Shell's GTK template paints headerbars (and transparent menubars) with the
+   window color. Chromium/Brave in GTK mode draw the tab strip from the headerbar
+   (own title bar) or the menubar ("Use system title bar and borders") and the
+   active tab from the window, so tabs blended into the strip. A darker bar keeps
+   them visible; it is derived from the Dux Shell colors, so it follows theme changes. */
+@define-color headerbar_bg_color shade(@view_bg_color, 0.7);
+@define-color headerbar_backdrop_color @headerbar_bg_color;
+
+menubar {
+  background-color: @headerbar_bg_color;
+}
+
+menubar:backdrop {
+  background-color: @headerbar_backdrop_color;
+}

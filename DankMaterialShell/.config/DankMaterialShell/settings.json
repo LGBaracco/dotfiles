@@ -252,7 +252,7 @@
   "batteryChargeLimit": 80,
   "lockBeforeSuspend": true,
   "muxCustomCommand": "tmux",
-  "matugenTemplateGtk": false,
+  "matugenTemplateGtk": true,
   "matugenTemplateHyprland": false,
   "matugenTemplateQt5ct": false,
   "matugenTemplateQt6ct": false,

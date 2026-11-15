@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Launcher for GNOME Software (via ../share/applications/org.gnome.Software.desktop).
+# Closing its window leaves the process running in the background, holding the
+# NVIDIA dGPU awake. Under niri, wait for the window to close, then quit it.
+# Elsewhere (mango) just run it.
+
+[ -n "${NIRI_SOCKET:-}" ] || exec gnome-software "$@"
+
+has_window() {
+    niri msg --json windows | jq -e 'any(.[]; .app_id == "org.gnome.Software")' >/dev/null
+}
+
+gnome-software "$@" &
+
+# Give the window up to 30 s to appear, then poll until it is gone.
+for _ in $(seq 60); do has_window && break; sleep 0.5; done
+while has_window; do sleep 2; done
+gnome-software --quit

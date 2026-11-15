@@ -1,4 +1,5 @@
 [Desktop Entry]
+TryExec=/snap/bin/code
 X-SnapInstanceName=code
 Name=Visual Studio Code
 Comment=Code Editing. Redefined.

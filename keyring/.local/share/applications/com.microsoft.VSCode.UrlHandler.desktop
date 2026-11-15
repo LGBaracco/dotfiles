@@ -1,0 +1,13 @@
+[Desktop Entry]
+TryExec=/usr/share/code/code
+Name=Visual Studio Code - URL Handler
+Comment=Code Editing. Redefined.
+GenericName=Text Editor
+Exec=/usr/share/code/code --password-store=gnome-libsecret --open-url %U
+Icon=vscode
+Type=Application
+NoDisplay=true
+StartupNotify=true
+Categories=Utility;TextEditor;Development;IDE;
+MimeType=x-scheme-handler/vscode;
+Keywords=vscode;

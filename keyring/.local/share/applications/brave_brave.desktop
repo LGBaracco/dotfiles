@@ -1,4 +1,5 @@
 [Desktop Entry]
+TryExec=/snap/bin/brave
 X-SnapInstanceName=brave
 Version=1.0
 Name=Brave Web Browser

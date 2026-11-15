@@ -31,8 +31,9 @@
   "Maximum height of inline plots, in lines."
   :type 'integer)
 
-(defcustom +notebook-auto-attach t
-  "Attach a kernel when a local .ipynb is opened (project kernel, else its kernelspec)."
+(defcustom +notebook-auto-attach nil
+  "Attach a kernel when a local .ipynb is opened (project kernel, else its kernelspec).
+Off: `,i' attaches one."
   :type 'boolean)
 
 (defface +notebook-output '((t :foreground "#dde1e6")) "Cell output text.")
@@ -951,6 +952,7 @@ Applies the faces itself and returns nil."
       :desc "Quit kernel + clear"      "q" #'+notebook/quit
       :desc "Kernel REPL buffer"       "p" #'+jupyter/pop-repl
       :desc "Write .ipynb"             "N" #'+notebook/export-ipynb
+      :desc "Convert to .org"          "O" #'+jupyter-org/from-ipynb
       :desc "Go to cell N"             "g" #'+notebook/goto-cell
       :desc "Cell mode (hydra)"        "j" #'+notebook/hydra)
 

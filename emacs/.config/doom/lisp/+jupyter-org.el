@@ -9,14 +9,22 @@
 ;;   ,jS start a server (C-u: Slurm)  ,jk pick a kernel   ,je run block (RET too)
 ;;   ,ja blocks up to here  ,jA buffer  ,jx interrupt  ,jR restart  ,jd/,jD results
 ;;   ,jo open result  ,jj hydra        ]c/[c blocks, ib/ab block text objects
+;;   ,jN write foo.ipynb (with outputs)
 ;;
 ;; `,ji'/`,jI'/… set buffer-local `org-babel-default-header-args:jupyter-python'
 ;; (:session, :kernel, :async yes), start the session and inject the same wiring
-;; as notebooks (sys.path, chdir, autoreload, project imports).
+;; as notebooks (sys.path, chdir, autoreload, project imports). Kernels never
+;; start by themselves.
+;;
+;; .ipynb → .org: `,O' in an open notebook, or M-x +jupyter-org/from-ipynb (dired:
+;; marked files). bin/nbsync.py writes the outputs as emacs-jupyter does
+;; (#+RESULTS:, plots in `jupyter-org-resource-directory'), so re-running a block
+;; replaces them. Local org notebooks show their plots on open (`zi' toggles).
 
 (require 'cl-lib)
 (require '+jupyter-kernels)
 (require '+jupyter-remote)
+(require '+jupyter-cells)                ; `+notebook--nbsync'
 
 (defvar-local +jupyter-org--bootstrap nil "Wiring code of the buffer's session.")
 
@@ -134,6 +142,183 @@
   (require 'jupyter-org-extensions)
   (call-interactively 'jupyter-org-hydra/body))
 
+;;; .ipynb ⇄ .org (bin/nbsync.py to-org / from-org)
+
+(defun +jupyter-org--read-file (file)
+  (with-temp-buffer
+    (let ((coding-system-for-read 'utf-8)) (insert-file-contents file))
+    (buffer-string)))
+
+(defun +jupyter-org--write-file (file string &optional binary)
+  (with-temp-buffer
+    (when binary (set-buffer-multibyte nil))
+    (insert string)
+    (let ((coding-system-for-write (if binary 'binary 'utf-8-unix)))
+      (write-region (point-min) (point-max) file nil 'silent))))
+
+(defun +jupyter-org--revert-buffer-of (file)
+  "Show FILE's new contents in its buffer, if it has one without unsaved edits."
+  (when-let* ((buf (get-file-buffer file)))
+    (with-current-buffer buf
+      (unless (buffer-modified-p) (revert-buffer t t)))))
+
+(defun +jupyter-org--ipynb-files ()
+  "Notebooks to convert: marked in dired, this notebook, else prompt."
+  (cond
+   ((derived-mode-p 'dired-mode)
+    (or (cl-remove-if-not (lambda (f) (string-suffix-p ".ipynb" f)) (dired-get-marked-files))
+        (user-error "No .ipynb file marked")))
+   ((and buffer-file-name (string-suffix-p ".ipynb" buffer-file-name))
+    (when (buffer-modified-p) (user-error "Save the notebook first"))
+    (list buffer-file-name))
+   (t (list (read-file-name "Notebook: " nil nil t nil
+                            (lambda (f) (or (file-directory-p f) (string-suffix-p ".ipynb" f))))))))
+
+(defun +jupyter-org--ipynb-to-org (file)
+  "Write FILE (.ipynb) as a sibling .org; return the .org, or nil when skipped."
+  (require 'ob-core)
+  (let ((target (concat (file-name-sans-extension file) ".org")))
+    (when (or (not (file-exists-p target))
+              (y-or-n-p (format "%s exists. Overwrite? " (abbreviate-file-name target))))
+      (let* ((res (json-parse-string
+                   (+notebook--nbsync
+                    "to-org"
+                    (json-serialize
+                     (list :ipynb (+jupyter-org--read-file file)
+                           :media (or (bound-and-true-p jupyter-org-resource-directory) "./.ob-jupyter/")
+                           :min_lines org-babel-min-lines-for-block-output)))
+                   :object-type 'plist :array-type 'list))
+             (dir (file-name-directory (expand-file-name target))))
+        (dolist (f (plist-get res :files))
+          (let ((path (expand-file-name (plist-get f :path) dir)))
+            (unless (file-exists-p path)  ; content-addressed (sha1) names
+              (make-directory (file-name-directory path) t)
+              (+jupyter-org--write-file path (base64-decode-string (plist-get f :b64)) t))))
+        (+jupyter-org--write-file target (plist-get res :org))
+        (+jupyter-org--revert-buffer-of target)
+        target))))
+
+;;;###autoload
+(defun +jupyter-org/from-ipynb (files)
+  "Convert FILES (.ipynb) to .org notebooks next to them, outputs included.
+The .ipynb files stay. In dired: the marked files."
+  (interactive (list (+jupyter-org--ipynb-files)))
+  (let ((done (delq nil (mapcar #'+jupyter-org--ipynb-to-org files))))
+    (when (derived-mode-p 'dired-mode) (revert-buffer))
+    (pcase done
+      ('() (message "jupyter: nothing converted"))
+      (`(,one) (find-file one) (message "jupyter: wrote %s" (abbreviate-file-name one)))
+      (_ (message "jupyter: wrote %d org notebooks" (length done))))))
+
+(defun +jupyter-org--image-output (path)
+  "nbsync output for the image at PATH (base64, except SVG text)."
+  (let ((ext (downcase (or (file-name-extension path) ""))))
+    (if (equal ext "svg")
+        (list :kind "image" :mime "image/svg+xml" :data (+jupyter-org--read-file path))
+      (list :kind "image"
+            :mime (if (member ext '("jpg" "jpeg")) "image/jpeg" "image/png")
+            :data (with-temp-buffer
+                    (set-buffer-multibyte nil)
+                    (let ((coding-system-for-read 'binary)) (insert-file-contents-literally path))
+                    (base64-encode-region (point-min) (point-max) t)
+                    (buffer-string))))))
+
+(defun +jupyter-org--element-text (el)
+  (string-trim-right
+   (buffer-substring-no-properties
+    (org-element-property :post-affiliated el)
+    (save-excursion (goto-char (org-element-property :end el))
+                    (skip-chars-backward " \t\n")
+                    (point)))))
+
+(defun +jupyter-org--outputs (el)
+  "nbsync outputs of result element EL (images resolved against `default-directory')."
+  (pcase (org-element-type el)
+    ('drawer (mapcan #'+jupyter-org--outputs (org-element-contents el)))
+    ((or 'fixed-width 'example-block)
+     (list (list :kind "text" :text (org-element-property :value el))))
+    ('export-block
+     (let ((type (downcase (org-element-property :type el))))
+       (list (list :kind (if (member type '("html" "latex" "markdown")) type "text")
+                   :text (org-element-property :value el)))))
+    ('keyword nil)                      ; bare `#+RESULTS:'
+    ('paragraph
+     (let ((images (org-element-map el 'link
+                     (lambda (l)
+                       (let ((path (org-element-property :path l)))
+                         (and (equal (org-element-property :type l) "file")
+                              (string-match-p (image-file-name-regexp) path)
+                              path))))))
+       (if images
+           (mapcar (lambda (p)
+                     (let ((file (expand-file-name p)))
+                       (if (file-exists-p file)
+                           (+jupyter-org--image-output file)
+                         (list :kind "text" :text (format "[missing image: %s]" p)))))
+                   images)
+         (list (list :kind "text" :text (+jupyter-org--element-text el))))))
+    (_ (list (list :kind "text" :text (+jupyter-org--element-text el))))))
+
+(defun +jupyter-org/export-ipynb ()
+  "Write this org notebook to a sibling .ipynb, outputs included.
+`jupyter-*' src blocks become code cells, the prose markdown cells (pandoc).
+An existing .ipynb keeps its metadata (kernelspec) and cell ids."
+  (interactive)
+  (unless (derived-mode-p 'org-mode) (user-error "Not an org buffer"))
+  (unless buffer-file-name (user-error "Save the buffer first"))
+  (require 'ob-core)
+  (save-restriction
+    (widen)
+    (+jupyter-org--export-ipynb (concat (file-name-sans-extension buffer-file-name) ".ipynb"))))
+
+(defun +jupyter-org--export-ipynb (target)
+  (let* ((tree (org-element-parse-buffer))
+         (src (current-buffer))
+         (results (make-hash-table))  ; begin -> result element (affiliated #+RESULTS:)
+         blocks cells cuts language)
+    (org-element-map tree org-element-all-elements
+      (lambda (e)
+        (when (or (org-element-property :results e)
+                  (and (eq (org-element-type e) 'keyword)
+                       (equal (org-element-property :key e) "RESULTS")))
+          (puthash (org-element-property :begin e) e results))))
+    (setq blocks (org-element-map tree 'src-block
+                   (lambda (b) (and (string-prefix-p "jupyter-" (or (org-element-property :language b) ""))
+                                    b))))
+    (unless blocks (user-error "No jupyter-* src blocks in this buffer"))
+    (setq language (string-remove-prefix "jupyter-" (org-element-property :language (car blocks))))
+    (cl-loop
+     for b in blocks
+     for i from 0
+     for res = (gethash (org-element-property :end b) results)
+     do (push (list :source (string-trim-right (or (nth 1 (org-babel-get-src-block-info t b)) "")
+                                               "\n+")
+                    :outputs (vconcat (and res (+jupyter-org--outputs res))))
+              cells)
+        (push (list (org-element-property :begin b)
+                    (org-element-property :end (or res b))
+                    (format "\nNBSYNCCELL%d\n\n" i))
+              cuts))
+    ;; Prose: the buffer with each block and its result replaced by a placeholder.
+    (let ((org (with-temp-buffer
+                 (insert-buffer-substring-no-properties src)
+                 (dolist (c cuts)       ; last block first, so positions stay valid
+                   (pcase-let ((`(,beg ,end ,text) c))
+                     (delete-region beg end)
+                     (goto-char beg)
+                     (insert text)))
+                 (buffer-string)))
+          (old (and (file-exists-p target) (+jupyter-org--read-file target))))
+      (+jupyter-org--write-file
+       target
+       (+notebook--nbsync
+        "from-org"
+        (json-serialize
+         (list :org org :language language :old (or old :null)
+               :cells (vconcat (nreverse cells))))))
+      (+jupyter-org--revert-buffer-of target)
+      (message "jupyter: wrote %s (%d code cells)" (abbreviate-file-name target) (length blocks)))))
+
 ;;; Block navigation / text objects (only in buffers with jupyter blocks)
 
 (defvar +jupyter-org-mode-map (make-sparse-keymap))
@@ -145,7 +330,10 @@
 (defun +jupyter-org-mode-maybe ()
   (when (save-excursion (goto-char (point-min))
                         (re-search-forward "^[ \t]*#\\+begin_src[ \t]+jupyter-" nil t))
-    (+jupyter-org-mode 1)))
+    (+jupyter-org-mode 1)
+    ;; Saved plots (not over TRAMP: every image would be downloaded on open).
+    (unless (file-remote-p default-directory)
+      (org-display-inline-images))))
 
 (add-hook 'org-mode-hook #'+jupyter-org-mode-maybe)
 
@@ -199,6 +387,7 @@
        :desc "Remove result"                "d" #'org-babel-remove-result
        :desc "Remove all results"           "D" #'+jupyter-org/remove-all-results
        :desc "Open result"                  "o" #'org-babel-open-src-block-result
+       :desc "Write .ipynb"                 "N" #'+jupyter-org/export-ipynb
        :desc "Hydra"                        "j" #'+jupyter-org/hydra))
 
 (provide '+jupyter-org)

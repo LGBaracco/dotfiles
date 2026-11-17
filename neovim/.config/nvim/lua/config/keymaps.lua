@@ -206,6 +206,21 @@ map({ "n", "t" }, "<c-t>", '<Cmd>execute v:count . "ToggleTerm"<CR>', {
     desc = "Toggle terminal",
 })
 
+--- System clipboard ---
+-- The unnamed register stays separate (no 'clipboard=unnamedplus'); only these keys use "+.
+-- Normal <C-v> stays visual-block; insert a literal char with <C-q>. Ghostty handles <C-S-c>/<C-S-v>
+-- itself (terminal copy / bracketed paste), so the <C-S-*> maps are for Neovide.
+-- vim.paste: charwise at the cursor with no autoindent (same as a terminal paste); first line only in cmdline.
+local function paste_clipboard()
+    vim.paste(vim.fn.getreg("+", 1, true), -1)
+end
+map("x", "<C-c>", '"+y', { desc = "Copy to clipboard" })
+map("x", "<C-S-c>", '"+y', { desc = "Copy to clipboard" })
+map("n", "<C-S-v>", '"+p', { desc = "Paste from clipboard" })
+map("x", "<C-S-v>", '"+P', { desc = "Paste from clipboard" }) -- P: replaced text doesn't clobber "
+map({ "i", "c", "t" }, "<C-S-v>", paste_clipboard, { desc = "Paste from clipboard" })
+map({ "i", "c" }, "<C-v>", paste_clipboard, { desc = "Paste from clipboard" })
+
 --- Comment ---
 -- mappings.basic/extra disabled in Comment.setup; these replace them.
 

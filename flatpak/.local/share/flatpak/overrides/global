@@ -1,0 +1,14 @@
+# User-wide overrides for every Flatpak app (`flatpak override --user --show`).
+# Flatpak also mounts xdg-config/xdg-data paths into each app's ~/.var/app/<id> dirs,
+# which is where GTK looks inside the sandbox.
+# - xdg-data/themes: Dux Shell's patched local adw-gtk3(-dark) copy (GTK3 apps)
+# - xdg-data/icons: user icon themes
+# - xdg-config/gtk-4.0: gtk.css importing dank-colors.css (GTK4/libadwaita apps)
+# - xdg-config/gtk-3.0: dank-colors.css (the stowed gtk.css is a link into ~/dotfiles and stays unreadable)
+# - QT_QPA_PLATFORMTHEME: the KDE runtime ships libqgtk3, so Qt apps take their palette
+#   from the GTK theme above; Dux Shell launches apps without niri's environment block.
+[Context]
+filesystems=xdg-config/gtk-3.0:ro;xdg-config/gtk-4.0:ro;xdg-data/themes:ro;xdg-data/icons:ro;
+
+[Environment]
+QT_QPA_PLATFORMTHEME=gtk3

@@ -167,6 +167,21 @@
 ;; Ghostel popups on the cluster for remote buffers (C-t), local one on SPC o t.
 (load! "lisp/+terminal")
 
+;;; Claude Code (claude-code-ide): the CLI in a ghostel side window, with this
+;;; buffer's file/selection, flymake diagnostics and ediff review. Local buffers
+;;; only (TRAMP is untested). SPC o c opens the menu.
+(use-package! claude-code-ide
+  :defer t
+  :config
+  (setq claude-code-ide-terminal-backend 'ghostel
+        ;; executeCode: Claude evals elisp here, outside the Bash sandbox, with
+        ;; this Emacs's ssh/TRAMP session; Claude Code asks unless allowed.
+        claude-code-ide-enable-execute-code t)
+  ;; xref, imenu, tree-sitter and project info as MCP tools
+  (claude-code-ide-emacs-tools-setup))
+
+(map! :leader :desc "Claude Code" "o c" #'claude-code-ide-menu)
+
 ;;; Neovim-style keys and dashboard (baseline: ~/dotfiles/neovim/.config/nvim)
 (load! "lisp/+keys")
 (load! "lisp/+dashboard")

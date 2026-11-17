@@ -63,3 +63,6 @@
 
 ;; Jupyter (lisp/+jupyter-*.el). emacs-jupyter itself comes from :lang (org +jupyter).
 (package! code-cells)   ; `# %%' cell navigation/bounds for notebook buffers
+
+;; Claude Code CLI in a ghostel window, wired to Emacs over MCP (config.el).
+(package! claude-code-ide :recipe (:host github :repo "manzaltu/claude-code-ide.el"))

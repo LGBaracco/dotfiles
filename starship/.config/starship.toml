@@ -2,12 +2,13 @@ add_newline = true
 # Don't stat through symlinks when scanning cwd: ~/home-ext points into the JURECA
 # sshfs mount, which blocks every lookup while it reconnects after standby.
 follow_symlinks = false
-format = "$os$hostname[](fg:color_orange bg:color_yellow)$username$git_branch$git_status$directory[](fg:color_blue)(\n\n$python$conda) "
+format = "$os$hostname[](fg:color_orange bg:color_yellow)$username($git_branch$git_status[](fg:color_aqua bg:color_blue))${custom.no_repo_arrow}$directory[](fg:color_blue)(\n\n$python$conda) "
 palette = "gruvbox_dark"
 
 # Pills in gruvbox-rainbow order (palette at the bottom): orange = OS icon + host,
 # yellow = user, aqua = git, blue = cwd.
-# Each pill draws its own leading arrow so missing segments leave no gaps.
+# Each pill draws its own leading arrow so missing segments leave no gaps
+# (except cwd, see [directory]).
 [os]
 disabled = false
 format = "[ $symbol]($style)"
@@ -36,10 +37,13 @@ format = "[ $user ]($style)"
 style_user = "fg:color_fg0 bg:color_yellow"
 style_root = "fg:color_fg0 bg:color_yellow"
 
-# Blue pill. Arrow comes from aqua inside a repo (git pill precedes), yellow (user) otherwise.
+# Blue pill. Its leading arrow is drawn outside the module: aqua by the git group in
+# format inside a repo, yellow by custom.no_repo_arrow otherwise. The directory module
+# can't pick it: it uses repo_root_format only when the cwd is < truncation_length levels
+# below the repo root, and falls back to format deeper down, same as outside a repo.
 [directory]
-format = "[](fg:color_yellow bg:color_blue)[ $path ]($style)"
-repo_root_format = "[](fg:color_aqua bg:color_blue)[ $repo_root$path ]($style)"
+format = "[ $path ]($style)"
+repo_root_format = "[ $repo_root$path ]($style)"
 style = "fg:color_fg0 bg:color_blue"
 repo_root_style = "fg:color_fg0 bg:color_blue"
 truncate_to_repo = true
@@ -57,6 +61,12 @@ symbol = " "
 format = "[$all_status$ahead_behind]($style)"
 stashed = ""
 style = "fg:color_fg0 bg:color_aqua"
+
+# User -> cwd arrow, only outside a git repo (starship has no "else" for format groups).
+[custom.no_repo_arrow]
+when = "! git rev-parse --git-dir >/dev/null 2>&1"
+shell = ["sh"]
+format = "[](fg:color_yellow bg:color_blue)"
 
 # Active venv (uv/virtualenv) or conda/mamba env: a bg3 (5th rainbow colour) pill on a second line.
 # The "(\n\n$python$conda)" group (blank line for breathing room) in format only renders when one is active.

@@ -647,14 +647,41 @@ first body position, :end the end of the last non-blank body line."
   "Re-read the .ipynb (kernel and modes stay)."
   (when (or noconfirm (not (buffer-modified-p))
             (yes-or-no-p "Discard edits and reread the notebook? "))
-    (+notebook--reread)))
+    (if (not inhibit-redisplay)
+        (+notebook--reread)
+      ;; Doom auto-reverts from redisplay hooks: a prompt there hangs, C-g is ignored.
+      (let ((buf (current-buffer)))
+        (run-at-time 0 nil (lambda ()
+                             (when (buffer-live-p buf)
+                               (with-current-buffer buf (+notebook--reread)))))))))
 
 (defun +notebook--reread ()
-  (let ((pt (point)))
-    (+notebook--load (let ((file buffer-file-name))
-                       (with-temp-buffer (insert-file-contents file) (buffer-string))))
+  "Reload the .ipynb; cells whose code is unchanged keep their live outputs."
+  (let* ((pt (point))
+         (file buffer-file-name)
+         (mtime (file-attribute-modification-time (file-attributes file)))
+         (raw (with-temp-buffer (insert-file-contents file) (buffer-string)))
+         (old-mtime (visited-file-modtime))
+         ;; `+notebook--load' deletes these; deleted overlays keep their properties.
+         (live (delq nil (mapcar (lambda (cell)
+                                   (when-let* (((plist-get cell :code))
+                                               (ov (+notebook--cell-overlay cell)))
+                                     (cons (+notebook--cell-code cell) ov)))
+                                 (+notebook--cells)))))
+    ;; New mtime first: rewriting a stale buffer asks "changed on disk?" again.
+    (set-visited-file-modtime mtime)
+    (condition-case err
+        (+notebook--load raw)
+      (error (set-visited-file-modtime old-mtime)
+             (signal (car err) (cdr err))))
+    (dolist (cell (+notebook--cells))
+      (when-let* (((plist-get cell :code))
+                  (hit (assoc (+notebook--cell-code cell) live)))
+        (setq live (delq hit live))
+        (when-let* ((ov (+notebook--cell-overlay cell))) (+notebook--delete-overlay ov))
+        (move-overlay (cdr hit) (plist-get cell :beg) (plist-get cell :end) (current-buffer))
+        (+notebook--render (cdr hit))))
     (set-buffer-modified-p nil)
-    (set-visited-file-modtime)
     (goto-char (min pt (point-max)))))
 
 ;;;###autoload

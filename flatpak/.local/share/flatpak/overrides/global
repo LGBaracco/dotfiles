@@ -6,7 +6,8 @@
 # - xdg-config/gtk-4.0: gtk.css importing dank-colors.css (GTK4/libadwaita apps)
 # - xdg-config/gtk-3.0: dank-colors.css (the stowed gtk.css is a link into ~/dotfiles and stays unreadable)
 # - QT_QPA_PLATFORMTHEME: the KDE runtime ships libqgtk3, so Qt apps take their palette
-#   from the GTK theme above; Dux Shell launches apps without niri's environment block.
+#   from the GTK theme above. `dms run` already exports it to apps it launches; this covers
+#   other launch paths (terminal, D-Bus activation).
 [Context]
 filesystems=xdg-config/gtk-3.0:ro;xdg-config/gtk-4.0:ro;xdg-data/themes:ro;xdg-data/icons:ro;
 

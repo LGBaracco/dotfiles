@@ -59,6 +59,10 @@ All write HDF5 pyramids (`pyramid/00..`) unless noted. MPI-parallel over files/s
 - **`img ann2hdf5 JSONS... IMAGE_PATTERN OUTPUT_PATTERN`** C:1810 → IM:105. MicroDraw annotation JSON → label raster + `labels`/`colors` attrs + PNG preview. `--input-spacing 1`, `--output-spacing 16`, `--prefix mask`, `--labels a,b`, `--config JSON` (alias/regex renames, per-section `rotation`), `--chunk-size`, `--compression`, `--overwrite`. OUTPUT_PATTERN must contain `B##`. IMAGE_PATTERN may be a JSON with height/width/spacing.
 - **`img tif2hdf5 IN_DIR OUT_DIR`** C:1913 → IM:346. Every `*.tif[f]` → `<stem>.hdf5` uint8 gray pyramid. `--sections`, `--num-levels 8`, `--downscaling-factor .5`, `--scales`, `--output-spacing`, `--chunk-size`, `--compression`, `--overwrite`. Per-file errors only logged at INFO. Memory-heavy.
 - **`img hdf5merge INPUT_PATTERN OUTPUT_FILE`** C:2015 → IM:508. Merge per-section files into one file with groups `/####` (`--sections`, `--driver`). Serial.
+- Whole-brain training files (the `atlas_data_tmp/.../B??_2micron_histology.hdf5` that CytoNet configs read) come from Christian's Nextflow workflow
+  `git@jugit.fz-juelich.de:inm-1/bda/software/analysis/atlas/atlas_scratch_workflow.git`: `tif2hdf5 --chunk-size 2048 --output-spacing 2 --scale-chunks`
+  per section → `hdf5merge <first section file> B??_histology.hdf5 --driver split` → Zarr. Since 2026-09 it goes TIFF → Zarr directly unless
+  `--via_hdf5 true`. Outputs are `publishDir` symlinks into the workflow's `work/` dir. JURECA paths and dates: project skill `data-locations`.
 - **`img png2mask PNGS... IN_SPACING OUT_PATTERN OUT_PREFIX LABEL_VALUES`** C:2040 → IM:547. Colour PNG → label mask. LABEL_VALUES = `;`-separated Python literals, `eval`'d: `"(0,0,0,255);(83,83,83,255)"`.
 - **`img png2hdf5 PNGS... OUT_PATTERN IN_SPACING`** C:2097 → IM:1683. RGB→gray pyramid. `--interpolation` default 3 (use 0 for labels), `--num-levels`, `--prefix`.
 - **`img extract IMAGES... OUT_PATTERN SPACING`** C:2179 → IM:661. Export TIFF at a spacing. Always skips existing.

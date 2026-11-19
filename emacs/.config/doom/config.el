@@ -86,8 +86,9 @@
 (setq scroll-margin 5)
       ;;scroll-conservatively 101
 
-;; font size
-(setq doom-font (font-spec :size 16))
+;; font: name the family, else Emacs takes GNOME's monospace-font-name (Ubuntu
+;; Sans Mono), which lacks ▀/▄ and scrambles the dashboard banner.
+(setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 16))
 ;; Theme: doom-themes' gruvbox, hard variant (bg #1d2021, as ghostty/tmux).
 ;; oxocarbon2 stays in themes/: `M-x load-theme RET oxocarbon2`.
 (setq doom-gruvbox-dark-variant "hard")

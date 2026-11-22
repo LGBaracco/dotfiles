@@ -68,7 +68,8 @@ zotero-cli --json search "diffusion models" --limit 5 --detail keys_only \
 | `notes` | text inside your notes, not item fields | `search --mode notes "research question"` |
 
 `semantic` needs the search index built (`zotero-cli db status` to check,
-`zotero-cli db update` to build). If it is empty, fall back to `items` and
+`zotero-cli db update` to build; the update needs the Zotero app running,
+for its local API on port 23119). If it is empty, fall back to `items` and
 say why rather than reporting no results.
 
 Every search covers one library — the active one. When you don't know which

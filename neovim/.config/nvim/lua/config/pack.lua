@@ -75,6 +75,26 @@ vim.g.loaded_node_provider = 0
 vim.g.loaded_perl_provider = 0
 vim.g.loaded_ruby_provider = 0
 
+-- Drop 'runtimepath'/'packpath' entries that do not exist. On HPC, Lmod puts each
+-- loaded module's share/ dir on $XDG_DATA_DIRS (18 of 28 packpath entries on
+-- JURECA, none with an nvim/ dir), and every packadd, runtime file and
+-- lsp/<name>.lua lookup stats each entry: ~30 µs warm on GPFS, far more cold.
+-- stdpath dirs stay even when missing: a fresh vim.pack install creates them.
+do
+    local keep = { vim.fn.stdpath("config"), vim.fn.stdpath("data") }
+    local function wanted(dir)
+        for _, k in ipairs(keep) do
+            if vim.startswith(dir, k) then
+                return true
+            end
+        end
+        return vim.uv.fs_stat(dir) ~= nil
+    end
+    for _, opt in ipairs({ "runtimepath", "packpath" }) do
+        vim.opt[opt] = vim.tbl_filter(wanted, vim.opt[opt]:get())
+    end
+end
+
 --- Build hooks (PackChanged) ---
 -- Registered before vim.pack.add so they also fire for installs from the lockfile.
 

@@ -109,7 +109,16 @@ local i = ls.insert_node
 
 ls.setup({})
 -- friendly-snippets is on the runtimepath via pack.json (includes LaTeX).
-require("luasnip.loaders.from_vscode").lazy_load()
+-- lazy_load() scans every snippet dir and sets up watchers (~40 ms, hundreds of
+-- file lookups on HPC GPFS), so it waits for the first Insert; luasnip still
+-- loads the filetypes of buffers opened before that (plugin/luasnip.lua).
+vim.api.nvim_create_autocmd("InsertEnter", {
+  once = true,
+  desc = "Load friendly-snippets (luasnip vscode loader)",
+  callback = function()
+    require("luasnip.loaders.from_vscode").lazy_load()
+  end,
+})
 
 ls.add_snippets("quarto", {
   s("pycell", {

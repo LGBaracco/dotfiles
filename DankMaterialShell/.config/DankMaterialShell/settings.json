@@ -802,5 +802,6 @@
   "blurBorderSeeded": true,
   "audioShowStreamDevices": true,
   "blurBorderColor": "outline",
-  "focusRingWidth": 1
+  "focusRingWidth": 1,
+  "niriOverviewOverlayEnabled": false
 }

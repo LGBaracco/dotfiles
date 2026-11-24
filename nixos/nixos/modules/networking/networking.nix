@@ -40,7 +40,7 @@
           User lbaracco
 
         # JUPITER: must precede `j*`, since jupiter.fz-juelich.de is the FZJ web
-        # load balancer, not the login nodes. Same 2FA master sharing as jureca.
+        # load balancer, not the login nodes. Same 2FA master sharing as jureca (`mju`).
         Host jupiter login.jupiter.fz-juelich.de
           HostName login.jupiter.fz-juelich.de
           User baracco1
@@ -56,7 +56,7 @@
           User baracco1
 
         # JSC needs 2FA per login: share one master connection between TRAMP,
-        # Emacs' Jupyter port-forwards (`ssh -O forward`), `tunnel` and `mju`.
+        # Emacs' Jupyter port-forwards (`ssh -O forward`), `tunnel` and `mjr`.
         # %C hashes the resolved host, so `jureca` and the full name share it.
         Host jureca jr* jureca.fz-juelich.de jr*.fz-juelich.de
           User baracco1

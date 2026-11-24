@@ -10,7 +10,7 @@
 -- outputs, and export outputs back into the notebook on :w. ,N converts a plain .qmd to .ipynb.
 -- ,I prompts for a Jupyter server (laptop → `tunnel <node>` → `start-server` on a compute node)
 -- and attaches its default kernel; ,k swaps the buffer's kernel (project / remote / kernelspec).
--- Files on sshfs mounts (mju/mws) never get a local uv kernel: it would rebuild the cluster .venv.
+-- Files on sshfs mounts (mjr/mju/mws) never get a local uv kernel: it would rebuild the cluster .venv.
 
 -- snacks.image (unicode placeholders): the plot is its own virt_lines extmark created
 -- after Molten's text extmark, so it always sits below stdout. image.nvim was dropped
@@ -246,7 +246,7 @@ end
 
 local FUSE_SUPER_MAGIC = 0x65735546
 
----True when `path` lives on a FUSE mount (sshfs `mju`/`mws`). A local `uv run --project`
+---True when `path` lives on a FUSE mount (sshfs `mjr`/`mju`/`mws`). A local `uv run --project`
 ---there finds the cluster's .venv linked to a Python the laptop lacks, deletes and rebuilds it.
 local function on_fuse_mount(path)
     local st = vim.uv.fs_statfs(path)

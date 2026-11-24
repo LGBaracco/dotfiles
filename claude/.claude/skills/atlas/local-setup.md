@@ -18,7 +18,7 @@ Keep `.venv/` and `uv.lock` out of atlas commits (`.git/info/exclude`).
 
 ## Reaching JURECA from this machine
 - SSH needs interactive 2FA (`Permission denied (keyboard-interactive)` in batch mode) → Claude cannot run remote commands. The user runs them on JURECA and pastes output, or commits there and pulls here.
-- File access: the user runs `mju` (fish alias) = `sshfs -o AddressFamily=inet -o IdentityFile=~/.ssh/id_jureca -o follow_symlinks,reconnect,ServerAliveInterval=15 baracco1@jureca.fz-juelich.de:/p /mnt/jureca/`.
+- File access: the user runs `mjr` (fish alias) = `sshfs -o AddressFamily=inet -o IdentityFile=~/.ssh/id_jureca -o follow_symlinks,reconnect,ServerAliveInterval=15 baracco1@jureca.fz-juelich.de:/p /mnt/jureca/`.
   JURECA `/p/<x>` = local `/mnt/jureca/<x>` (e.g. `$GALAXY_ROOT` = `/mnt/jureca/project1/cjinm16/baracco1/home_ext/galaxy`). Check with `timeout 5 ls /mnt/jureca`.
   sshfs is slow: `timeout 30` on every command, `ls` one level at a time, never recurse/`rg` a whole tree, `git -c safe.directory='*'`.
 - Interactive login: `ssh -4 -i ~/.ssh/id_jureca baracco1@jureca.fz-juelich.de`.

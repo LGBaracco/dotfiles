@@ -101,7 +101,7 @@ PYPROJECT is nil without a pyproject.toml. Works on TRAMP paths."
 ;;; Guards
 
 (defun +jupyter--fuse-mounts ()
-  "Mount points of FUSE filesystems (sshfs `mju'/`mws' …)."
+  "Mount points of FUSE filesystems (sshfs `mjr'/`mju'/`mws' …)."
   (ignore-errors
     (with-temp-buffer
       (insert-file-contents "/proc/mounts")

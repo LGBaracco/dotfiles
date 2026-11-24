@@ -10,7 +10,12 @@
 # atlas kernelspec lives), caches on $SCRATCH. Keep in sync with ~/.bashrc.
 # shellcheck source=/dev/null
 type module >/dev/null 2>&1 || { [ -r /etc/profile ] && . /etc/profile >/dev/null 2>&1; }
-command -v jutil >/dev/null 2>&1 && jutil env activate -p cjinm16 >/dev/null
+case "${SYSTEMNAME:-}" in
+jupiter) _project=brainfm ;;
+*) _project=cjinm16 ;;
+esac
+command -v jutil >/dev/null 2>&1 && jutil env activate -p "$_project" >/dev/null
+unset _project
 if [ -d "${PROJECT:-}/home_ext" ]; then
     export HOME_EXT=$PROJECT/home_ext
     export XDG_CONFIG_HOME=$HOME_EXT/.config

@@ -6,7 +6,7 @@
 -- :KernelEnvSync <kernel> <sif> copies the image's Python sources (.py/.pyi/.pth/
 -- py.typed under site-/dist-packages) out of its squashfs into
 -- stdpath("cache")/kernel-env/<kernel>/. The image is read in place, so a .sif on
--- the sshfs mount (`mju`) is fine: only those files cross the wire (~400 MB for atlas).
+-- the sshfs mount (`mjr`) is fine: only those files cross the wire (~400 MB for atlas).
 -- plugins.repl.molten calls M.attach on kernel start/stop; the ty_otter client
 -- (plugins.lsp) reads M.ty_settings in on_init and is restarted when that changes.
 -- Needs `unsquashfs` (pack.json tools: squashfsTools).

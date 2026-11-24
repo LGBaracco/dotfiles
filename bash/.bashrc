@@ -15,7 +15,7 @@ export PATH
 # Neovim (lua/config/pack.lua: plugin/tool profile).
 if [ -z "${DOTFILES_PROFILE:-}" ]; then
     case "${HOSTNAME%%.*}" in
-    jr* | jw* | jusuf*) DOTFILES_PROFILE=hpc ;;
+    jr* | jw* | jp* | jusuf*) DOTFILES_PROFILE=hpc ;;
     *) [ -n "${SYSTEMNAME:-}" ] && DOTFILES_PROFILE=hpc || DOTFILES_PROFILE=desktop ;;
     esac
 fi
@@ -45,6 +45,9 @@ alias ga='git add'
 alias gc='git commit'
 alias ta='tmux attach'
 alias td='tmux detach'
+alias tk='tmux kill-session'
+alias tK='tmux kill-server'
+
 # that shadow the uv env's packages and break on its newer Python
 alias start-server='env -u PYTHONPATH uv run --with jupyter jupyter server --no-browser --ip=0.0.0.0 --port 8888 --MappingKernelManager.default_kernel_name=atlas'
 if command -v nvim >/dev/null 2>&1; then
@@ -53,8 +56,11 @@ if command -v nvim >/dev/null 2>&1; then
     alias packsync='nvim --headless +PackSync +qa'
 fi
 
-# Sets $project
-jutil env activate -p cjinm16
+# Sets $PROJECT/$SCRATCH. Keep in sync with ~/.local/bin/start-server.
+case "${SYSTEMNAME:-}" in
+jupiter) jutil env activate -p brainfm ;;
+*) jutil env activate -p cjinm16 ;;
+esac
 
 if [ -d "$PROJECT/home_ext" ]; then
     export HOME_EXT=$PROJECT/home_ext

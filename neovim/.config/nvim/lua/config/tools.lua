@@ -168,7 +168,7 @@ local function sync_tools()
     end
 
     -- Install callbacks run in a fast event context (no nvim_echo): collect, report after.
-    local pending, installed, skipped, failed = 0, {}, {}, {}
+    local pending, installed, skipped, unsupported, failed = 0, {}, {}, {}, {}
     for _, t in ipairs(M.tools()) do
         if t.mason and t.requires and not has_bin(t.requires) then
             skipped[#skipped + 1] = ("%s (needs %s)"):format(t.mason, t.requires)
@@ -184,6 +184,10 @@ local function sync_tools()
                     pending = pending - 1
                     if success then
                         installed[#installed + 1] = t.mason
+                    -- No build for this OS/arch (clangd on aarch64, e.g. JUPITER): not
+                    -- fixable by re-syncing, so warn instead of failing every :PackSync.
+                    elseif tostring(result):find("platform is unsupported", 1, true) then
+                        unsupported[#unsupported + 1] = t.mason
                     else
                         failed[#failed + 1] = ("mason: %s failed: %s"):format(t.mason, vim.inspect(result))
                     end
@@ -206,6 +210,10 @@ local function sync_tools()
     end
     if #skipped > 0 then
         say("mason skipped, toolchain missing: " .. table.concat(skipped, ", "), "warn")
+    end
+    if #unsupported > 0 then
+        table.sort(unsupported)
+        say("no mason build for this platform (use a host binary): " .. table.concat(unsupported, ", "), "warn")
     end
 end
 

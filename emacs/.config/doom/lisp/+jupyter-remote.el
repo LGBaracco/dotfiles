@@ -1,13 +1,17 @@
 ;;; lisp/+jupyter-remote.el -*- lexical-binding: t; -*-
 ;;
-;; Jupyter servers on ssh hosts (JURECA by default), driven from Emacs:
+;; Jupyter servers on ssh hosts (`+remote-hosts': JURECA, JUPITER), driven from Emacs:
 ;;
 ;;   ,S       start a server on the login node and attach its default kernel
-;;   C-u ,S   same, as a Slurm job on a compute node (partition/GPUs/time prompted)
+;;   C-u ,S   same, as a Slurm job on a compute node (partition/GPUs/time prompted,
+;;            defaults per host in `+remote-hosts')
 ;;   ,I       attach to a running server: one Emacs started (also after a restart),
 ;;            one started by hand (runtime file + squeue), or a URL/token
 ;;   ,Q       stop a server (kill / scancel) and drop its port-forward
 ;;   ,i       in a TRAMP buffer: attach the host's server, starting one if needed
+;;
+;; TRAMP buffers use their own host. From a local buffer ,S asks which host (when more
+;; than one is configured) and ,I offers discovery on each.
 ;;
 ;; Everything runs over the ssh ControlMaster of the host (ssh_config: ControlMaster
 ;; auto + ControlPersist), so 2FA is entered once (TRAMP prompts in the minibuffer)
@@ -20,10 +24,7 @@
 (require 'cl-lib)
 (require 'subr-x)
 (require '+jupyter-kernels)
-
-(defcustom +jupyter-remote-host "jureca"
-  "ssh destination used when the buffer is not a TRAMP buffer."
-  :type 'string)
+(require '+remote)
 
 (defcustom +jupyter-remote-state-dir "~/.local/state/emacs-jupyter"
   "Directory on the remote host for tokens and server logs (created 0700)."
@@ -32,11 +33,6 @@
 (defcustom +jupyter-remote-start-command "\"$HOME\"/.local/bin/start-server"
   "Remote command starting a Jupyter server (accepts --port --ip --token-file --root)."
   :type 'string)
-
-(defcustom +jupyter-slurm-defaults
-  '(:partition "dc-gpu" :account "jinm16" :gpus 4 :time "01:00:00")
-  "Defaults for `C-u ,S' (Slurm compute-node server)."
-  :type 'plist)
 
 (defcustom +jupyter-remote-start-timeout 180
   "Seconds to wait for a new server to answer (first `uv run --with jupyter' is slow)."
@@ -81,12 +77,18 @@
 ;;; ssh
 
 (defun +jupyter-remote--dest (&optional dir)
-  "ssh destination for DIR's TRAMP host, else `+jupyter-remote-host'."
+  "ssh destination for DIR's TRAMP host, else the host picked last (`+remote-read-host')."
   (let ((dir (or dir default-directory)))
     (if (file-remote-p dir)
         (let ((user (file-remote-p dir 'user)) (host (file-remote-p dir 'host)))
           (if user (concat user "@" host) host))
-      +jupyter-remote-host)))
+      (+remote-default-host))))
+
+(defun +jupyter-remote--dest-or-read (prompt)
+  "ssh destination of a TRAMP buffer, else a host of `+remote-hosts' read with PROMPT."
+  (if (file-remote-p default-directory)
+      (+jupyter-remote--dest)
+    (+remote-read-host prompt)))
 
 (defun +jupyter-remote--master-p (host)
   (eq 0 (call-process "ssh" nil nil nil "-O" "check" host)))
@@ -105,7 +107,7 @@
 (defun +jupyter/ssh-login (&optional host)
   "Open a terminal running `ssh -fN HOST' to type the 2FA by hand (master stays up)."
   (interactive)
-  (let* ((host (or host (+jupyter-remote--dest)))
+  (let* ((host (or host (+jupyter-remote--dest-or-read "ssh login")))
          (buf (make-term (format "ssh-login %s" host) "ssh" nil "-fN" host)))
     (with-current-buffer buf (term-char-mode))
     (pop-to-buffer buf)))
@@ -368,12 +370,13 @@ ATTACH-FN, if non-nil, is called with REC in BUFFER instead of attaching a kerne
     (call-process "head" nil t nil "-c" "24" "/dev/urandom")
     (mapconcat (lambda (c) (format "%02x" c)) (buffer-string) "")))
 
-(defun +jupyter-remote--read-slurm ()
-  (let ((d +jupyter-slurm-defaults))
-    (list :partition (read-string "Partition: " (plist-get d :partition))
+(defun +jupyter-remote--read-slurm (host)
+  "Slurm options for a server on HOST, prefilled from its `+remote-hosts' :slurm."
+  (let ((d (+remote-host-get host :slurm)))
+    (list :partition (read-string (format "Partition (%s): " host) (plist-get d :partition))
           :account (read-string "Account: " (plist-get d :account))
-          :gpus (read-number "GPUs: " (plist-get d :gpus))
-          :time (read-string "Time limit: " (plist-get d :time)))))
+          :gpus (read-number "GPUs: " (or (plist-get d :gpus) 0))
+          :time (read-string "Time limit: " (or (plist-get d :time) "01:00:00")))))
 
 (defun +jupyter-remote--start (host root slurm buffer &optional attach-fn)
   "Start a server on HOST (login node, or Slurm job when SLURM is a plist), attach BUFFER."
@@ -459,18 +462,18 @@ ATTACH-FN, if non-nil, is called with REC in BUFFER instead of attaching a kerne
   (cl-remove-if-not (lambda (r) (and (equal (plist-get r :host) host) (plist-get r :node)))
                     +jupyter-remote--servers))
 
-(defun +jupyter-remote--runtime-dir (host)
-  (concat (or (cdr (assoc (+jupyter-remote--short (car (last (split-string host "@"))))
-                          +jupyter-remote-data-dirs))
-              "~/.local/share/jupyter")
-          "/runtime"))
+(defun +jupyter-remote--data-dir-sh (host)
+  "Shell snippet setting $d to HOST's Jupyter data dir (see `+remote-hosts' :data-dir)."
+  (if-let* ((dir (+remote-host-get host :data-dir)))
+      (concat "d=" (shell-quote-argument dir))
+    "d=$(\"$HOME\"/.local/bin/start-server --data-dir 2>/dev/null | tail -n 1); [ -n \"$d\" ] || d=\"$HOME\"/.local/share/jupyter"))
 
 (defun +jupyter-remote--discover (host callback)
   "Servers started by hand on HOST: CALLBACK gets a list of records."
   (+jupyter-remote--ssh
    host
-   (format "for f in %s/jpserver-*.json; do [ -r \"$f\" ] && cat \"$f\" && echo; done; echo '@@'; squeue --me -h -o '%%i %%T %%N' 2>/dev/null"
-           (+jupyter-remote--runtime-dir host))
+   (format "%s; for f in \"$d\"/runtime/jpserver-*.json; do [ -r \"$f\" ] && cat \"$f\" && echo; done; echo '@@'; squeue --me -h -o '%%i %%T %%N' 2>/dev/null"
+           (+jupyter-remote--data-dir-sh host))
    :callback
    (lambda (_code out _err)
      (pcase-let* ((`(,json ,squeue) (split-string out "^@@$"))
@@ -542,24 +545,28 @@ ATTACH-FN, if non-nil, is called with REC in BUFFER instead of attaching a kerne
      (t (+jupyter-remote/start-server nil attach-fn)))))
 
 (defun +jupyter-remote/start-server (&optional slurm attach-fn)
-  "Start a Jupyter server on the buffer's host (login node; C-u: Slurm job) and attach."
+  "Start a Jupyter server on the buffer's host (login node; C-u: Slurm job) and attach.
+From a local buffer, the host is read from `+remote-hosts'."
   (interactive "P")
-  (let* ((host (+jupyter-remote--dest))
+  (let* ((host (+jupyter-remote--dest-or-read "Start a Jupyter server on"))
          (root (when (file-remote-p default-directory)
                  (directory-file-name (file-local-name (car (+jupyter-project-root)))))))
-    (+jupyter-remote--start host root (and slurm (+jupyter-remote--read-slurm)) (current-buffer) attach-fn)))
+    (+jupyter-remote--start host root (and slurm (+jupyter-remote--read-slurm host)) (current-buffer) attach-fn)))
 
 (defun +jupyter-remote/attach (&optional attach-fn)
   "Attach the buffer to a running server (its default kernel)."
   (interactive)
   (+jupyter-remote--load)
-  (let* ((host (+jupyter-remote--dest))
+  (let* ((hosts (if (file-remote-p default-directory)
+                    (list (+jupyter-remote--dest))
+                  (mapcar #'car +remote-hosts)))
          (buffer (current-buffer))
          (known (mapcar (lambda (r) (cons (plist-get r :label) r))
                         (cl-remove-if-not (lambda (r) (plist-get r :node)) +jupyter-remote--servers)))
          (choices (append known
-                          (list (cons (format "Discover servers on %s…" host) 'discover)
-                                (cons "URL / host:port / token…" 'manual))))
+                          (mapcar (lambda (h) (cons (format "Discover servers on %s…" h) (cons 'discover h)))
+                                  hosts)
+                          (list (cons "URL / host:port / token…" 'manual))))
          (choice (cdr (assoc (completing-read "Jupyter server: " choices nil t) choices))))
     (pcase choice
       ('manual
@@ -573,7 +580,7 @@ ATTACH-FN, if non-nil, is called with REC in BUFFER instead of attaching a kerne
                                          :key (lambda (r) (plist-get r :id)) :test #'equal)))
               (+jupyter-remote--save)
               (with-current-buffer buffer (+jupyter-remote--do-attach rec attach-fn)))))))
-      ('discover
+      (`(discover . ,host)
        (+jupyter-remote--ensure-master host)
        (+jupyter-remote--discover
         host

@@ -29,6 +29,15 @@
         ]
       },
       {
+        "matcher": "Bash|Monitor|mcp__ide__executeCode",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/cluster-guard.py"
+          }
+        ]
+      },
+      {
         "hooks": [
           {
             "type": "command",
@@ -138,5 +147,34 @@
   },
   "awaySummaryEnabled": false,
   "theme": "dark-ansi",
-  "editorMode": "vim"
+  "editorMode": "vim",
+  "autoMode": {
+    "environment": [
+      "### Org-wide",
+      "**Organization**: None configured",
+      "**Cloud provider(s)**: None configured",
+      "**Repository visibility**: PUBLIC — github.com/LGBaracco/dotfiles (confirmed via gh)",
+      "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
+      "**Secrets management**: None configured — note: repo's .gitignore excludes claude/.claude/.credentials.json and a redacted pattern, consistent with local-only credential handling, but this is not an endorsed secrets system",
+      "**Default / protected branches**: main (default). No rulesets listed, no protected branches listed, per gh",
+      "**CI/CD deploy targets**: None configured",
+      "**Network posture**: None configured",
+      "**Host containment**: None configured — assume Claude Code runs on an ordinary developer machine or CI runner with open internet",
+      "**Source control**: The trusted repo (github.com/LGBaracco/dotfiles) and its origin remote only — no additional orgs configured",
+      "**Trusted internal domains**: None configured",
+      "**Trusted cloud buckets**: None configured",
+      "**Key internal services**: None configured",
+      "**Internal package registry**: None configured",
+      "**Sensitive data locations & audiences**: claude/.claude/.credentials.json and the redacted .gitignore pattern — local credential files excluded from version control; keep out of commits/pushes to this public repo",
+      "**Data retention / declassification**: None configured",
+      "**Sensitive remote targets**: None configured — fall back to the default prod/production-namesegment heuristic",
+      "**Protected deployment namespaces / environments**: None configured — fall back to the Sensitive remote targets heuristic",
+      "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries prod or production as a whole word or name segment",
+      "### User-specific",
+      "**Primary use of Claude Code**: software development (personal NixOS/dotfiles configuration management)",
+      "**Trusted repo**: /home/lorenzo/dotfiles (github.com/LGBaracco/dotfiles) — PUBLIC repo: only this repo's own work belongs here; content ported from outside this session's repo is not its own work",
+      "**Org-specific CLIs**: None configured — frequently used non-standard CLIs observed: fd, apt-cache, emacsclient, flatpak, zotero-cli, rt, dpkg, fish, strings",
+      "routine under /home/lorenzo/dotfiles/ prefix: standard dotfiles maintenance (stow operations, Nix rebuilds, config edits) treated as ordinary local development"
+    ]
+  }
 }

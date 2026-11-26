@@ -18,6 +18,7 @@
 (require 'cl-lib)
 (require 'subr-x)
 (require 'json)
+(require '+remote)                       ; `+remote-data-dir'
 
 (defgroup +jupyter nil
   "Jupyter kernels, notebooks and remote servers."
@@ -33,12 +34,6 @@
     ".pytest_cache" ".ruff_cache" "dist" "build" "tests" "test" "docs")
   "Directories never star-imported by the kernel wiring."
   :type '(repeat string))
-
-(defcustom +jupyter-remote-data-dirs
-  '(("jureca" . "/p/project1/cjinm16/baracco1/home_ext/.local/share/jupyter"))
-  "Jupyter data dir per TRAMP host: where the remote server reads kernelspecs.
-Hosts not listed use ~/.local/share/jupyter."
-  :type '(alist :key-type string :value-type string))
 
 (defcustom +jupyter-kernel-start-timeout 90
   "Seconds to wait for a new kernel (first `uv run --with ipykernel' resolves packages)."
@@ -137,10 +132,7 @@ PYPROJECT is nil without a pyproject.toml. Works on TRAMP paths."
 (defun +jupyter--data-dir (&optional remote-root)
   "Jupyter data dir; on REMOTE-ROOT's host as a TRAMP file name."
   (if-let* ((remote (and remote-root (file-remote-p remote-root))))
-      (concat remote
-              (or (cdr (assoc (car (split-string (file-remote-p remote-root 'host) "\\."))
-                              +jupyter-remote-data-dirs))
-                  "~/.local/share/jupyter"))
+      (concat remote (+remote-data-dir remote-root))
     (let ((env (getenv "JUPYTER_DATA_DIR"))
           (xdg (getenv "XDG_DATA_HOME")))
       (expand-file-name

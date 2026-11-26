@@ -16,9 +16,11 @@ Env for a local clone: `uv sync --python 3.11` in the clone (fallback `uv venv -
 atlas's own jugit deps are HTTPS URLs → for that command only: `GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=url.git@jugit.fz-juelich.de:.insteadOf GIT_CONFIG_VALUE_0=https://jugit.fz-juelich.de/`.
 Keep `.venv/` and `uv.lock` out of atlas commits (`.git/info/exclude`).
 
-## Reaching JURECA from this machine
-- SSH needs interactive 2FA (`Permission denied (keyboard-interactive)` in batch mode) → Claude cannot run remote commands. The user runs them on JURECA and pastes output, or commits there and pulls here.
-- File access: the user runs `mjr` (fish alias) = `sshfs -o AddressFamily=inet -o IdentityFile=~/.ssh/id_jureca -o follow_symlinks,reconnect,ServerAliveInterval=15 baracco1@jureca.fz-juelich.de:/p /mnt/jureca/`.
+## Reaching JURECA / JUPITER from this machine
+- **Run nothing on the clusters unless the user explicitly asked for or allowed that command**, and no shell commands on the mounts below either (Read/Glob/Grep/Edit on mount paths are fine). Otherwise propose the command and let the user run it and paste the output. The `cluster-guard` hook turns each such command into a permission prompt; a denial means do not retry or work around it.
+- Once allowed: SSH needs interactive 2FA, but ssh_config shares one master connection per host (`jureca`, `jupiter`). While the user is logged in (`ssh -O check jureca` exits 0; needs no approval), `ssh -o BatchMode=yes jureca '…'` works without 2FA. Non-interactive shells only get `~/.local/bin` on PATH: for modules (uv), `$PROJECT` or `$SCRATCH` use `ssh -o BatchMode=yes jureca "bash -ic '…'"`. Without a master (`Permission denied (keyboard-interactive)`) ask the user to log in again.
+- Started from an Emacs TRAMP buffer (`SPC o c`), Claude already runs in the mount below with these rules in its system prompt (`emacs/.config/doom/lisp/+claude-remote.el`).
+- File access: the user runs `mjr` (fish alias) = `sshfs -o AddressFamily=inet -o IdentityFile=~/.ssh/id_jureca -o follow_symlinks,reconnect,ServerAliveInterval=15 baracco1@jureca.fz-juelich.de:/p /mnt/jureca/`. JUPITER: `mju` mounts `login.jupiter.fz-juelich.de:/e` on `/mnt/jupiter/` (JUPITER `/e/<x>` = local `/mnt/jupiter/<x>`).
   JURECA `/p/<x>` = local `/mnt/jureca/<x>` (e.g. `$GALAXY_ROOT` = `/mnt/jureca/project1/cjinm16/baracco1/home_ext/galaxy`). Check with `timeout 5 ls /mnt/jureca`.
   sshfs is slow: `timeout 30` on every command, `ls` one level at a time, never recurse/`rg` a whole tree, `git -c safe.directory='*'`.
 - Interactive login: `ssh -4 -i ~/.ssh/id_jureca baracco1@jureca.fz-juelich.de`.

@@ -1,6 +1,6 @@
 ;;; lisp/+jupyter-lsp.el -*- lexical-binding: t; -*-
 ;;
-;; ty for buffers whose kernel runs in a container image (atlas on JURECA). The
+;; ty for buffers whose kernel runs in a container image (atlas on JURECA/JUPITER). The
 ;; packages exist only inside the .sif, so ty runs inside it too:
 ;;
 ;;   local buffer                      -> ty server (as before)
@@ -11,16 +11,13 @@
 ;; `uv tool install ty' there (home is bind-mounted into the image). The image's
 ;; site-/dist-packages are passed as ty extra-paths (queried once per image), the
 ;; live replacement for Neovim's :KernelEnvSync extraction. Images are set with
-;; `M-x +jupyter/kernel-image-set'; the kernel used before one is attached comes
-;; from `+jupyter-lsp-host-kernels'. A kernel change restarts eglot when the
-;; image changes (the analogue of the ty_otter restart).
+;; `M-x +jupyter/kernel-image-set' (once per host and kernel); the kernel used before
+;; one is attached is the host's :kernel in `+remote-hosts'. A kernel change restarts
+;; eglot when the image changes (the analogue of the ty_otter restart).
 
 (require 'cl-lib)
 (require '+jupyter-kernels)
-
-(defcustom +jupyter-lsp-host-kernels '(("jureca" . "atlas"))
-  "Kernel assumed for TRAMP buffers of a host until one is attached."
-  :type '(alist :key-type string :value-type string))
+(require '+remote)
 
 (defconst +jupyter-lsp--state-file
   (expand-file-name "jupyter-kernel-images.eld" (or (bound-and-true-p doom-state-dir) user-emacs-directory)))
@@ -40,13 +37,14 @@
       (prin1 +jupyter-lsp--images (current-buffer)))))
 
 (defun +jupyter-lsp--host (&optional dir)
+  "Short name of DIR's TRAMP host: its `+remote-hosts' entry, else the first label."
   (let ((h (file-remote-p (or dir default-directory) 'host)))
-    (and h (car (split-string h "\\.")))))
+    (and h (or (+remote-host-key h) (car (split-string h "\\."))))))
 
 (defun +jupyter-lsp--kernel ()
   "Kernel of this buffer (attached, else the host default)."
   (or +jupyter-kernel-name
-      (cdr (assoc (+jupyter-lsp--host) +jupyter-lsp-host-kernels))))
+      (+remote-host-get (+jupyter-lsp--host) :kernel)))
 
 (defun +jupyter-lsp--entry (&optional kernel)
   (+jupyter-lsp--load)

@@ -159,6 +159,16 @@
                      "one-time password" "One Time Password" "Token code"))
            (* nonl) (any ":៖︓﹕：") (* blank)))))
 
+;; Direct async processes for /ssh: too (Doom enables them for scp only): magit,
+;; rg/fd, compile and remote terminals run as plain ssh over the ControlMaster
+;; instead of through TRAMP's shell. Doom keeps them off for eglot. If remote
+;; terminals (C-t) or magit misbehave in TRAMP buffers, delete this block.
+(after! files-x
+  (connection-local-set-profiles '(:application tramp :protocol "ssh")
+                                 'remote-direct-async-process))
+
+;; Hosts (JURECA, JUPITER): Slurm/kernel/sshfs settings, dashboard `c' → host's ~ over TRAMP.
+(load! "lisp/+remote")
 (load! "lisp/+jupyter-kernels")
 (load! "lisp/+jupyter-cells")
 (load! "lisp/+jupyter-remote")
@@ -169,8 +179,9 @@
 (load! "lisp/+terminal")
 
 ;;; Claude Code (claude-code-ide): the CLI in a ghostel side window, with this
-;;; buffer's file/selection, flymake diagnostics and ediff review. Local buffers
-;;; only (TRAMP is untested). SPC o c opens the menu.
+;;; buffer's file/selection, flymake diagnostics and ediff review. From a TRAMP
+;;; buffer on a `+remote-hosts' host, Claude runs locally in the host's sshfs mount
+;;; and runs commands over ssh (lisp/+claude-remote.el). SPC o c opens the menu.
 (use-package! claude-code-ide
   :defer t
   :config
@@ -179,7 +190,8 @@
         ;; this Emacs's ssh/TRAMP session; Claude Code asks unless allowed.
         claude-code-ide-enable-execute-code t)
   ;; xref, imenu, tree-sitter and project info as MCP tools
-  (claude-code-ide-emacs-tools-setup))
+  (claude-code-ide-emacs-tools-setup)
+  (load! "lisp/+claude-remote"))
 
 (map! :leader :desc "Claude Code" "o c" #'claude-code-ide-menu)
 

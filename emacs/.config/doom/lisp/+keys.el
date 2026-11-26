@@ -435,7 +435,8 @@
        :desc "Interrupt"          "SPC" #'+repl/interrupt)
 
       (:prefix "o"                   ; extends Doom's map, keeps its other keys
-       :desc "Local terminal"     "t" #'+terminal/toggle-local))
+       :desc "Local terminal"     "t" #'+terminal/toggle-local
+       :desc "Remote host (TRAMP)" "h" #'+remote/open-host))
 
 ;;; Localleader --------------------------------------------------------------
 

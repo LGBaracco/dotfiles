@@ -1,7 +1,8 @@
 ;;; lisp/+dashboard.el -*- lexical-binding: t; -*-
 ;;
 ;; Doom dashboard mirroring the nvim one (neovim/.config/nvim/lua/plugins/dashboard.lua):
-;; figlet banner, seven single-key entries, no footer, no mode-line.
+;; figlet banner, nvim's seven single-key entries plus `c' (remote host, lisp/+remote.el),
+;; no footer, no mode-line.
 ;;
 ;; banner.txt was generated, not drawn:
 ;;   uvx --from pyfiglet pyfiglet -w 200 -f delta_corps_priest_1 EMACS
@@ -41,7 +42,9 @@
         ("Magit"                 :icon (+dashboard--icon #xF02A2) :key "s" :action magit-status)
         ("Grep"                  :icon (+dashboard--icon #xF002)  :key "g" :action +default/search-project)
         ("Find file"             :icon (+dashboard--icon #xF021E) :key "f" :action +vertico/consult-fd-or-find)
-        ("New file"              :icon (+dashboard--icon #xF15B)  :key "e" :action evil-buffer-new)))
+        ("New file"              :icon (+dashboard--icon #xF15B)  :key "e" :action evil-buffer-new)
+        ;; Emacs only: pick a host of `+remote-hosts', dirvish at its ~ over TRAMP
+        ("Open remote host"      :icon (+dashboard--icon #xF233)  :key "c" :action +remote/open-host)))
 
 (map! :map +dashboard-mode-map
       :n "r" #'consult-recent-file
@@ -50,7 +53,8 @@
       :n "s" #'magit-status
       :n "g" #'+default/search-project
       :n "f" #'+vertico/consult-fd-or-find
-      :n "e" #'evil-buffer-new)
+      :n "e" #'evil-buffer-new
+      :n "c" #'+remote/open-host)
 
 ;; nvim hides the statusline on the dashboard.
 (add-hook '+dashboard-mode-hook #'mode-line-invisible-mode)
